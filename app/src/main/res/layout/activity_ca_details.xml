@@ -1,0 +1,399 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.example.android.gurkha.Person_Details">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/select"
+                layout="@layout/appbar_for_maps_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/alternate"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/location"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="Location:"
+                            android:textStyle="italic"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textlocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_toRightOf="@+id/location"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+                        <TextView
+                            android:id="@+id/scheme"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:textStyle="italic"
+                            android:layout_below="@+id/location"
+                            android:text="Scheme no:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textscheme"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_below="@id/location"
+                            android:layout_toRightOf="@+id/scheme"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/village"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/scheme"
+                            android:padding="5dp"
+                            android:textStyle="italic"
+                            android:text="Village:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textvillage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/scheme"
+                            android:layout_centerHorizontal="true"
+                            android:layout_toRightOf="@+id/village"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+
+                        <TextView
+                            android:id="@+id/vdc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/village"
+                            android:textStyle="italic"
+                            android:padding="5dp"
+                            android:text="VDC:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textvdc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/village"
+                            android:layout_centerHorizontal="true"
+                            android:layout_toRightOf="@+id/vdc"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/wno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/vdc"
+                            android:padding="5dp"
+                            android:textStyle="italic"
+                            android:text="W/No:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textwno"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/vdc"
+                            android:layout_toRightOf="@+id/wno"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+
+                        <TextView
+                            android:id="@+id/servicetype"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/wno"
+                            android:padding="5dp"
+                            android:text="Service Type:"
+                            android:textStyle="italic"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textservicetype"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textwno"
+                            android:layout_toRightOf="@+id/servicetype"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/hhtotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textservicetype"
+                            android:textStyle="italic"
+                            android:padding="5dp"
+                            android:text="HH Total:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/texthhtotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textservicetype"
+                            android:layout_toRightOf="@+id/hhtotal"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/tenta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="italic"
+                            android:layout_below="@+id/hhtotal"
+                            android:padding="5dp"
+                            android:text="Tap No/Block:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/texttenta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/hhtotal"
+                            android:layout_toRightOf="@+id/tenta"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/population"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tenta"
+                            android:padding="5dp"
+                            android:text="Population:"
+                            android:textStyle="italic"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textpopulation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tenta"
+                            android:layout_centerHorizontal="true"
+                            android:layout_toRightOf="@+id/population"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/coveragelevel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="italic"
+                            android:layout_below="@+id/population"
+                            android:layout_centerHorizontal="true"
+                            android:padding="5dp"
+                            android:text="School Coverage in W/S:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/level"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/coveragelevel"
+                            android:padding="5dp"
+                            android:text="Level:"
+                            android:textStyle="italic"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textlevel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/coveragelevel"
+                            android:layout_toRightOf="@+id/level"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/totpopulation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/level"
+                            android:padding="5dp"
+                            android:textStyle="italic"
+                            android:text="Total Population:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/texttotpopulation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textlevel"
+                            android:layout_toRightOf="@+id/totpopulation"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/ric"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/texttotpopulation"
+                            android:textStyle="italic"
+                            android:layout_centerHorizontal="true"
+                            android:padding="5dp"
+                            android:text="Rough Indication of Cost(RIC)"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/gws"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/ric"
+                            android:padding="5dp"
+                            android:textStyle="italic"
+                            android:text="GWS/KAAA:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textgws"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/ric"
+                            android:layout_toRightOf="@+id/gws"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/community"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/gws"
+                            android:padding="5dp"
+                            android:textStyle="italic"
+                            android:text="Community:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textcommunity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/gws"
+                            android:layout_toRightOf="@+id/community"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/total"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="italic"
+                            android:layout_below="@+id/community"
+                            android:padding="5dp"
+                            android:text="Total:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/texttotal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textcommunity"
+                            android:layout_toRightOf="@+id/total"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/funder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/total"
+                            android:padding="5dp"
+                            android:textStyle="italic"
+                            android:text="Funder:"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textfunder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/texttotal"
+                            android:layout_toRightOf="@+id/funder"
+                            android:padding="5dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="20sp" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
+
+    <fragment
+        android:id="@+id/fragment_navigation_drawer"
+        android:name="com.example.android.gurkha.NavigationDrawer"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:layout="@layout/fragment_navigation_drawer"
+        tools:layout="@layout/fragment_navigation_drawer" />
+</android.support.v4.widget.DrawerLayout>

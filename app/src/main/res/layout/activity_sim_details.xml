@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent">
+
+    <include
+        android:id="@+id/select"
+        layout="@layout/appbar_for_maps_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/textId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/select"
+        android:layout_margin="7dp"
+        android:textColor="@android:color/black"
+        android:text="SIM ID:"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/serialid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/select"
+        android:layout_margin="7dp"
+        android:layout_toRightOf="@+id/textId"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/ip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imei"
+        android:layout_margin="7dp"
+        android:layout_toRightOf="@+id/textIP"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textIP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imei"
+        android:layout_margin="7dp"
+        android:textColor="@android:color/black"
+        android:text="IP:"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textImei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textId"
+        android:text="IMEI:"
+        android:textColor="@android:color/black"
+        android:layout_margin="7dp"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/imei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textId"
+        android:layout_margin="7dp"
+        android:layout_toRightOf="@+id/textImei"
+        android:textSize="18sp" />
+
+</RelativeLayout>
+
+

@@ -1,0 +1,91 @@
+<resources>
+    <string name="app_name">Gurkha</string>
+    <string name="text_accounts">All Accounts</string>
+    <string name="hint_name">Full Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="text_login">Login</string>
+    <string name="text_register">Register</string>
+    <string name="error_message_name">Enter Full Name</string>
+    <string name="error_message_contact_no">Enter Contact No</string>
+    <string name="error_message_district">Enter District</string>
+    <string name="error_message_email">Enter Valid Email</string>
+    <string name="error_message_age">Enter Age</string>
+    <string name="error_message_password">Enter Password</string>
+    <string name="success_message">Registration Successful</string>
+    <string name="text_not_member">No account yet? Create one</string>
+    <string name="text_already_member">Already a member? Login</string>
+    <string name="error_email_exists">Email Already Exists</string>
+    <string name="error_password_match">Passwords Does Not Match</string>
+    <string name="error_valid_email_password">Sorry! You are not authorised to login</string>
+    <string name="facebook_login_error">Sorry! User is registered but not authorized</string>
+    <string name="select_awc">Please select Area Welfare Center</string>
+    <string name="changed">Password changed!</string>
+    <string name="not_changed">Incorrect Email Id</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="text_hello">Hello,</string>
+    <string name="text_title">Android Tutorials Hub</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="facebook_app_id">752028908301547</string>
+    <string name="title_activity_last_visit">Map</string>
+    <string name="title_activity_search_person">Map</string>
+    <string name="xAxis">X Axis:</string>
+    <string name="yAxis">Y Axis:</string>
+    <string name="zAxis">Z Axis:</string>
+    <string name="heading">Heading:</string>
+    <string name="pitch">Pitch:</string>
+    <string name="roll">Roll:</string>
+
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="empty"></string>
+    <string name="take_picture">Take picture</string>
+    <string name="request_permission">This sample needs camera permission.</string>
+
+    <string name="error_timeout">Connection Not Found</string>
+    <string name="error_auth_failure">Authorization Failure</string>
+    <string name="error_server">Unable to connect with the server</string>
+    <string name="error_network">Network not found</string>
+    <string name="error_parse">Parsing Not Established</string>
+
+
+    <string name="started">Started:</string>
+    <string name="latitude">Latitude:</string>
+    <string name="longitude">Longitude:</string>
+    <string name="altitude">Altitude:</string>
+    <string name="elapsed_time">Elapsed Time:</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="gps_enabled">GPS Enabled</string>
+    <string name="gps_disabled">GPS Disabled</string>
+    <string name="new_run">New Run</string>
+    <string name="title_activity_run_list">Run List</string>
+    <string name="map">Map</string>
+    <string name="run_start">Run Start %s</string>
+    <string name="run_started_at_format">Run started at %s</string>
+    <string name="run_finish">Run Finish %s</string>
+    <string name="run_finished_at_format">Finished on: %1$s </string>
+    <string name="title_activity_tracking">Map</string>
+    <string name="title_activity_current__location">Map</string>
+    <string name="title_activity_on_vehicle">Map</string>
+    <string name="title_activity_loader">Map</string>
+
+    <string name="barcode_error_format">"Error reading barcode: %1$s"</string>
+
+    <string name="no_data">No information found.</string>
+
+
+    <string name="message_write_error">Error Writing Message !</string>
+    <string name="message_write_success">Successfully written to Tag !</string>
+    <string name="message_write_progress">Writing to Tag..</string>
+    <string name="message_tag_detected">NFC Tag Detected !</string>
+    <string name="message_read_tag">Read from NFC Tag</string>
+    <string name="message_write_tag">Write to NFC Tag</string>
+    <string name="message_tap_tag">Tap the NFC Tag to your device !</string>
+    <string name="hint_message">Message</string>
+
+
+</resources>

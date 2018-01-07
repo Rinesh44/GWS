@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "764739662604",
+    "firebase_url": "https://gwsociety-1c550.firebaseio.com",
+    "project_id": "gwsociety-1c550",
+    "storage_bucket": "gwsociety-1c550.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764739662604:android:5e6535885ddb16da",
+        "android_client_info": {
+          "package_name": "com.example.android.gurkha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "764739662604-q7vcmfmrn48ujl2u56n9b1nhltbdjrfo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACx-6EagCrmzK2__X9AFjO1l73iCE6lVI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
