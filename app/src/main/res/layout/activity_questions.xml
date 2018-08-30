@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorSecondary"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/select"
+        layout="@layout/appbar_for_maps_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorSecondary"
+        android:fillViewport="true">
+
+
+        <!--
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                android:id="@+id/textperson"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/spinnerAwc"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="7dp"
+                android:fontFamily="@font/core_regular"
+                android:background="@android:drawable/btn_dropdown"
+                android:gravity="center"
+                android:padding="5dp"
+                android:spinnerMode="dropdown"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+                -->
+
+        <LinearLayout
+            android:id="@+id/container_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:divider="?android:dividerHorizontal"
+            android:dividerPadding="10dp"
+            android:orientation="vertical"
+            android:showDividers="middle">
+
+      <!--      <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_done"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@color/colorButton"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:text="done" />-->
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
+
+

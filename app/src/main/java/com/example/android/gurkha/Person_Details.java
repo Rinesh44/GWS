@@ -6,13 +6,20 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.media.ThumbnailUtils;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -23,86 +30,96 @@ import java.io.IOException;
 
 
 public class Person_Details extends AppCompatActivity {
-    TextView army_no, rank, name, surname, subunit, unit, army, age, dob, doe, dod, dc, retain, payee,
+    private static final String TAG = Person_Details.class.getSimpleName();
+    EditText army_no, rank, name, surname, subunit, unit, army, age, dob, doe, dod, dc, retain, payee,
             dependent_name, dependent_age, dependent_dob, nominee, relation, paid_to, health_state, type_of_welfare_pensioner,
-            longitude, latitude, village, district, vdc, ward_no, po;
+            longitude, latitude, village, district, vdc, ward_no, po, childName, childDOB, childAge;
     Toolbar toolbar;
+    LinearLayout childContainer;
     ImageView photo1, photo2, photo3;
-
+    FloatingActionButton btnSave;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person__details);
 
         toolbar = (Toolbar) findViewById(R.id.select);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
 
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
 
-        name = (TextView) findViewById(R.id.textName);
+        name = (EditText) findViewById(R.id.textName);
         name.setTypeface(face);
-        latitude = (TextView) findViewById(R.id.textlatidude);
+        latitude = (EditText) findViewById(R.id.textlatidude);
         latitude.setTypeface(face);
-        longitude = (TextView) findViewById(R.id.textlongitude);
+        longitude = (EditText) findViewById(R.id.textlongitude);
         longitude.setTypeface(face);
-        relation = (TextView) findViewById(R.id.textrelation);
+        relation = (EditText) findViewById(R.id.textrelation);
         relation.setTypeface(face);
-        army_no = (TextView) findViewById(R.id.textarmyno);
+        army_no = (EditText) findViewById(R.id.textarmyno);
         army_no.setTypeface(face);
-        rank = (TextView) findViewById(R.id.textrank);
+        rank = (EditText) findViewById(R.id.textrank);
         rank.setTypeface(face);
-        surname = (TextView) findViewById(R.id.textsurname);
+        surname = (EditText) findViewById(R.id.textsurname);
         surname.setTypeface(face);
-        subunit = (TextView) findViewById(R.id.textsubunit);
+        subunit = (EditText) findViewById(R.id.textsubunit);
         subunit.setTypeface(face);
-        unit = (TextView) findViewById(R.id.textunit);
+        unit = (EditText) findViewById(R.id.textunit);
         unit.setTypeface(face);
-        army = (TextView) findViewById(R.id.textarmyid);
+        army = (EditText) findViewById(R.id.textarmyid);
         army.setTypeface(face);
-        age = (TextView) findViewById(R.id.textage);
+        age = (EditText) findViewById(R.id.textage);
         age.setTypeface(face);
-        dob = (TextView) findViewById(R.id.textdob);
+        dob = (EditText) findViewById(R.id.textdob);
         dob.setTypeface(face);
-        doe = (TextView) findViewById(R.id.textdoe);
+        doe = (EditText) findViewById(R.id.textdoe);
         doe.setTypeface(face);
-        dod = (TextView) findViewById(R.id.textdod);
+        dod = (EditText) findViewById(R.id.textdod);
         dod.setTypeface(face);
-        dc = (TextView) findViewById(R.id.textdc);
+        dc = (EditText) findViewById(R.id.textdc);
         dc.setTypeface(face);
-        retain = (TextView) findViewById(R.id.textretain);
+        retain = (EditText) findViewById(R.id.textretain);
         retain.setTypeface(face);
-        payee = (TextView) findViewById(R.id.textpayee);
+        payee = (EditText) findViewById(R.id.textpayee);
         payee.setTypeface(face);
-        dependent_name = (TextView) findViewById(R.id.textdependentname);
+        dependent_name = (EditText) findViewById(R.id.textdependentname);
         dependent_name.setTypeface(face);
-        dependent_age = (TextView) findViewById(R.id.textdependentage);
+        dependent_age = (EditText) findViewById(R.id.textdependentage);
         dependent_age.setTypeface(face);
-        dependent_dob = (TextView) findViewById(R.id.textdependentdob);
+        dependent_dob = (EditText) findViewById(R.id.textdependentdob);
         dependent_dob.setTypeface(face);
-        nominee = (TextView) findViewById(R.id.textnominee);
+        nominee = (EditText) findViewById(R.id.textnominee);
         nominee.setTypeface(face);
-        paid_to = (TextView) findViewById(R.id.textpaid);
+        paid_to = (EditText) findViewById(R.id.textpaid);
         paid_to.setTypeface(face);
-        health_state = (TextView) findViewById(R.id.texthealthstate);
+        health_state = (EditText) findViewById(R.id.texthealthstate);
         health_state.setTypeface(face);
-        type_of_welfare_pensioner = (TextView) findViewById(R.id.texttypeofwelfarepensioner);
+        type_of_welfare_pensioner = (EditText) findViewById(R.id.texttypeofwelfarepensioner);
         type_of_welfare_pensioner.setTypeface(face);
-        village = (TextView) findViewById(R.id.textvillage);
+        village = (EditText) findViewById(R.id.textvillage);
         village.setTypeface(face);
-        district = (TextView) findViewById(R.id.textdistrict);
+        district = (EditText) findViewById(R.id.textdistrict);
         district.setTypeface(face);
-        vdc = (TextView) findViewById(R.id.textvdc);
+        vdc = (EditText) findViewById(R.id.textvdc);
         vdc.setTypeface(face);
-        ward_no = (TextView) findViewById(R.id.textwardno);
+        ward_no = (EditText) findViewById(R.id.textwardno);
         ward_no.setTypeface(face);
-        po = (TextView) findViewById(R.id.textpo);
+        po = (EditText) findViewById(R.id.textpo);
         po.setTypeface(face);
+        childContainer = findViewById(R.id.child_container);
+        childName = findViewById(R.id.text_child_name);
+        childDOB = findViewById(R.id.text_child_dob);
+        childAge = findViewById(R.id.text_child_age);
 
         photo1 = (ImageView) findViewById(R.id.imgphoto1);
         photo2 = (ImageView) findViewById(R.id.imgphoto2);
         photo3 = (ImageView) findViewById(R.id.imgphoto3);
+
+        btnSave = findViewById(R.id.save);
 
 
         Intent i = getIntent();
@@ -194,6 +211,21 @@ public class Person_Details extends AppCompatActivity {
         String txtpo = i.getStringExtra("po");
         po.setText(txtpo);
 
+
+        String txtChildName = i.getStringExtra("child_name");
+        childName.setText(txtChildName);
+//        Log.e(TAG, txtChildName);
+
+
+        String txtChildDob = i.getStringExtra("child_dob");
+        childDOB.setText(txtChildDob);
+//        Log.e(TAG, txtChildDob);
+
+
+        String txtChildAge = i.getStringExtra("child_age");
+        childAge.setText(txtChildAge);
+//        Log.e(TAG, txtChildAge);
+
         String img1 = i.getStringExtra("photo1");
         byte[] decodedString = Base64.decode(img1, Base64.DEFAULT);
         final Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -216,5 +248,56 @@ public class Person_Details extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_edit:
+                makeTextEditable();
+                break;
+        }
+            return false;
+    }
+
+    private void makeTextEditable() {
+        btnSave.setVisibility(View.VISIBLE);
+
+        name.setFocusableInTouchMode(true);
+        surname.setFocusableInTouchMode(true);
+        relation.setFocusableInTouchMode(true);
+        age.setFocusableInTouchMode(true);
+        latitude.setFocusableInTouchMode(true);
+        longitude.setFocusableInTouchMode(true);
+        army_no.setFocusableInTouchMode(true);
+        rank.setFocusableInTouchMode(true);
+        unit.setFocusableInTouchMode(true);
+        subunit.setFocusableInTouchMode(true);
+        army.setFocusableInTouchMode(true);
+        dob.setFocusableInTouchMode(true);
+        doe.setFocusableInTouchMode(true);
+        dod.setFocusableInTouchMode(true);
+        dc.setFocusableInTouchMode(true);
+        retain.setFocusableInTouchMode(true);
+        payee.setFocusableInTouchMode(true);
+        childName.setFocusableInTouchMode(true);
+        childDOB.setFocusableInTouchMode(true);
+        childAge.setFocusableInTouchMode(true);
+        dependent_name.setFocusableInTouchMode(true);
+        dependent_age.setFocusableInTouchMode(true);
+        dependent_dob.setFocusableInTouchMode(true);
+        health_state.setFocusableInTouchMode(true);
+        paid_to.setFocusableInTouchMode(true);
+        nominee.setFocusableInTouchMode(true);
+        type_of_welfare_pensioner.setFocusableInTouchMode(true);
+        village.setFocusableInTouchMode(true);
+        district.setFocusableInTouchMode(true);
+        vdc.setFocusableInTouchMode(true);
+        ward_no.setFocusableInTouchMode(true);
+        po.setFocusableInTouchMode(true);
+    }
 }

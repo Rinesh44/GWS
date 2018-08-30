@@ -20,259 +20,337 @@
                 android:id="@+id/select"
                 layout="@layout/appbar_for_maps_activity"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <ScrollView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true" />
+                android:fillViewport="true">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/alternate"
-                    android:padding="5dp">
+                    android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/category"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:textStyle="italic"
-                        android:text="Category:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/textcategory"
+                    <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_toRightOf="@+id/category"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
-                    <TextView
-                        android:id="@id/name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:layout_below="@id/category"
-                        android:textStyle="italic"
-                        android:text="Name:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        android:layout_below="@+id/select"
+                        android:layout_margin="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardElevation="4dp"
+                        app:cardUseCompatPadding="true">
 
-                    <TextView
-                        android:id="@+id/textName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_toRightOf="@+id/name"
-                        android:layout_below="@id/category"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
 
-                    <TextView
-                        android:id="@+id/armyno"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/name"
-                        android:textStyle="italic"
-                        android:padding="5dp"
-                        android:text="Army No:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/category"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Category:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/textarmyno"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/name"
-                        android:layout_centerHorizontal="true"
-                        android:layout_toRightOf="@+id/armyno"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textcategory"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/category"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
+                            <TextView
+                                android:id="@id/name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/category"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Name:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/wpsp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/armyno"
-                        android:padding="5dp"
-                        android:textStyle="italic"
-                        android:text="WP/SP:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/category"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/name"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/textwpsp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/armyno"
-                        android:layout_centerHorizontal="true"
-                        android:layout_toRightOf="@+id/wpsp"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/armyno"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/name"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Army No:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/address"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="italic"
-                        android:layout_below="@+id/textwpsp"
-                        android:padding="5dp"
-                        android:text="Address:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/textaddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textwpsp"
-                        android:layout_toRightOf="@+id/address"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textarmyno"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/name"
+                                android:layout_centerHorizontal="true"
+                                android:inputType="number"
+                                android:layout_toRightOf="@+id/armyno"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
 
-                    <TextView
-                        android:id="@+id/grant"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textaddress"
-                        android:padding="5dp"
-                        android:textStyle="italic"
-                        android:text="Approved Grant:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/wpsp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/armyno"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="WP/SP:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/textgrant"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textaddress"
-                        android:layout_toRightOf="@+id/grant"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textwpsp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/armyno"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/wpsp"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/cost"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textgrant"
-                        android:padding="5dp"
-                        android:textStyle="italic"
-                        android:text="Construction Cost:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/address"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textwpsp"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Address:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/textcost"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textgrant"
-                        android:layout_toRightOf="@+id/cost"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textaddress"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textwpsp"
+                                android:layout_toRightOf="@+id/address"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/supervisor"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textcost"
-                        android:padding="5dp"
-                        android:text="Project Supervisor:"
-                        android:textStyle="italic"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/textsupervisor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textcost"
-                        android:layout_toRightOf="@+id/supervisor"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/grant"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textaddress"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Approved Grant:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/remarks"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/supervisor"
-                        android:textStyle="italic"
-                        android:padding="5dp"
-                        android:text="Remarks:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textgrant"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textaddress"
+                                android:layout_toRightOf="@+id/grant"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/textremarks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textsupervisor"
-                        android:layout_centerHorizontal="true"
-                        android:layout_toRightOf="@+id/remarks"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/cost"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textgrant"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Construction Cost:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/remarks"
-                        android:padding="5dp"
-                        android:text="Status:"
-                        android:textStyle="italic"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textcost"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textgrant"
+                                android:layout_toRightOf="@+id/cost"
+                                android:inputType="number"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/textstatus"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textremarks"
-                        android:layout_centerHorizontal="true"
-                        android:layout_toRightOf="@+id/status"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/supervisor"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textcost"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Project Supervisor:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/location"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/status"
-                        android:padding="5dp"
-                        android:textStyle="italic"
-                        android:text="Location:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textsupervisor"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textcost"
+                                android:layout_toRightOf="@+id/supervisor"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/textlocation"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/status"
-                        android:layout_centerHorizontal="true"
-                        android:layout_toRightOf="@+id/location"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/remarks"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/supervisor"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Remarks:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                </RelativeLayout>
-            </LinearLayout>
+                            <EditText
+                                android:id="@+id/textremarks"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textsupervisor"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/remarks"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/remarks"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Status:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textstatus"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textremarks"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/status"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/location"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/status"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Location:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textlocation"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/status"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/location"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                        </RelativeLayout>
+
+                        <android.support.design.widget.FloatingActionButton
+                            android:id="@+id/save"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|bottom"
+                            android:layout_margin="20dp"
+                            android:backgroundTint="#dd4b39"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:src="@drawable/ic_done_all"
+                            android:visibility="gone"
+                            app:borderWidth="0dp"
+                            app:elevation="8dp"
+                            app:fabSize="mini" />
+
+                    </android.support.v7.widget.CardView>
+                </LinearLayout>
+            </ScrollView>
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 

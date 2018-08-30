@@ -43,12 +43,14 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:allowBackup="true"
+        android:name=".application.GurkhaApplication"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:allowBackup">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -101,6 +103,16 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
         <activity
             android:name=".Village_List"
             android:windowSoftInputMode="stateHidden" />
@@ -138,19 +150,10 @@
         <activity android:name=".Addeddesc" />
         <activity android:name=".Category" />
         <activity
-            android:name=".District_awc"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".Awc_category"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".awc_name1"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".awc_name2"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".awc_name3"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".awc_details" />
         <activity
@@ -216,7 +219,6 @@
         <activity
             android:name=".ChoosePath"
             android:windowSoftInputMode="stateHidden" />
-
         <activity android:name=".Scanner" />
 
         <service
@@ -230,7 +232,25 @@
         <activity android:name=".SimDetails" />
         <activity android:name=".SelectAwc" />
         <activity android:name=".SelectAwcForMap" />
-        <activity android:name=".NFC"/>
+        <activity android:name=".NFC" />
+        <activity android:name=".QnA.Results" />
+        <activity
+            android:name=".QnA.SocialPoll"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".QnA.EconomicPoll"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".QnA.HealthPoll"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".QnA.Questions" />
+        <activity android:name=".QnA.AnswersResult" />
+        <activity android:name=".MakePayment" />
+        <activity android:name=".PensionerRiskAssessment.SendPersonId" />
+        <activity
+            android:name=".PensionerRiskAssessment.AssessmentQuestions"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".AddPictures"></activity>
     </application>
 
 </manifest>

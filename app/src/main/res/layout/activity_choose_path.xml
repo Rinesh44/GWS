@@ -11,19 +11,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context="com.example.android.gurkha.ChoosePath">
+
         <android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/rootview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#D7DBB8"
+            android:background="@color/colorSecondary"
             android:orientation="vertical"
             android:weightSum="1"
             tools:context="com.example.android.gurkha.ChoosePath">
 
             <include
                 android:id="@+id/app_bar"
-                layout="@layout/appbar_for_villagelist"
+                layout="@layout/choose_path_appbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -42,43 +43,49 @@
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:background="#ABCDB4"
                     android:layout_marginTop="5dp"
+                    android:background="#ABCDB4"
+                    android:fontFamily="@font/core_regular"
                     android:gravity="center_vertical"
                     android:text="\tSelect Path"
                     android:textColor="@android:color/white"
                     android:textSize="20sp" />
                 <!-- Editext for Search -->
-                <EditText android:id="@+id/inputSearch"
+                <EditText
+                    android:id="@+id/inputSearch"
                     android:layout_width="180dp"
                     android:layout_height="30dp"
-                    android:hint="Search"
                     android:layout_alignRight="@+id/title"
-                    android:layout_marginTop="12dp"
-                    android:textColor="@android:color/black"
-                    android:drawableLeft="@drawable/ic_search"
-                    android:textCursorDrawable="@null"
-                    android:paddingLeft="5dp"
-                    android:background="@android:color/white"
                     android:layout_marginRight="10dp"
-                    android:inputType="textVisiblePassword"/>
+                    android:layout_marginTop="12dp"
+                    android:background="@android:color/white"
+                    android:drawableLeft="@drawable/ic_search"
+                    android:fontFamily="@font/core_regular"
+                    android:hint="Search"
+                    android:inputType="textVisiblePassword"
+                    android:paddingLeft="5dp"
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null" />
 
                 <ListView
                     android:id="@+id/list_people"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/title"></ListView>
+                    android:layout_below="@+id/title"
+                    android:fontFamily="@font/core_regular"></ListView>
 
                 <TextView
                     android:id="@+id/empty_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:textAppearance="?android:textAppearanceMedium"/>
+                    android:fontFamily="@font/core_regular"
+                    android:textAppearance="?android:textAppearanceMedium" />
 
             </RelativeLayout>
         </android.support.v7.widget.LinearLayoutCompat>
     </android.support.design.widget.CoordinatorLayout>
+
     <fragment
         android:id="@+id/fragment_navigation_drawer"
         android:name="com.example.android.gurkha.NavigationDrawer"

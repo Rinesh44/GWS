@@ -17,6 +17,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -24,6 +27,8 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.example.android.gurkha.QnA.Questions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,13 +62,16 @@ public class People extends AppCompatActivity {
     private ListView listView;
     private EditText search;
     private TextView mEmptyStateTextView;
+    String token, fbToken;
     // URL to get peoplelist JSON
     private static String base_url = "http://pagodalabs.com.np/";
-    private static String url = "http://pagodalabs.com.np/gws/personal_detail/api/personal_detail/";
+    private static String url = "http://pagodalabs.com.np/gws/personal_detail/api/personal_detail?api_token=";
     ArrayList<HashMap<String, String>> peoplelist;
     Call<ResponseBody> call;
+    Typeface face;
     SessionManager sessionManager;
     FbSessionManager fbSessionManager;
+    private int lastPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +80,7 @@ public class People extends AppCompatActivity {
         peoplelist = new ArrayList<>();
 
         TextView tv = (TextView) findViewById(R.id.toolbar_title);
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
         tv.setTypeface(face);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -84,7 +92,22 @@ public class People extends AppCompatActivity {
         fbSessionManager = new FbSessionManager(getApplicationContext());
 
         adapter = new SimpleAdapter(People.this, peoplelist,
-                R.layout.list_item, new String[]{"name", "surname", "army_no"}, new int[]{R.id.name, R.id.surname, R.id.army_no});
+                R.layout.list_item, new String[]{"name", "surname", "army_no"}, new int[]{R.id.name, R.id.surname, R.id.army_no}) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView name = (TextView) view.findViewById(R.id.name);
+                TextView surname = (TextView) view.findViewById(R.id.surname);
+                TextView army_no = (TextView) view.findViewById(R.id.army_no);
+                name.setTypeface(face);
+                surname.setTypeface(face);
+                army_no.setTypeface(face);
+                Animation animation = AnimationUtils.loadAnimation(People.this, (position > lastPosition) ? R.anim.item_animation_fall_down : R.anim.item_animation_fall_down);
+                view.startAnimation(animation);
+                lastPosition = position;
+                return view;
+            }
+        };
         adapter.notifyDataSetChanged();
 
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
@@ -96,7 +119,6 @@ public class People extends AppCompatActivity {
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         listView.setEmptyView(mEmptyStateTextView);
-
 
         try {
 
@@ -124,7 +146,7 @@ public class People extends AppCompatActivity {
 
     /**
      * Interceptor to cache data and maintain it for a minute.
-     *
+     * <p>
      * If the same network request is sent within a minute,
      * the response is retrieved from cache.
      */
@@ -140,7 +162,7 @@ public class People extends AppCompatActivity {
 
     /**
      * Interceptor to cache data and maintain it for four weeks.
-     *
+     * <p>
      * If the device is offline, stale (at most 2 weeks)
      * response is fetched from the cache.
      */
@@ -158,15 +180,20 @@ public class People extends AppCompatActivity {
         }
     }
 
-    void run() throws IOException {
-        OkHttpClient client = new OkHttpClient();
-        final String awc = SelectAwc.awc;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        progressDialog.dismiss();
+    }
 
+    void run() throws IOException {
+        final String awc = SelectAwc.awc;
         if (sessionManager.getUserDetails() != null) {
             HashMap<String, String> user = sessionManager.getUserDetails();
             String id = user.get(SessionManager.KEY_ID);
+            token = user.get(SessionManager.KEY_TOKEN);
 
-            if (id != null){
+            if (id != null) {
                 if (id.matches("1")) {
                     progressDialog = new ProgressDialog(People.this);
                     progressDialog.setMessage("Please wait...");
@@ -191,7 +218,7 @@ public class People extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail/");
+                    call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -201,6 +228,12 @@ public class People extends AppCompatActivity {
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(People.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
+
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -242,50 +275,56 @@ public class People extends AppCompatActivity {
                                     String ward_no = c.getString("ward_no");
                                     String po = c.getString("po");
                                     String background = c.getString("background");
-
+                                    String child_name = c.getString("child_name");
+                                    String child_dob = c.getString("child_dob");
+                                    String child_age = c.getString("child_age");
 
                                     // tmp hash map for single data
-                                    HashMap<String, String> contact = new HashMap<>();
+                                    HashMap<String, String> details = new HashMap<>();
 
                                     // adding each child node to HashMap key => value
 
-                                    contact.put("personal_id", personal_id);
-                                    contact.put("army_no", army_no);
-                                    contact.put("rank", rank);
-                                    contact.put("name", name);
-                                    contact.put("surname", surname);
-                                    contact.put("subunit", subunit);
-                                    contact.put("unit", unit);
-                                    contact.put("army", army);
-                                    contact.put("age", age);
-                                    contact.put("dob", dob);
-                                    contact.put("doe", doe);
-                                    contact.put("dod", dod);
-                                    contact.put("dc", dc);
-                                    contact.put("retain", retain);
-                                    contact.put("payee", payee);
-                                    contact.put("dependent_name", dependent_name);
-                                    contact.put("dependent_age", dependent_age);
-                                    contact.put("dependent_dob", dependent_dob);
-                                    contact.put("photo1", photo1);
-                                    contact.put("photo2", photo2);
-                                    contact.put("photo3", photo3);
-                                    contact.put("nominee", nominee);
-                                    contact.put("relation", relation);
-                                    contact.put("paid_to", paid_to);
-                                    contact.put("health_state", health_state);
-                                    contact.put("type_of_welfare_pensioner", type_of_welfare_pensioner);
-                                    contact.put("longitude", longitude);
-                                    contact.put("latitude", latitude);
-                                    contact.put("village", village);
-                                    contact.put("district", district);
-                                    contact.put("vdc", vdc);
-                                    contact.put("ward_no", ward_no);
-                                    contact.put("po", po);
-                                    contact.put("background", background);
+                                    details.put("personal_id", personal_id);
+                                    details.put("army_no", army_no);
+                                    details.put("rank", rank);
+                                    details.put("name", name);
+                                    details.put("surname", surname);
+                                    details.put("subunit", subunit);
+                                    details.put("unit", unit);
+                                    details.put("army", army);
+                                    details.put("age", age);
+                                    details.put("dob", dob);
+                                    details.put("doe", doe);
+                                    details.put("dod", dod);
+                                    details.put("dc", dc);
+                                    details.put("retain", retain);
+                                    details.put("payee", payee);
+                                    details.put("dependent_name", dependent_name);
+                                    details.put("dependent_age", dependent_age);
+                                    details.put("dependent_dob", dependent_dob);
+                                    details.put("photo1", photo1);
+                                    details.put("photo2", photo2);
+                                    details.put("photo3", photo3);
+                                    details.put("nominee", nominee);
+                                    details.put("relation", relation);
+                                    details.put("paid_to", paid_to);
+                                    details.put("health_state", health_state);
+                                    details.put("type_of_welfare_pensioner", type_of_welfare_pensioner);
+                                    details.put("longitude", longitude);
+                                    details.put("latitude", latitude);
+                                    details.put("village", village);
+                                    details.put("district", district);
+                                    details.put("vdc", vdc);
+                                    details.put("ward_no", ward_no);
+                                    details.put("po", po);
+                                    details.put("background", background);
+                                    details.put("child_name", child_name);
+                                    details.put("child_dob", child_dob);
+                                    details.put("child_age", child_age);
+
 
                                     // adding contact to contact list
-                                    peoplelist.add(contact);
+                                    peoplelist.add(details);
                                     adapter.notifyDataSetChanged();
                                 }
                             } catch (JSONException | IOException e) {
@@ -307,42 +346,45 @@ public class People extends AppCompatActivity {
                                         @Override
                                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                                            HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
+                                            HashMap<String, Object> detailsHash = (HashMap<String, Object>) adapter.getItem(position);
 
-                                            String personal_id = (String) obj.get("personal_id");
-                                            String army_no = (String) obj.get("army_no");
-                                            String rank = (String) obj.get("rank");
-                                            String name = (String) obj.get("name");
-                                            String surname = (String) obj.get("surname");
-                                            String subunit = (String) obj.get("subunit");
-                                            String unit = (String) obj.get("unit");
-                                            String army = (String) obj.get("army");
-                                            String age = (String) obj.get("age");
-                                            String dob = (String) obj.get("dob");
-                                            String doe = (String) obj.get("doe");
-                                            String dod = (String) obj.get("dod");
-                                            String dc = (String) obj.get("dc");
-                                            String retain = (String) obj.get("retain");
-                                            String payee = (String) obj.get("payee");
-                                            String dependent_name = (String) obj.get("dependent_name");
-                                            String dependent_age = (String) obj.get("dependent_age");
-                                            String dependent_dob = (String) obj.get("dependent_dob");
-                                            String photo1 = (String) obj.get("photo1");
-                                            String photo2 = (String) obj.get("photo2");
-                                            String photo3 = (String) obj.get("photo3");
-                                            String nominee = (String) obj.get("nominee");
-                                            String relation = (String) obj.get("relation");
-                                            String paid_to = (String) obj.get("paid_to");
-                                            String health_state = (String) obj.get("health_state");
-                                            String type_of_welfare_pensioner = (String) obj.get("type_of_welfare_pensioner");
-                                            String longitude = (String) obj.get("longitude");
-                                            String latitude = (String) obj.get("latitude");
-                                            String village = (String) obj.get("village");
-                                            String district = (String) obj.get("district");
-                                            String vdc = (String) obj.get("vdc");
-                                            String ward_no = (String) obj.get("ward_no");
-                                            String po = (String) obj.get("po");
-                                            String background = (String) obj.get("background");
+                                            String personal_id = (String) detailsHash.get("personal_id");
+                                            String army_no = (String) detailsHash.get("army_no");
+                                            String rank = (String) detailsHash.get("rank");
+                                            String name = (String) detailsHash.get("name");
+                                            String surname = (String) detailsHash.get("surname");
+                                            String subunit = (String) detailsHash.get("subunit");
+                                            String unit = (String) detailsHash.get("unit");
+                                            String army = (String) detailsHash.get("army");
+                                            String age = (String) detailsHash.get("age");
+                                            String dob = (String) detailsHash.get("dob");
+                                            String doe = (String) detailsHash.get("doe");
+                                            String dod = (String) detailsHash.get("dod");
+                                            String dc = (String) detailsHash.get("dc");
+                                            String retain = (String) detailsHash.get("retain");
+                                            String payee = (String) detailsHash.get("payee");
+                                            String dependent_name = (String) detailsHash.get("dependent_name");
+                                            String dependent_age = (String) detailsHash.get("dependent_age");
+                                            String dependent_dob = (String) detailsHash.get("dependent_dob");
+                                            String photo1 = (String) detailsHash.get("photo1");
+                                            String photo2 = (String) detailsHash.get("photo2");
+                                            String photo3 = (String) detailsHash.get("photo3");
+                                            String nominee = (String) detailsHash.get("nominee");
+                                            String relation = (String) detailsHash.get("relation");
+                                            String paid_to = (String) detailsHash.get("paid_to");
+                                            String health_state = (String) detailsHash.get("health_state");
+                                            String type_of_welfare_pensioner = (String) detailsHash.get("type_of_welfare_pensioner");
+                                            String longitude = (String) detailsHash.get("longitude");
+                                            String latitude = (String) detailsHash.get("latitude");
+                                            String village = (String) detailsHash.get("village");
+                                            String district = (String) detailsHash.get("district");
+                                            String vdc = (String) detailsHash.get("vdc");
+                                            String ward_no = (String) detailsHash.get("ward_no");
+                                            String po = (String) detailsHash.get("po");
+                                            String background = (String) detailsHash.get("background");
+                                            String child_age = (String) detailsHash.get("child_age");
+                                            String child_name = (String) detailsHash.get("child_name");
+                                            String child_dob = (String) detailsHash.get("child_dob");
 
 
                                             Intent in = new Intent(People.this, Person_Details.class);
@@ -380,6 +422,11 @@ public class People extends AppCompatActivity {
                                             in.putExtra("ward_no", ward_no);
                                             in.putExtra("po", po);
                                             in.putExtra("background", background);
+                                            in.putExtra("child_age", child_age);
+                                            in.putExtra("child_name", child_name);
+                                            in.putExtra("child_dob", child_dob);
+
+
                                             startActivity(in);
                                         }
                                     });
@@ -442,7 +489,7 @@ public class People extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail/" + awc);
+                    call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -452,6 +499,11 @@ public class People extends AppCompatActivity {
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(People.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -493,7 +545,9 @@ public class People extends AppCompatActivity {
                                     String ward_no = c.getString("ward_no");
                                     String po = c.getString("po");
                                     String background = c.getString("background");
-
+                                    String child_name = c.getString("child_name");
+                                    String child_dob = c.getString("child_dob");
+                                    String child_age = c.getString("child_age");
 
                                     // tmp hash map for single data
                                     HashMap<String, String> contact = new HashMap<>();
@@ -534,6 +588,9 @@ public class People extends AppCompatActivity {
                                     contact.put("ward_no", ward_no);
                                     contact.put("po", po);
                                     contact.put("background", background);
+                                    contact.put("child_name", child_name);
+                                    contact.put("child_dob", child_dob);
+                                    contact.put("child_age", child_age);
 
                                     // adding contact to contact list
                                     peoplelist.add(contact);
@@ -595,6 +652,9 @@ public class People extends AppCompatActivity {
                                             String ward_no = (String) obj.get("ward_no");
                                             String po = (String) obj.get("po");
                                             String background = (String) obj.get("background");
+                                            String child_name = (String) obj.get("child_name");
+                                            String child_dob = (String) obj.get("child_dob");
+                                            String child_age = (String) obj.get("child_age");
 
 
                                             Intent in = new Intent(People.this, Person_Details.class);
@@ -632,6 +692,9 @@ public class People extends AppCompatActivity {
                                             in.putExtra("ward_no", ward_no);
                                             in.putExtra("po", po);
                                             in.putExtra("background", background);
+                                            in.putExtra("child_name", child_name);
+                                            in.putExtra("child_dob", child_dob);
+                                            in.putExtra("child_age", child_age);
                                             startActivity(in);
                                         }
                                     });
@@ -671,14 +734,18 @@ public class People extends AppCompatActivity {
                         }
                     });
                 }
+            }
         }
-    }
 
         if (fbSessionManager.getUserDetails() != null) {
             HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
-            String fbId = fbUser.get(SessionManager.KEY_ID);
+            String fbId = fbUser.get(FbSessionManager.KEY_ID);
 
-            if (fbId != null){
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            fbToken = fbUser.get(FbSessionManager.KEY_TOKEN);
+            //token = user.get(SessionManager.KEY_TOKEN);
+
+            if (fbId != null) {
                 if (fbId.matches("1")) {
                     progressDialog = new ProgressDialog(People.this);
                     progressDialog.setMessage("Please wait...");
@@ -703,7 +770,7 @@ public class People extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail/");
+                    call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail?api_token=" + fbToken);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -713,6 +780,11 @@ public class People extends AppCompatActivity {
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(People.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -754,7 +826,9 @@ public class People extends AppCompatActivity {
                                     String ward_no = c.getString("ward_no");
                                     String po = c.getString("po");
                                     String background = c.getString("background");
-
+                                    String child_name = c.getString("child_name");
+                                    String child_dob = c.getString("child_dob");
+                                    String child_age = c.getString("child_age");
 
                                     // tmp hash map for single data
                                     HashMap<String, String> contact = new HashMap<>();
@@ -795,6 +869,10 @@ public class People extends AppCompatActivity {
                                     contact.put("ward_no", ward_no);
                                     contact.put("po", po);
                                     contact.put("background", background);
+                                    contact.put("child_name", child_name);
+                                    contact.put("child_dob", child_dob);
+                                    contact.put("child_age", child_age);
+
 
                                     // adding contact to contact list
                                     peoplelist.add(contact);
@@ -855,6 +933,9 @@ public class People extends AppCompatActivity {
                                             String ward_no = (String) obj.get("ward_no");
                                             String po = (String) obj.get("po");
                                             String background = (String) obj.get("background");
+                                            String child_name = (String) obj.get("child_name");
+                                            String child_dob = (String) obj.get("child_dob");
+                                            String child_age = (String) obj.get("child_age");
 
 
                                             Intent in = new Intent(People.this, Person_Details.class);
@@ -892,6 +973,9 @@ public class People extends AppCompatActivity {
                                             in.putExtra("ward_no", ward_no);
                                             in.putExtra("po", po);
                                             in.putExtra("background", background);
+                                            in.putExtra("child_name", child_name);
+                                            in.putExtra("child_dob", child_dob);
+                                            in.putExtra("child_age", child_age);
                                             startActivity(in);
                                         }
                                     });
@@ -954,7 +1038,7 @@ public class People extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail/" + awc);
+                    call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail/" + awc + "?api_token=" + fbToken);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -964,6 +1048,11 @@ public class People extends AppCompatActivity {
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(People.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -1005,6 +1094,9 @@ public class People extends AppCompatActivity {
                                     String ward_no = c.getString("ward_no");
                                     String po = c.getString("po");
                                     String background = c.getString("background");
+                                    String child_name = c.getString("child_name");
+                                    String child_dob = c.getString("child_dob");
+                                    String child_age = c.getString("child_age");
 
 
                                     // tmp hash map for single data
@@ -1046,7 +1138,9 @@ public class People extends AppCompatActivity {
                                     contact.put("ward_no", ward_no);
                                     contact.put("po", po);
                                     contact.put("background", background);
-
+                                    contact.put("child_name", child_name);
+                                    contact.put("child_dob", child_dob);
+                                    contact.put("child_age", child_age);
                                     // adding contact to contact list
                                     peoplelist.add(contact);
                                     adapter.notifyDataSetChanged();
@@ -1107,6 +1201,9 @@ public class People extends AppCompatActivity {
                                             String ward_no = (String) obj.get("ward_no");
                                             String po = (String) obj.get("po");
                                             String background = (String) obj.get("background");
+                                            String child_name = (String) obj.get("child_name");
+                                            String child_dob = (String) obj.get("child_dob");
+                                            String child_age = (String) obj.get("child_age");
 
 
                                             Intent in = new Intent(People.this, Person_Details.class);
@@ -1144,6 +1241,9 @@ public class People extends AppCompatActivity {
                                             in.putExtra("ward_no", ward_no);
                                             in.putExtra("po", po);
                                             in.putExtra("background", background);
+                                            in.putExtra("child_name", child_name);
+                                            in.putExtra("child_dob", child_dob);
+                                            in.putExtra("child_age", child_age);
                                             startActivity(in);
                                         }
                                     });
@@ -1187,285 +1287,285 @@ public class People extends AppCompatActivity {
         }
     }
 
-        /**
-         * Async task class to get json by making HTTP call
-         */
-        private class GetNames extends AsyncTask<Void, Void, Void> {
+    /**
+     * Async task class to get json by making HTTP call
+     */
+    private class GetNames extends AsyncTask<Void, Void, Void> {
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                // Showing progress dialog
-                progressDialog = new ProgressDialog(People.this);
-                progressDialog.setMessage("Please wait...");
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-            }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Showing progress dialog
+            progressDialog = new ProgressDialog(People.this);
+            progressDialog.setMessage("Please wait...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
 
-            @Override
-            protected Void doInBackground(Void... arg0) {
-                HttpHandler sh = new HttpHandler();
-                String awc = SelectAwc.awc;
-                String checkAdmin = MainActivity.checkAdmin;
-                // Making a request to url and getting response
-                if (checkAdmin.matches("1")) {
-                    String jsonStr = sh.makeServiceCall(url);
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            HttpHandler sh = new HttpHandler();
+            String awc = SelectAwc.awc;
+            String checkAdmin = MainActivity.checkAdmin;
+            // Making a request to url and getting response
+            if (checkAdmin.matches("1")) {
+                String jsonStr = sh.makeServiceCall(url);
 
-                    Log.e(TAG, "Response from url: " + jsonStr);
-                    if (jsonStr != null) {
-                        try {
-                            JSONObject jsonObj = new JSONObject(jsonStr);
+                Log.e(TAG, "Response from url: " + jsonStr);
+                if (jsonStr != null) {
+                    try {
+                        JSONObject jsonObj = new JSONObject(jsonStr);
 
-                            // Getting JSON Array node
-                            JSONArray data = jsonObj.getJSONArray("personal");
-                            // looping through All data
-                            for (int i = 0; i < data.length(); i++) {
-                                JSONObject c = data.getJSONObject(i);
+                        // Getting JSON Array node
+                        JSONArray data = jsonObj.getJSONArray("personal");
+                        // looping through All data
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject c = data.getJSONObject(i);
 
-                                String personal_id = c.getString("personal_id");
-                                String army_no = c.getString("army_no");
-                                String rank = c.getString("rank");
-                                String name = c.getString("name");
-                                String surname = c.getString("surname");
-                                String subunit = c.getString("subunit");
-                                String unit = c.getString("unit");
-                                String army = c.getString("army");
-                                String age = c.getString("age");
-                                String dob = c.getString("dob");
-                                String doe = c.getString("doe");
-                                String dod = c.getString("dod");
-                                String dc = c.getString("dc");
-                                String retain = c.getString("retain");
-                                String payee = c.getString("payee");
-                                String dependent_name = c.getString("dependent_name");
-                                String dependent_age = c.getString("dependent_age");
-                                String dependent_dob = c.getString("dependent_dob");
-                                String photo1 = c.getString("photo1");
-                                String photo2 = c.getString("photo2");
-                                String photo3 = c.getString("photo3");
-                                String nominee = c.getString("nominee");
-                                String relation = c.getString("relation");
-                                String paid_to = c.getString("paid_to");
-                                String health_state = c.getString("health_state");
-                                String type_of_welfare_pensioner = c.getString("type_of_welfare_pensioner");
-                                String longitude = c.getString("longitude");
-                                String latitude = c.getString("latitude");
-                                String village = c.getString("village");
-                                String district = c.getString("district");
-                                String vdc = c.getString("vdc");
-                                String ward_no = c.getString("ward_no");
-                                String po = c.getString("po");
-                                String background = c.getString("background");
+                            String personal_id = c.getString("personal_id");
+                            String army_no = c.getString("army_no");
+                            String rank = c.getString("rank");
+                            String name = c.getString("name");
+                            String surname = c.getString("surname");
+                            String subunit = c.getString("subunit");
+                            String unit = c.getString("unit");
+                            String army = c.getString("army");
+                            String age = c.getString("age");
+                            String dob = c.getString("dob");
+                            String doe = c.getString("doe");
+                            String dod = c.getString("dod");
+                            String dc = c.getString("dc");
+                            String retain = c.getString("retain");
+                            String payee = c.getString("payee");
+                            String dependent_name = c.getString("dependent_name");
+                            String dependent_age = c.getString("dependent_age");
+                            String dependent_dob = c.getString("dependent_dob");
+                            String photo1 = c.getString("photo1");
+                            String photo2 = c.getString("photo2");
+                            String photo3 = c.getString("photo3");
+                            String nominee = c.getString("nominee");
+                            String relation = c.getString("relation");
+                            String paid_to = c.getString("paid_to");
+                            String health_state = c.getString("health_state");
+                            String type_of_welfare_pensioner = c.getString("type_of_welfare_pensioner");
+                            String longitude = c.getString("longitude");
+                            String latitude = c.getString("latitude");
+                            String village = c.getString("village");
+                            String district = c.getString("district");
+                            String vdc = c.getString("vdc");
+                            String ward_no = c.getString("ward_no");
+                            String po = c.getString("po");
+                            String background = c.getString("background");
 
 
-                                // tmp hash map for single data
-                                HashMap<String, String> contact = new HashMap<>();
+                            // tmp hash map for single data
+                            HashMap<String, String> contact = new HashMap<>();
 
-                                // adding each child node to HashMap key => value
+                            // adding each child node to HashMap key => value
 
-                                contact.put("personal_id", personal_id);
-                                contact.put("army_no", army_no);
-                                contact.put("rank", rank);
-                                contact.put("name", name);
-                                contact.put("surname", surname);
-                                contact.put("subunit", subunit);
-                                contact.put("unit", unit);
-                                contact.put("army", army);
-                                contact.put("age", age);
-                                contact.put("dob", dob);
-                                contact.put("doe", doe);
-                                contact.put("dod", dod);
-                                contact.put("dc", dc);
-                                contact.put("retain", retain);
-                                contact.put("payee", payee);
-                                contact.put("dependent_name", dependent_name);
-                                contact.put("dependent_age", dependent_age);
-                                contact.put("dependent_dob", dependent_dob);
-                                contact.put("photo1", photo1);
-                                contact.put("photo2", photo2);
-                                contact.put("photo3", photo3);
-                                contact.put("nominee", nominee);
-                                contact.put("relation", relation);
-                                contact.put("paid_to", paid_to);
-                                contact.put("health_state", health_state);
-                                contact.put("type_of_welfare_pensioner", type_of_welfare_pensioner);
-                                contact.put("longitude", longitude);
-                                contact.put("latitude", latitude);
-                                contact.put("village", village);
-                                contact.put("district", district);
-                                contact.put("vdc", vdc);
-                                contact.put("ward_no", ward_no);
-                                contact.put("po", po);
-                                contact.put("background", background);
+                            contact.put("personal_id", personal_id);
+                            contact.put("army_no", army_no);
+                            contact.put("rank", rank);
+                            contact.put("name", name);
+                            contact.put("surname", surname);
+                            contact.put("subunit", subunit);
+                            contact.put("unit", unit);
+                            contact.put("army", army);
+                            contact.put("age", age);
+                            contact.put("dob", dob);
+                            contact.put("doe", doe);
+                            contact.put("dod", dod);
+                            contact.put("dc", dc);
+                            contact.put("retain", retain);
+                            contact.put("payee", payee);
+                            contact.put("dependent_name", dependent_name);
+                            contact.put("dependent_age", dependent_age);
+                            contact.put("dependent_dob", dependent_dob);
+                            contact.put("photo1", photo1);
+                            contact.put("photo2", photo2);
+                            contact.put("photo3", photo3);
+                            contact.put("nominee", nominee);
+                            contact.put("relation", relation);
+                            contact.put("paid_to", paid_to);
+                            contact.put("health_state", health_state);
+                            contact.put("type_of_welfare_pensioner", type_of_welfare_pensioner);
+                            contact.put("longitude", longitude);
+                            contact.put("latitude", latitude);
+                            contact.put("village", village);
+                            contact.put("district", district);
+                            contact.put("vdc", vdc);
+                            contact.put("ward_no", ward_no);
+                            contact.put("po", po);
+                            contact.put("background", background);
 
-                                // adding contact to contact list
-                                peoplelist.add(contact);
-                                adapter.notifyDataSetChanged();
-
-                            }
-                        } catch (final JSONException e) {
-                            Log.e(TAG, "Json parsing error: " + e.getMessage());
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Json parsing error: " + e.getMessage(),
-                                            Toast.LENGTH_LONG)
-                                            .show();
-                                }
-                            });
+                            // adding contact to contact list
+                            peoplelist.add(contact);
+                            adapter.notifyDataSetChanged();
 
                         }
-                    } else {
-                        Log.e(TAG, "Couldn't get json from server.");
+                    } catch (final JSONException e) {
+                        Log.e(TAG, "Json parsing error: " + e.getMessage());
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(getApplicationContext(),
-                                        "Connection Timeout! Please check internet connection",
+                                        "Json parsing error: " + e.getMessage(),
                                         Toast.LENGTH_LONG)
                                         .show();
                             }
                         });
 
                     }
-
-                    return null;
                 } else {
-                    String jsonStr = sh.makeServiceCall(url + awc);
+                    Log.e(TAG, "Couldn't get json from server.");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "Connection Timeout! Please check internet connection",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
 
-                    Log.e(TAG, "Response from url: " + jsonStr);
-                    if (jsonStr != null) {
-                        try {
-                            JSONObject jsonObj = new JSONObject(jsonStr);
+                }
 
-                            // Getting JSON Array node
-                            JSONArray data = jsonObj.getJSONArray("personal");
-                            // looping through All data
-                            for (int i = 0; i < data.length(); i++) {
-                                JSONObject c = data.getJSONObject(i);
+                return null;
+            } else {
+                String jsonStr = sh.makeServiceCall(url + awc);
 
-                                String personal_id = c.getString("personal_id");
-                                String army_no = c.getString("army_no");
-                                String rank = c.getString("rank");
-                                String name = c.getString("name");
-                                String surname = c.getString("surname");
-                                String subunit = c.getString("subunit");
-                                String unit = c.getString("unit");
-                                String army = c.getString("army");
-                                String age = c.getString("age");
-                                String dob = c.getString("dob");
-                                String doe = c.getString("doe");
-                                String dod = c.getString("dod");
-                                String dc = c.getString("dc");
-                                String retain = c.getString("retain");
-                                String payee = c.getString("payee");
-                                String dependent_name = c.getString("dependent_name");
-                                String dependent_age = c.getString("dependent_age");
-                                String dependent_dob = c.getString("dependent_dob");
-                                String photo1 = c.getString("photo1");
-                                String photo2 = c.getString("photo2");
-                                String photo3 = c.getString("photo3");
-                                String nominee = c.getString("nominee");
-                                String relation = c.getString("relation");
-                                String paid_to = c.getString("paid_to");
-                                String health_state = c.getString("health_state");
-                                String type_of_welfare_pensioner = c.getString("type_of_welfare_pensioner");
-                                String longitude = c.getString("longitude");
-                                String latitude = c.getString("latitude");
-                                String village = c.getString("village");
-                                String district = c.getString("district");
-                                String vdc = c.getString("vdc");
-                                String ward_no = c.getString("ward_no");
-                                String po = c.getString("po");
-                                String background = c.getString("background");
+                Log.e(TAG, "Response from url: " + jsonStr);
+                if (jsonStr != null) {
+                    try {
+                        JSONObject jsonObj = new JSONObject(jsonStr);
+
+                        // Getting JSON Array node
+                        JSONArray data = jsonObj.getJSONArray("personal");
+                        // looping through All data
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject c = data.getJSONObject(i);
+
+                            String personal_id = c.getString("personal_id");
+                            String army_no = c.getString("army_no");
+                            String rank = c.getString("rank");
+                            String name = c.getString("name");
+                            String surname = c.getString("surname");
+                            String subunit = c.getString("subunit");
+                            String unit = c.getString("unit");
+                            String army = c.getString("army");
+                            String age = c.getString("age");
+                            String dob = c.getString("dob");
+                            String doe = c.getString("doe");
+                            String dod = c.getString("dod");
+                            String dc = c.getString("dc");
+                            String retain = c.getString("retain");
+                            String payee = c.getString("payee");
+                            String dependent_name = c.getString("dependent_name");
+                            String dependent_age = c.getString("dependent_age");
+                            String dependent_dob = c.getString("dependent_dob");
+                            String photo1 = c.getString("photo1");
+                            String photo2 = c.getString("photo2");
+                            String photo3 = c.getString("photo3");
+                            String nominee = c.getString("nominee");
+                            String relation = c.getString("relation");
+                            String paid_to = c.getString("paid_to");
+                            String health_state = c.getString("health_state");
+                            String type_of_welfare_pensioner = c.getString("type_of_welfare_pensioner");
+                            String longitude = c.getString("longitude");
+                            String latitude = c.getString("latitude");
+                            String village = c.getString("village");
+                            String district = c.getString("district");
+                            String vdc = c.getString("vdc");
+                            String ward_no = c.getString("ward_no");
+                            String po = c.getString("po");
+                            String background = c.getString("background");
 
 
-                                // tmp hash map for single data
-                                HashMap<String, String> contact = new HashMap<>();
+                            // tmp hash map for single data
+                            HashMap<String, String> contact = new HashMap<>();
 
-                                // adding each child node to HashMap key => value
+                            // adding each child node to HashMap key => value
 
-                                contact.put("personal_id", personal_id);
-                                contact.put("army_no", army_no);
-                                contact.put("rank", rank);
-                                contact.put("name", name);
-                                contact.put("surname", surname);
-                                contact.put("subunit", subunit);
-                                contact.put("unit", unit);
-                                contact.put("army", army);
-                                contact.put("age", age);
-                                contact.put("dob", dob);
-                                contact.put("doe", doe);
-                                contact.put("dod", dod);
-                                contact.put("dc", dc);
-                                contact.put("retain", retain);
-                                contact.put("payee", payee);
-                                contact.put("dependent_name", dependent_name);
-                                contact.put("dependent_age", dependent_age);
-                                contact.put("dependent_dob", dependent_dob);
-                                contact.put("photo1", photo1);
-                                contact.put("photo2", photo2);
-                                contact.put("photo3", photo3);
-                                contact.put("nominee", nominee);
-                                contact.put("relation", relation);
-                                contact.put("paid_to", paid_to);
-                                contact.put("health_state", health_state);
-                                contact.put("type_of_welfare_pensioner", type_of_welfare_pensioner);
-                                contact.put("longitude", longitude);
-                                contact.put("latitude", latitude);
-                                contact.put("village", village);
-                                contact.put("district", district);
-                                contact.put("vdc", vdc);
-                                contact.put("ward_no", ward_no);
-                                contact.put("po", po);
-                                contact.put("background", background);
+                            contact.put("personal_id", personal_id);
+                            contact.put("army_no", army_no);
+                            contact.put("rank", rank);
+                            contact.put("name", name);
+                            contact.put("surname", surname);
+                            contact.put("subunit", subunit);
+                            contact.put("unit", unit);
+                            contact.put("army", army);
+                            contact.put("age", age);
+                            contact.put("dob", dob);
+                            contact.put("doe", doe);
+                            contact.put("dod", dod);
+                            contact.put("dc", dc);
+                            contact.put("retain", retain);
+                            contact.put("payee", payee);
+                            contact.put("dependent_name", dependent_name);
+                            contact.put("dependent_age", dependent_age);
+                            contact.put("dependent_dob", dependent_dob);
+                            contact.put("photo1", photo1);
+                            contact.put("photo2", photo2);
+                            contact.put("photo3", photo3);
+                            contact.put("nominee", nominee);
+                            contact.put("relation", relation);
+                            contact.put("paid_to", paid_to);
+                            contact.put("health_state", health_state);
+                            contact.put("type_of_welfare_pensioner", type_of_welfare_pensioner);
+                            contact.put("longitude", longitude);
+                            contact.put("latitude", latitude);
+                            contact.put("village", village);
+                            contact.put("district", district);
+                            contact.put("vdc", vdc);
+                            contact.put("ward_no", ward_no);
+                            contact.put("po", po);
+                            contact.put("background", background);
 
-                                // adding contact to contact list
-                                peoplelist.add(contact);
-                                adapter.notifyDataSetChanged();
-
-                            }
-                        } catch (final JSONException e) {
-                            Log.e(TAG, "Json parsing error: " + e.getMessage());
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Json parsing error: " + e.getMessage(),
-                                            Toast.LENGTH_LONG)
-                                            .show();
-                                }
-                            });
+                            // adding contact to contact list
+                            peoplelist.add(contact);
+                            adapter.notifyDataSetChanged();
 
                         }
-                    } else {
-                        Log.e(TAG, "Couldn't get json from server.");
+                    } catch (final JSONException e) {
+                        Log.e(TAG, "Json parsing error: " + e.getMessage());
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(getApplicationContext(),
-                                        "Connection Timeout! Please check internet connection",
+                                        "Json parsing error: " + e.getMessage(),
                                         Toast.LENGTH_LONG)
                                         .show();
                             }
                         });
 
                     }
+                } else {
+                    Log.e(TAG, "Couldn't get json from server.");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "Connection Timeout! Please check internet connection",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
 
-                    return null;
                 }
-            }
 
-            @Override
-            protected void onPostExecute(Void result) {
-                super.onPostExecute(result);
-                // Dismiss the progress dialog
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-                /**
-                 * Updating parsed JSON data into ListView
-                 * */
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            // Dismiss the progress dialog
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            /**
+             * Updating parsed JSON data into ListView
+             * */
             /*
             adapter = new SimpleAdapter(Village_List.this, villageList,
                     R.layout.list_item, new String[]{"v_id", "villages"}, new int[]{R.id.id, R.id.name}){
@@ -1487,110 +1587,110 @@ public class People extends AppCompatActivity {
             };
              */
 
-                listView.setAdapter(adapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                        HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
-                        String personal_id = (String) obj.get("personal_id");
-                        String army_no = (String) obj.get("army_no");
-                        String rank = (String) obj.get("rank");
-                        String name = (String) obj.get("name");
-                        String surname = (String) obj.get("surname");
-                        String subunit = (String) obj.get("subunit");
-                        String unit = (String) obj.get("unit");
-                        String army = (String) obj.get("army");
-                        String age = (String) obj.get("age");
-                        String dob = (String) obj.get("dob");
-                        String doe = (String) obj.get("doe");
-                        String dod = (String) obj.get("dod");
-                        String dc = (String) obj.get("dc");
-                        String retain = (String) obj.get("retain");
-                        String payee = (String) obj.get("payee");
-                        String dependent_name = (String) obj.get("dependent_name");
-                        String dependent_age = (String) obj.get("dependent_age");
-                        String dependent_dob = (String) obj.get("dependent_dob");
-                        String photo1 = (String) obj.get("photo1");
-                        String photo2 = (String) obj.get("photo2");
-                        String photo3 = (String) obj.get("photo3");
-                        String nominee = (String) obj.get("nominee");
-                        String relation = (String) obj.get("relation");
-                        String paid_to = (String) obj.get("paid_to");
-                        String health_state = (String) obj.get("health_state");
-                        String type_of_welfare_pensioner = (String) obj.get("type_of_welfare_pensioner");
-                        String longitude = (String) obj.get("longitude");
-                        String latitude = (String) obj.get("latitude");
-                        String village = (String) obj.get("village");
-                        String district = (String) obj.get("district");
-                        String vdc = (String) obj.get("vdc");
-                        String ward_no = (String) obj.get("ward_no");
-                        String po = (String) obj.get("po");
-                        String background = (String) obj.get("background");
+                    HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
+                    String personal_id = (String) obj.get("personal_id");
+                    String army_no = (String) obj.get("army_no");
+                    String rank = (String) obj.get("rank");
+                    String name = (String) obj.get("name");
+                    String surname = (String) obj.get("surname");
+                    String subunit = (String) obj.get("subunit");
+                    String unit = (String) obj.get("unit");
+                    String army = (String) obj.get("army");
+                    String age = (String) obj.get("age");
+                    String dob = (String) obj.get("dob");
+                    String doe = (String) obj.get("doe");
+                    String dod = (String) obj.get("dod");
+                    String dc = (String) obj.get("dc");
+                    String retain = (String) obj.get("retain");
+                    String payee = (String) obj.get("payee");
+                    String dependent_name = (String) obj.get("dependent_name");
+                    String dependent_age = (String) obj.get("dependent_age");
+                    String dependent_dob = (String) obj.get("dependent_dob");
+                    String photo1 = (String) obj.get("photo1");
+                    String photo2 = (String) obj.get("photo2");
+                    String photo3 = (String) obj.get("photo3");
+                    String nominee = (String) obj.get("nominee");
+                    String relation = (String) obj.get("relation");
+                    String paid_to = (String) obj.get("paid_to");
+                    String health_state = (String) obj.get("health_state");
+                    String type_of_welfare_pensioner = (String) obj.get("type_of_welfare_pensioner");
+                    String longitude = (String) obj.get("longitude");
+                    String latitude = (String) obj.get("latitude");
+                    String village = (String) obj.get("village");
+                    String district = (String) obj.get("district");
+                    String vdc = (String) obj.get("vdc");
+                    String ward_no = (String) obj.get("ward_no");
+                    String po = (String) obj.get("po");
+                    String background = (String) obj.get("background");
 
 
-                        Intent in = new Intent(People.this, Person_Details.class);
-                        in.putExtra("personal_id", personal_id);
-                        in.putExtra("army_no", army_no);
-                        in.putExtra("rank", rank);
-                        in.putExtra("name", name);
-                        in.putExtra("surname", surname);
-                        in.putExtra("subunit", subunit);
-                        in.putExtra("unit", unit);
-                        in.putExtra("army", army);
-                        in.putExtra("age", age);
-                        in.putExtra("dob", dob);
-                        in.putExtra("doe", doe);
-                        in.putExtra("dod", dod);
-                        in.putExtra("dc", dc);
-                        in.putExtra("retain", retain);
-                        in.putExtra("payee", payee);
-                        in.putExtra("dependent_name", dependent_name);
-                        in.putExtra("dependent_age", dependent_age);
-                        in.putExtra("dependent_dob", dependent_dob);
-                        in.putExtra("photo1", photo1);
-                        in.putExtra("photo2", photo2);
-                        in.putExtra("photo3", photo3);
-                        in.putExtra("nominee", nominee);
-                        in.putExtra("relation", relation);
-                        in.putExtra("paid_to", paid_to);
-                        in.putExtra("health_state", health_state);
-                        in.putExtra("type_of_welfare_pensioner", type_of_welfare_pensioner);
-                        in.putExtra("longitude", longitude);
-                        in.putExtra("latitude", latitude);
-                        in.putExtra("village", village);
-                        in.putExtra("district", district);
-                        in.putExtra("vdc", vdc);
-                        in.putExtra("ward_no", ward_no);
-                        in.putExtra("po", po);
-                        in.putExtra("background", background);
-                        startActivity(in);
-                    }
-                });
-                search.addTextChangedListener(new TextWatcher() {
+                    Intent in = new Intent(People.this, Person_Details.class);
+                    in.putExtra("personal_id", personal_id);
+                    in.putExtra("army_no", army_no);
+                    in.putExtra("rank", rank);
+                    in.putExtra("name", name);
+                    in.putExtra("surname", surname);
+                    in.putExtra("subunit", subunit);
+                    in.putExtra("unit", unit);
+                    in.putExtra("army", army);
+                    in.putExtra("age", age);
+                    in.putExtra("dob", dob);
+                    in.putExtra("doe", doe);
+                    in.putExtra("dod", dod);
+                    in.putExtra("dc", dc);
+                    in.putExtra("retain", retain);
+                    in.putExtra("payee", payee);
+                    in.putExtra("dependent_name", dependent_name);
+                    in.putExtra("dependent_age", dependent_age);
+                    in.putExtra("dependent_dob", dependent_dob);
+                    in.putExtra("photo1", photo1);
+                    in.putExtra("photo2", photo2);
+                    in.putExtra("photo3", photo3);
+                    in.putExtra("nominee", nominee);
+                    in.putExtra("relation", relation);
+                    in.putExtra("paid_to", paid_to);
+                    in.putExtra("health_state", health_state);
+                    in.putExtra("type_of_welfare_pensioner", type_of_welfare_pensioner);
+                    in.putExtra("longitude", longitude);
+                    in.putExtra("latitude", latitude);
+                    in.putExtra("village", village);
+                    in.putExtra("district", district);
+                    in.putExtra("vdc", vdc);
+                    in.putExtra("ward_no", ward_no);
+                    in.putExtra("po", po);
+                    in.putExtra("background", background);
+                    startActivity(in);
+                }
+            });
+            search.addTextChangedListener(new TextWatcher() {
 
-                    @Override
-                    public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                        // When user changed the Text
-                        People.this.adapter.getFilter().filter(cs);
-                    }
+                @Override
+                public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                    // When user changed the Text
+                    People.this.adapter.getFilter().filter(cs);
+                }
 
-                    @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                                  int arg3) {
-                        // TODO Auto-generated method stub
+                @Override
+                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                              int arg3) {
+                    // TODO Auto-generated method stub
 
-                    }
+                }
 
-                    @Override
-                    public void afterTextChanged(Editable arg0) {
-                        // TODO Auto-generated method stub
-                    }
-                });
-
-            }
+                @Override
+                public void afterTextChanged(Editable arg0) {
+                    // TODO Auto-generated method stub
+                }
+            });
 
         }
+
+    }
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm =
@@ -1600,16 +1700,18 @@ public class People extends AppCompatActivity {
                 activeNetwork.isConnectedOrConnecting();
     }
 
-    public void timerDelayRemoveDialog(long time, final ProgressDialog d){
+    public void timerDelayRemoveDialog(long time, final ProgressDialog d) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                d.dismiss();
+                if (d.isShowing()) {
+                    d.dismiss();
+                }
             }
         }, time);
     }
 
-    }
+}
 
 
 

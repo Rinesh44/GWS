@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorSecondary"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/select"
+            layout="@layout/appbar_for_maps_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:text="Recipient Name"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+            android:id="@+id/sp_recipient_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:fontFamily="@font/core_regular"
+            android:padding="5dp"
+            android:spinnerMode="dropdown"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:fontFamily="@font/core_regular"
+            android:text="OR" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_QR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorButton"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/core_regular"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Find from QR code"
+            android:textColor="@android:color/white" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:text="Amount"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+
+        <EditText
+            android:id="@+id/et_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@android:color/black"
+            android:textSize="25sp" />
+
+
+      <!--  <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:text="Topic"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+
+        <EditText
+            android:id="@+id/et_topic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />-->
+
+<!--        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_addimage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="5dp"
+            android:background="@color/colorButton"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/core_regular"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="add image"
+            android:textColor="@android:color/white" />-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/imageDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/onmenuclick"
+                android:fontFamily="@font/core_regular"
+                android:gravity="center"
+                android:hint="Add photo description"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:text="Transaction No."
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/et_transaction_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:text="Date of Transaction"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/et_transaction_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textperson"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            android:focusableInTouchMode="false"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_NFC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorButton"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/core_regular"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Write to NFC"
+            android:textColor="@android:color/white" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@color/colorButton"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/core_regular"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="save"
+            android:textColor="@android:color/white" />
+
+
+    </LinearLayout>
+</ScrollView>
+

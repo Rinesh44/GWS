@@ -4,6 +4,7 @@ package com.example.android.gurkha;
 import android.*;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -21,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -35,6 +37,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.gurkha.QnA.AnswersResult;
+import com.example.android.gurkha.QnA.Results;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -56,6 +60,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
@@ -79,7 +84,7 @@ public class NavigationDrawer extends Fragment {
     static public TextView txtName, txtFbName;
     private static final int RC_SIGN_IN = 007;
     public ProfilePictureView imgPic;
-    ImageView userImage;
+    CircleImageView userImage;
     public File[] allFiles;
     SessionManager session;
     FbSessionManager fbSessionManager;
@@ -161,7 +166,7 @@ public class NavigationDrawer extends Fragment {
         adapter = new com.example.android.gurkha.Adapter(getActivity(), getData());
         recyclerView.setAdapter(adapter);
 
-        userImage = (ImageView) layout.findViewById(R.id.userImage);
+        userImage = (CircleImageView) layout.findViewById(R.id.userImage);
 
         File imageFile = new File(Environment.getExternalStorageDirectory().getPath() + "/GWS/User Images/" + getUserName + ".jpg");
         if (imageFile.exists()) {
@@ -180,7 +185,6 @@ public class NavigationDrawer extends Fragment {
 
             String userId = fbUser.get(FbSessionManager.KEY_PROPIC);
             imgPic.setProfileId(userId);
-
         }
 
         if (txtFbName.getText().equals(""))
@@ -212,36 +216,85 @@ public class NavigationDrawer extends Fragment {
                         }
                     }
 
-                    Intent i = new Intent(Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-                    startActivity(i);
-/*
                     File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GWS/");
                     if (folder.exists()) {
-                        allFiles = folder.listFiles();
+                       /* allFiles = folder.listFiles();
                         for (int i = 0; i < allFiles.length; i++) {
                             new SingleMediaScanner(getActivity(), allFiles[i]);
-                        }
-                    } else
+                        }*/
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        Uri selectedUri = Uri.parse(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GWS/");
+                        intent.setDataAndType(selectedUri, "text/csv");
+                        startActivity(Intent.createChooser(intent, "Open folder"));
+
+                      /*  if (intent.resolveActivityInfo(getActivity().getPackageManager(), 0) != null)
+                        {
+                            startActivity(intent);
+                        }*/
+                       /* else
+                        {
+                            // if you reach this place, it means there is no any file
+                            // explorer app installed on your device
+                            Toast.makeText(getActivity(), "Problem locating to the directory", Toast.LENGTH_SHORT).show();
+                        }*/
+
+                    } else {
                         Toast.makeText(getActivity(), "No saved pictures found", Toast.LENGTH_SHORT).show();
-
-
-                */
-/*
-                if (position == 2) {
-                    Intent database = new Intent(getActivity(), AndroidDatabaseManager.class);
-                    startActivity(database);
-
-                }*/
+                        return;
+                    }
 
                 }
 
-                if(position == 2){
+                if (position == 2) {
                     Intent nfc = new Intent(getActivity(), NFC.class);
                     startActivity(nfc);
                 }
+
                 if (position == 3) {
+                    Intent results = new Intent(getActivity(), Results.class);
+                    startActivity(results);
+                }
+
+                if (position == 4) {
+                    Intent pollResult = new Intent(getActivity(), AnswersResult.class);
+                    startActivity(pollResult);
+                }
+
+                if (position == 5) {
+
+                    AlertDialog.Builder builder;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Dialog_Alert);
+                    } else {
+                        builder = new AlertDialog.Builder(getActivity());
+                    }
+                    builder.setTitle("Delete Cache")
+                            .setMessage("Are you sure you want to delete all cached data?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    try {
+                                        File dir = getActivity().getCacheDir();
+                                        deleteDir(dir);
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    dialog.dismiss();
+                                    Toast.makeText(getActivity(), "Cahced data deleted", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+
+                }
+                if (position == 6) {
                     LoginManager.getInstance().logOut();
                     getLoginData.removeExtra("name");
                     getLoginData.removeExtra("profile_picID");
@@ -266,11 +319,26 @@ public class NavigationDrawer extends Fragment {
         return layout;
     }
 
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else if (dir != null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
-        Log.e("requestCode", String.valueOf(reqCode));
-        Log.e("resultCode", String.valueOf(resultCode));
         if (resultCode == -1) {
 
             try {
@@ -301,8 +369,8 @@ public class NavigationDrawer extends Fragment {
     public static List<Information> getData() {
         int i;
         List<Information> data = new ArrayList<>();
-        int[] icons = {R.drawable.menu, R.drawable.ic_pic, R.drawable.ic_nfc, R.drawable.ic_account_circle};
-        String[] titles = {"Menu", "Saved Pictures", "NFC", "Logout"};
+        int[] icons = {R.drawable.menu, R.drawable.ic_pic, R.drawable.ic_nfc, R.drawable.ic_result, R.drawable.ic_result, R.drawable.ic_clear_cache, R.drawable.ic_account_circle};
+        String[] titles = {"Menu", "Saved Pictures", "Read NFC Tag", "Conditions Outome", "Poll Outcome", "Clear Cached data", "Logout"};
 
 
         for (i = 0; i < titles.length && i < icons.length; i++) {
@@ -342,7 +410,8 @@ public class NavigationDrawer extends Fragment {
             mDrawerLayout.openDrawer(containerView);
         }
 
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle
+        );
         mDrawerLayout.post(new Runnable() {
             @Override
             public void run() {

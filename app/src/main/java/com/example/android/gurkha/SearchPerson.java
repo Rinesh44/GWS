@@ -28,15 +28,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.FloatProperty;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
@@ -71,17 +64,17 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
     private LocationManager locationManager;
     private LocationListener locationListener;
     public Double lant, lont;
-    private Toolbar toolbar;
     private ArrayList<Marker> originMarkers = new ArrayList<>();
     private ProgressDialog progressDialog;
     boolean isNetworkEnabled = false;
     private static String base_url = "http://pagodalabs.com.np/";
-    private static String url = "http://pagodalabs.com.np/gws/personal_detail/api/personal_detail/";
+    private static String url = "http://pagodalabs.com.np/gws/personal_detail/api/personal_detail?api_token=";
     public String lat, lon;
     private Marker locationMarker;
     private EditText search;
     ArrayList<HashMap<String, String>> positionList;
     private SimpleAdapter adapter;
+    String token;
     private Button btnSearch;
     Marker currentmarker, addedmarker;
     SessionManager sessionManager;
@@ -93,6 +86,7 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
     public int size;
     Call<ResponseBody> call;
     String myResponse;
+    Typeface face;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,20 +99,11 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
 
         positionList = new ArrayList<>();
 
-        toolbar = (Toolbar) findViewById(R.id.select);
-
         sessionManager = new SessionManager(getApplicationContext());
         fbSessionManager = new FbSessionManager(getApplicationContext());
 
         adapter = new SimpleAdapter(SearchPerson.this, positionList,
                 R.layout.list_item, new String[]{"name", "surname"}, new int[]{R.id.name, R.id.surname});
-
-        TextView tv = (TextView) findViewById(R.id.toolbar_title);
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
-        tv.setTypeface(face);
-
-        NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         List<String> providers = locationManager.getProviders(true);
@@ -172,7 +157,7 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Interceptor to cache data and maintain it for a minute.
-     *
+     * <p>
      * If the same network request is sent within a minute,
      * the response is retrieved from cache.
      */
@@ -188,7 +173,7 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Interceptor to cache data and maintain it for four weeks.
-     *
+     * <p>
      * If the device is offline, stale (at most two weeks old)
      * response is fetched from the cache.
      */
@@ -210,11 +195,11 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
     void run() throws IOException {
         OkHttpClient client = new OkHttpClient();
         final String awc = SelectAwcForMap.awc;
-        if (sessionManager.getUserDetails() != null){
+        if (sessionManager.getUserDetails() != null) {
             HashMap<String, String> user = sessionManager.getUserDetails();
             String id = user.get(SessionManager.KEY_ID);
-
-            if(id != null) {
+            token = user.get(SessionManager.KEY_TOKEN);
+            if (id != null) {
                 if (id.matches("1")) {
 
                     progressDialog = new ProgressDialog(SearchPerson.this);
@@ -240,7 +225,7 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(SearchPersonInterface.class).getResponse("gws/personal_detail/api/personal_detail/");
+                    call = retrofit.create(SearchPersonInterface.class).getResponse("gws/personal_detail/api/personal_detail?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -258,6 +243,11 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(SearchPerson.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -530,7 +520,7 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(SearchPersonInterface.class).getResponse("gws/personal_detail/api/personal_detail/" + awc);
+                    call = retrofit.create(SearchPersonInterface.class).getResponse("gws/personal_detail/api/personal_detail/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -548,6 +538,11 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(SearchPerson.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -798,13 +793,14 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
                     });
                 }
             }
-    }
+        }
 
-        if (fbSessionManager.getUserDetails() != null){
+        if (fbSessionManager.getUserDetails() != null) {
             HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
             String fbId = fbUser.get(SessionManager.KEY_ID);
-
-            if(fbId != null) {
+            //HashMap<String, String> user = sessionManager.getUserDetails();
+            token = fbUser.get(SessionManager.KEY_TOKEN);
+            if (fbId != null) {
                 if (fbId.matches("1")) {
 
                     progressDialog = new ProgressDialog(SearchPerson.this);
@@ -830,7 +826,7 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(SearchPersonInterface.class).getResponse("gws/personal_detail/api/personal_detail/");
+                    call = retrofit.create(SearchPersonInterface.class).getResponse("gws/personal_detail/api/personal_detail?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -848,6 +844,11 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(SearchPerson.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -1120,7 +1121,7 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(SearchPersonInterface.class).getResponse("gws/personal_detail/api/personal_detail/" + awc);
+                    call = retrofit.create(SearchPersonInterface.class).getResponse("gws/personal_detail/api/personal_detail/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -1138,6 +1139,11 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(SearchPerson.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -1694,6 +1700,7 @@ public class SearchPerson extends FragmentActivity implements OnMapReadyCallback
 
                         TextView title = (TextView) v.findViewById(R.id.content);
                         title.setText(args.getTitle());
+                        title.setTypeface(face);
 
                         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                             @Override

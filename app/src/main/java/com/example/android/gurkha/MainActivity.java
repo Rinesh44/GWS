@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String url = "http://pagodalabs.com.np/gws/auth/api/login";
     private static final String fbUrl = "http://pagodalabs.com.np/gws/auth/api/account";
     static String awcName;
+    static String accessToken, fbAccessToken;
     static String checkAdmin;
     static String mEmail, fbUserId;
     String fbEmail, fbId, fbFirstName, fbLastName, finalName, fbAwc;
@@ -118,9 +119,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         finalName = fbFirstName + " " + fbLastName;
                     } else
                         Toast.makeText(activity, "facebook data not found", Toast.LENGTH_SHORT).show();
-                        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                        //---get the IMEI number---
-                        String facebookImei = tm.getDeviceId();
+
+                    TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                    //---get the IMEI number---
+                    String facebookImei = tm.getDeviceId();
 
                     MediaType JSON = MediaType.parse("application/json; charset=utf-8");
                     Map<String, String> params = new HashMap<String, String>();
@@ -149,41 +151,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
-                            if (response.isSuccessful()) {
-                                String responseString = response.body().string();
-                                Log.e("postResponse:", responseString);
-                                Log.e("postResponse:", responseString);
+                            //if (response.isSuccessful()) {
+                            String responseString = response.body().string();
+                            Log.e("postResponse:", responseString);
 
-                                if (responseString.contains("Success")) {
-                                    try {
-                                        JSONObject jsonObj = new JSONObject(responseString);
-                                        JSONArray data = jsonObj.getJSONArray("user_data");
-                                        JSONObject c = data.getJSONObject(0);
-                                        checkAdmin = c.getString("id");
-                                        awcName = c.getString("awc");
-                                        sendName = c.getString("name");
-                                        fbSession.createLoginSession(checkAdmin, sendName, fbId);
-                                        normalLogin = false;
-                                        fbLogin = true;
-                                        if (fbUserId != null) {
-                                            Log.i("fbUserId:", fbUserId);
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                            if (responseString.contains("Success")) {
+                                try {
+                                    JSONObject jsonObj = new JSONObject(responseString);
+                                    JSONArray data = jsonObj.getJSONArray("user");
+                                    JSONObject c = data.getJSONObject(0);
+                                    checkAdmin = c.getString("id");
+                                    awcName = c.getString("awc");
+                                    sendName = c.getString("name");
+                                    fbAccessToken = jsonObj.getString("api_token");
+                                    fbSession.createLoginSession(checkAdmin, sendName, fbId, fbAccessToken);
+                                    normalLogin = false;
+                                    fbLogin = true;
+                                    if (fbUserId != null) {
+                                        Log.i("fbUserId:", fbUserId);
                                     }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 
-                                    Intent fbLogin = new Intent(activity, Menu.class);
-                                    getIntent().removeExtra("startTest");
-                                    fbLogin.putExtra("profile_picID", fbId);
-                                    fbLogin.putExtra("name", sendName);
-                                    startActivity(fbLogin);
-                                    finish();
-                                } else
-                                    Snackbar.make(root, getString(R.string.facebook_login_error), Snackbar.LENGTH_LONG).show();
-                                    LoginManager.getInstance().logOut();
-                                // emptyInputEditText();
+                                Intent fbLogin = new Intent(activity, Menu.class);
+                                getIntent().removeExtra("startTest");
+                                fbLogin.putExtra("profile_picID", fbId);
+                                fbLogin.putExtra("name", sendName);
+                                startActivity(fbLogin);
+                                finish();
                             } else
-                                Snackbar.make(root, "Unable to get response", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(root, getString(R.string.facebook_login_error), Snackbar.LENGTH_LONG).show();
+                            LoginManager.getInstance().logOut();
+                            // emptyInputEditText();
+                            // }
+                            //else
+                            //Snackbar.make(root, "Unable to get response", Snackbar.LENGTH_LONG).show();
                         }
                     });
 
@@ -328,8 +331,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                     });
-
-
 
                 } else {
                     Toast.makeText(MainActivity.this, "Sorry internet connection is required.", Toast.LENGTH_SHORT).show();
@@ -501,7 +502,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        if (InternetConnection.checkConnection(getApplicationContext())) {
+        if (InternetConnection.checkConnection(
+
+                getApplicationContext()))
+
+        {
             Toast.makeText(activity, "Please Wait", Toast.LENGTH_SHORT).show();
             TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -546,7 +551,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             JSONObject c = data.getJSONObject(0);
                             awcName = c.getString("awc");
                             checkAdmin = c.getString("id");
-                            Log.e("finalAwc", awcName);
+                            accessToken = jsonObj.getString("api_token");
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -554,25 +561,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.e("postResponse:", responseString);
                         if (responseString.contains("Success")) {
 
-                            session.createLoginSession(checkAdmin, mEmail);
+                            session.createLoginSession(checkAdmin, mEmail, accessToken);
                             normalLogin = true;
                             fbLogin = false;
                             Intent login = new Intent(activity, Menu.class);
                             Log.e("underResponseSuccess:", "True");
-                            login.putExtra("userName", textInputEditTextEmail.toString());
+                            login.putExtra("userName", textInputEditTextEmail.getText().toString());
                             getIntent().removeExtra("startTest");
                             startActivity(login);
                             Intent runService = new Intent(MainActivity.this, Service.class);
                             startService(runService);
                             finish();
+
                         } else
                             Snackbar.make(root, getString(R.string.error_valid_email_password), Snackbar.LENGTH_LONG).show();
-                            // emptyInputEditText();
+                        // emptyInputEditText();
                     }
                 }
             });
 
-        } else {
+        } else
+
+        {
             Toast.makeText(MainActivity.this, "Sorry internet connection is required.", Toast.LENGTH_SHORT).show();
         }
         //session.createLoginSession(textInputEditTextEmail.getText().toString().trim(), textInputEditTextPassword.getText().toString().trim());
@@ -646,6 +656,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return null;
     }
+
 
 }
 

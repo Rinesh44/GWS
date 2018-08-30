@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="?android:dividerHorizontal"
+        android:showDividers="middle"
+        android:dividerPadding="15dp"
+        android:background="@color/colorSecondary"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/select"
+            layout="@layout/appbar_for_maps_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/core_regular"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Select Person"
+            android:textSize="20sp" />
+
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+            android:id="@+id/textPerson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="7dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:padding="5dp"
+            android:spinnerMode="dropdown"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorSecondary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Village Location"
+            android:id="@+id/location_title"
+            android:textSize="18sp"
+            android:fontFamily="@font/core_regular"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="15dp"/>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rg1"
+            android:layout_below="@+id/location_title"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/hill"
+                android:fontFamily="@font/core_regular"
+                android:text="Hill"
+                android:layout_marginLeft="15dp"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/core_regular"
+            android:text="Terai"
+            android:id="@+id/terai"
+            android:layout_marginLeft="15dp"/>
+        </RadioGroup>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rg1"
+            android:id="@+id/rg_location1"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Urban"
+                android:id="@+id/urban"
+                android:fontFamily="@font/core_regular"
+                android:layout_marginLeft="15dp"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Suburban Area"
+                android:id="@+id/suburban"
+                android:fontFamily="@font/core_regular"
+                android:layout_marginLeft="15dp"/>
+        </RadioGroup>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorSecondary">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Water Supply"
+                android:fontFamily="@font/core_regular"
+                android:id="@+id/water_supply_title"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:layout_marginLeft="15dp"/>
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rg_water_supply1"
+                android:layout_below="@+id/water_supply_title"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/communal"
+                    android:fontFamily="@font/core_regular"
+                    android:text="Communal"
+                    android:layout_marginLeft="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Private"
+                    android:id="@+id/rb_private"
+                    android:fontFamily="@font/core_regular"
+                    android:layout_marginLeft="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Stream"
+                    android:id="@+id/rg_stream"
+                    android:fontFamily="@font/core_regular"
+                    android:layout_marginLeft="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Spring Well"
+                    android:id="@+id/rg_spring"
+                    android:fontFamily="@font/core_regular"
+                    android:layout_marginLeft="15dp"/>
+
+            </RadioGroup>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:id="@+id/layout_distance">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How far?"
+                android:fontFamily="@font/core_regular"
+                android:id="@+id/distance_text"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:layout_marginLeft="15dp"/>
+        
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_distance_to_source"
+            android:hint="in meters"
+            android:inputType="number"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/distance_text"
+            android:layout_marginLeft="15dp"/>
+
+        </RelativeLayout>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rg_health">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/core_regular"
+                android:id="@+id/hpost"
+                android:text="Health Post"
+                android:layout_marginLeft="15dp"
+                />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hospital"
+            android:fontFamily="@font/core_regular"
+            android:id="@+id/hhospital"
+            android:layout_marginLeft="15dp"
+            />
+
+        </RadioGroup>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distace to health post/hospital"
+            android:textColor="@android:color/black"
+            android:fontFamily="@font/core_regular"
+            android:textSize="18sp"
+            android:layout_marginLeft="15dp"/>
+
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:hint="in KMs"
+            android:fontFamily="@font/core_regular"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/distanceToHealth"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/core_regular"
+            android:text="Health Service Provided"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rg_service_provided"
+           >
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full"
+                android:id="@+id/full"
+                android:fontFamily="@font/core_regular"
+                android:layout_marginLeft="15dp"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Partial"
+            android:id="@+id/partial"
+            android:fontFamily="@font/core_regular"
+            android:layout_marginLeft="15dp"/>
+
+        </RadioGroup>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Communication (Tel access)"
+            android:textSize="18sp"
+            android:fontFamily="@font/core_regular"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="15dp"/>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rg_communication">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yes"
+                android:id="@+id/cyes"
+                android:fontFamily="@font/core_regular"
+                android:layout_marginLeft="15dp"/>
+
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No"
+            android:id="@+id/cno"
+            android:fontFamily="@font/core_regular"
+            android:layout_marginLeft="15dp"/>
+
+        </RadioGroup>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Road Transport"
+            android:textSize="18sp"
+            android:fontFamily="@font/core_regular"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="15dp"/>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rg_transport">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yes"
+                android:id="@+id/tyes"
+                android:fontFamily="@font/core_regular"
+                android:layout_marginLeft="15dp"/>
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No"
+                android:id="@+id/tno"
+                android:fontFamily="@font/core_regular"
+                android:layout_marginLeft="15dp"/>
+
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Electricity"
+            android:fontFamily="@font/core_regular"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="15dp"/>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rg_electricity">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yes"
+                android:id="@+id/eyes"
+                android:fontFamily="@font/core_regular"
+                android:layout_marginLeft="15dp"/>
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No"
+                android:id="@+id/eno"
+                android:fontFamily="@font/core_regular"
+                android:layout_marginLeft="15dp"/>
+
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home to AWC travel"
+            android:fontFamily="@font/core_regular"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="15dp"/>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rg_awc_travel">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Less thatn 1 day"
+                android:id="@+id/less"
+                android:fontFamily="@font/core_regular"
+                android:layout_marginLeft="15dp"/>
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More than 1 day"
+                android:fontFamily="@font/core_regular"
+                android:id="@+id/more"
+                android:layout_marginLeft="15dp"/>
+
+        </RadioGroup>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Specify walking and bus/jeep travel time"
+            android:layout_marginLeft="15dp"
+            android:fontFamily="@font/core_regular"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/et_travel_time"
+            android:fontFamily="@font/core_regular"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_height="wrap_content"
+            android:background="@color/colorButton"
+            android:textColor="@android:color/white"
+            android:layout_margin="15dp"
+            android:fontFamily="@font/core_regular"
+            android:text="save"
+            android:id="@+id/save"/>
+    </LinearLayout>
+</ScrollView>

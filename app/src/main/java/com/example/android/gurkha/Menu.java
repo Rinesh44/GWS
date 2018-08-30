@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.Build;
 
@@ -16,6 +17,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.android.gurkha.PensionerRiskAssessment.SendPersonId;
+import com.example.android.gurkha.QnA.EconomicPoll;
+import com.example.android.gurkha.QnA.HealthPoll;
+import com.example.android.gurkha.QnA.Questions;
+import com.example.android.gurkha.QnA.Results;
+import com.example.android.gurkha.QnA.SocialPoll;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import com.example.android.gurkha.app.Config.Config;
@@ -53,15 +60,18 @@ public class Menu extends AppCompatActivity {
     private Boolean exit = false;
     Boolean gps_enabled;
     public static boolean marker;
-    private TextView topleft, topright, middleleft, middleright, bottomright, bottom, bottom2, scanner;
+    private TextView topleft, topright, middleleft, middleright, bottomright, bottom, bottom2, scanner,
+            poll, risk_update, psa, addPhotos;
     private static final int REQUEST_PERMISSIONS = 123;
     SessionManager session;
     FbSessionManager fbSessionManager;
+    int PERMISSION_ALL = 1;
 
-    private static String[] PERMISSIONS_STORAGE = {
+    private String[] PERMISSIONS_STORAGE = {
             Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -75,7 +85,7 @@ public class Menu extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.select);
 
         TextView tv = (TextView) findViewById(R.id.toolbar_title);
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
         tv.setTypeface(face);
 
         session = new SessionManager(getApplicationContext());
@@ -84,16 +94,20 @@ public class Menu extends AppCompatActivity {
         txtRegId = (TextView) findViewById(R.id.txt_reg_id);
         txtMessage = (TextView) findViewById(R.id.txt_push_message);
 
+     /*   if (ContextCompat.checkSelfPermission(Menu.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Menu.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    112);
+        }*/
+
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
 
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         gps_enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        if (ContextCompat.checkSelfPermission(Menu.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Menu.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    112);
+        if(!hasPermissions(this, PERMISSIONS_STORAGE)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, PERMISSION_ALL);
         }
 
 
@@ -209,6 +223,16 @@ public class Menu extends AppCompatActivity {
                     Intent lastVisit = new Intent(Menu.this, LastVisit.class);
                     startActivity(lastVisit);
                 }
+            }
+        });
+
+        psa = findViewById(R.id.psa);
+        psa.setTypeface(face);
+        psa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent assessment = new Intent(Menu.this, SendPersonId.class);
+                startActivity(assessment);
             }
         });
         middleleft = (TextView) findViewById(R.id.middle_left);
@@ -368,7 +392,7 @@ public class Menu extends AppCompatActivity {
                                     if (ContextCompat.checkSelfPermission(Menu.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                                         ActivityCompat.requestPermissions(Menu.this,
                                                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                                112);
+                                                111);
                                     }
                                     Intent tracker = new Intent(Menu.this, Tracking.class);
                                     startActivity(tracker);
@@ -391,20 +415,109 @@ public class Menu extends AppCompatActivity {
             }
         });
 
+        risk_update = findViewById(R.id.risk_update);
+        risk_update.setTypeface(face);
+        risk_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent questions = new Intent(Menu.this, Questions.class);
+                startActivity(questions);
+            }
+        });
+
+
+        poll = findViewById(R.id.poll);
+        poll.setTypeface(face);
+        poll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(Menu.this);
+                dialog.getWindow();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.addperson);
+                dialog.show();
+
+                Button health = (Button) dialog.findViewById(R.id.direct);
+                Button economical = (Button) dialog.findViewById(R.id.track);
+                Button social = (Button) dialog.findViewById(R.id.load);
+
+                health.setText("Health");
+                economical.setText("Economical");
+                social.setText("Social");
+
+
+                health.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent healthPoll = new Intent(Menu.this, HealthPoll.class);
+                        startActivity(healthPoll);
+                        dialog.dismiss();
+                    }
+                });
+
+                economical.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent economicalPoll = new Intent(Menu.this, EconomicPoll.class);
+                        startActivity(economicalPoll);
+                        dialog.dismiss();
+                    }
+                });
+
+                social.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent socialPoll = new Intent(Menu.this, SocialPoll.class);
+                        startActivity(socialPoll);
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+
         scanner = (TextView) findViewById(R.id.qrscanner);
         scanner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent scannerActivity = new Intent(Menu.this, Scanner.class);
+                Intent scannerActivity = new Intent(Menu.this, MakePayment.class);
                 startActivity(scannerActivity);
             }
         });
+
+        addPhotos = findViewById(R.id.add_photos);
+        addPhotos.setTypeface(face);
+        addPhotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addPicturesActivity = new Intent(Menu.this, AddPictures.class);
+                startActivity(addPicturesActivity);
+            }
+        });
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    /**
+     * ask required permissions
+     * @param context
+     * @param permissions
+     * @return
+     */
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     // Fetches reg id from shared preferences

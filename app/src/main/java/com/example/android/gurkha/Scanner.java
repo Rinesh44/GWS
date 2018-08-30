@@ -15,7 +15,8 @@ public class Scanner extends AppCompatActivity {
     private static final String LOG_TAG = Scanner.class.getSimpleName();
 
     private TextView mResultTextView;
-    Button scanner;
+    Button scanner, done;
+    public static String getId;
 
     //qr code scanner object
     private IntentIntegrator qrScan;
@@ -27,6 +28,7 @@ public class Scanner extends AppCompatActivity {
 
         mResultTextView = (TextView) findViewById(R.id.result_textview);
         scanner = (Button) findViewById(R.id.scan_barcode_button);
+        done = findViewById(R.id.btn_done);
 
         //intializing scan object
         qrScan = new IntentIntegrator(this);
@@ -38,8 +40,14 @@ public class Scanner extends AppCompatActivity {
             }
         });
 
-    }
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
+    }
 
     //Getting the scan results
     @Override
@@ -51,8 +59,9 @@ public class Scanner extends AppCompatActivity {
                 Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
             } else {
                 //if qr contains data
+                getId = result.getContents();
                 mResultTextView.setText(result.getContents());
-                Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Scan completed", Toast.LENGTH_LONG).show();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

@@ -8,6 +8,7 @@
     <Button
         android:id="@+id/direct"
         android:layout_width="match_parent"
+        android:fontFamily="@font/core_regular"
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
         android:text="Get Direct Direction" />
@@ -16,6 +17,7 @@
         android:id="@+id/track"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/core_regular"
         android:layout_margin="7dp"
         android:text="Track Route" />
 
@@ -23,6 +25,7 @@
         android:id="@+id/load"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/core_regular"
         android:layout_margin="7dp"
         android:text="Load Route" />
 </LinearLayout>

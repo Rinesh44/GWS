@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorSecondary">
+
+    <include
+        android:id="@+id/select"
+        layout="@layout/appbar_for_maps_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/select"
+        android:layout_margin="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/core_regular"
+                android:text="Conditions Poll"
+                android:textColor="@color/colorPrimary"
+                android:textSize="22sp" />
+
+            <!-- <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Social Highest"
+                 android:id="@+id/social"
+                 android:textColor="@android:color/black"
+                 android:fontFamily="@font/core_regular"
+                 android:textSize="18sp"
+                 android:layout_marginTop="20dp"
+                 android:layout_marginLeft="10dp"
+                 android:layout_below="@+id/title"/>
+
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Social Highest"
+                 android:id="@+id/social_value"
+                 android:fontFamily="@font/core_regular"
+                 android:textColor="@android:color/black"
+                 android:layout_alignParentEnd="true"
+                 android:layout_marginRight="10dp"
+                 android:textSize="18sp"
+                 android:layout_marginTop="20dp"
+                 android:layout_marginLeft="10dp"
+                 android:layout_below="@+id/title"/>
+
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/economical"
+                 android:text="Economical Highest"
+                 android:textColor="@android:color/black"
+                 android:fontFamily="@font/core_regular"
+                 android:textSize="18sp"
+                 android:layout_marginTop="20dp"
+                 android:layout_marginLeft="10dp"
+                 android:layout_below="@+id/social"/>
+
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/economical_value"
+                 android:text="Economical Highest"
+                 android:layout_marginEnd="10dp"
+                 android:fontFamily="@font/core_regular"
+                 android:layout_alignParentEnd="true"
+                 android:textColor="@android:color/black"
+                 android:textSize="18sp"
+                 android:layout_marginTop="20dp"
+                 android:layout_marginLeft="10dp"
+                 android:layout_below="@+id/social"/>
+
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Health Highest"
+                 android:id="@+id/health"
+                 android:fontFamily="@font/core_regular"
+                 android:textColor="@android:color/black"
+                 android:textSize="18sp"
+                 android:layout_marginTop="20dp"
+                 android:layout_marginLeft="10dp"
+                 android:layout_below="@+id/economical"/>
+
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Health Highest"
+                 android:id="@+id/health_value"
+                 android:layout_alignParentEnd="true"
+                 android:layout_marginEnd="10dp"
+                 android:fontFamily="@font/core_regular"
+                 android:textColor="@android:color/black"
+                 android:textSize="18sp"
+                 android:layout_marginTop="20dp"
+                 android:layout_marginLeft="10dp"
+                 android:layout_below="@+id/economical"/>
+         -->
+
+            <TextView
+                android:id="@+id/total_economic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/core_regular"
+                android:text="Economic Total"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/total_economic_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/title"
+                android:layout_marginEnd="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/core_regular"
+                android:text="Total economic"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/total_social"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/total_economic"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/core_regular"
+                android:text="Social Total"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/total_social_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/total_economic"
+                android:layout_marginEnd="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/core_regular"
+                android:text="Total social"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/total_health"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/total_social"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/core_regular"
+                android:text="Health Total"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/total_health_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/total_social"
+                android:layout_marginEnd="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/core_regular"
+                android:text="Total health"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/total_health_value"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/core_regular"
+                android:text="Total"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/total_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/total_health_value"
+                android:layout_marginEnd="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/core_regular"
+                android:text="Total social"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

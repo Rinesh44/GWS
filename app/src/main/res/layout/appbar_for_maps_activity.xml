@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true"
-    android:elevation="4dp"
     android:background="#008558"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:clickable="true"
+    android:elevation="6dp"
+    android:fitsSystemWindows="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    >
+    app:theme="@style/HiddenTitleTheme">
+
     <TextView
+        android:id="@+id/toolbar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="GWS"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:textSize="20sp"
         android:layout_gravity="right"
+        android:fontFamily="@font/core_regular"
         android:paddingRight="20dp"
-        android:id="@+id/toolbar_title" />
+        android:text="GWT"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 </android.support.v7.widget.Toolbar>

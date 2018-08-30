@@ -12,6 +12,7 @@ import android.nfc.NdefRecord;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.gurkha.MainActivity;
+import com.example.android.gurkha.MakePayment;
 import com.example.android.gurkha.NFC;
 import com.example.android.gurkha.NFCInterface.Listener;
 import com.example.android.gurkha.R;
+import com.scottyab.aescrypt.AESCrypt;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.security.GeneralSecurityException;
 
 public class NFCWriteFragment extends DialogFragment {
 
@@ -42,7 +46,7 @@ public class NFCWriteFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_write,container,false);
+        View view = inflater.inflate(R.layout.fragment_write, container, false);
         initViews(view);
         return view;
     }
@@ -56,7 +60,7 @@ public class NFCWriteFragment extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (NFC)context;
+        mListener = (MakePayment) context;
         mListener.onDialogDisplayed();
     }
 
@@ -66,28 +70,31 @@ public class NFCWriteFragment extends DialogFragment {
         mListener.onDialogDismissed();
     }
 
-    public void onNfcDetected(Ndef ndef, String messageToWrite){
+    public void onNfcDetected(Ndef ndef, String messageToWrite) {
 
         mProgress.setVisibility(View.VISIBLE);
-        writeToNfc(ndef,messageToWrite);
+        writeToNfc(ndef, messageToWrite);
     }
 
-    private void writeToNfc(Ndef ndef, String message){
+    private void writeToNfc(Ndef ndef, String message) {
 
         mTvMessage.setText(getString(R.string.message_write_progress));
         if (ndef != null) {
 
             try {
                 ndef.connect();
+                String password = "password";
+
+                message = AESCrypt.encrypt(password, message);
                 NdefRecord mimeRecord = NdefRecord.createMime("text/plain", message.getBytes(Charset.forName("US-ASCII")));
                 ndef.writeNdefMessage(new NdefMessage(mimeRecord));
                 ndef.close();
-                //Write Successful
                 mTvMessage.setText(getString(R.string.message_write_success));
 
-            } catch (IOException | FormatException e) {
+            } catch (IOException | FormatException | GeneralSecurityException e) {
                 e.printStackTrace();
-                mTvMessage.setText(getString(R.string.message_write_error));
+                mTvMessage.setText(R.string.exceeded_storage);
+                Log.e(TAG, e.toString());
 
             } finally {
                 mProgress.setVisibility(View.GONE);

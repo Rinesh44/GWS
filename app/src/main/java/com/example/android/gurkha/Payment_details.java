@@ -2,19 +2,28 @@ package com.example.android.gurkha;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Payment_details extends AppCompatActivity {
-    TextView name, paiddate, granted, paid, unpaidamount, grant, itemsgiven, category, totalcost, grantedamount, datehandedover, pvno, sponsername,
-            armyno, surname;
+    TextView name, paiddate, granted, paid, unpaidamount, grant, itemsgiven, category, totalcost, grantedamount, datehandedover, pvno, sponsername, surname;
+    EditText armyno;
     Toolbar toolbar;
+    FloatingActionButton fabSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +31,10 @@ public class Payment_details extends AppCompatActivity {
         setContentView(R.layout.activity_payment_details);
 
         toolbar = (Toolbar) findViewById(R.id.select);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
 
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
@@ -32,7 +43,7 @@ public class Payment_details extends AppCompatActivity {
         name.setTypeface(face);
         surname = (TextView) findViewById(R.id.textpersonsurname);
         surname.setTypeface(face);
-        armyno = (TextView) findViewById(R.id.textarmyno);
+        armyno = (EditText) findViewById(R.id.textarmyno);
         armyno.setTypeface(face);
         paiddate = (TextView) findViewById(R.id.textpaiddate);
         paiddate.setTypeface(face);
@@ -58,6 +69,9 @@ public class Payment_details extends AppCompatActivity {
         pvno.setTypeface(face);
         sponsername = (TextView) findViewById(R.id.textsponsername);
         sponsername.setTypeface(face);
+
+
+        fabSave = findViewById(R.id.save);
 
         Intent i = getIntent();
 
@@ -105,6 +119,63 @@ public class Payment_details extends AppCompatActivity {
 
         String txtsponsername = i.getStringExtra("sponsor_name");
         sponsername.setText(txtsponsername);
+
+        fabSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             /*   Map<String, String> params = new HashMap<String, String>();
+                params.put("personal_id", id);
+                params.put("paid_date", mpaiddate);
+                params.put("paid", mpaid);
+                params.put("unpaid_amount", munpaidamount);
+                params.put("items_given", mitemsgiven);
+                params.put("category", mcategory);
+                params.put("total_cost", mtotalcost);
+                params.put("date_handed_over", mdategrantedover);
+                params.put("granted_amount", mgranted_amount);
+                params.put("sponsor_name", msponsername);
+                params.put("pv_no", mpvno);
+                params.put("grant", mgrant);
+                params.put("awc", mAwc);
+                params.put("created_at", mHiddenDate);
+                params.put("api_token", token);*/
+            }
+        });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_edit:
+                makeTextEditable();
+                break;
+        }
+        return false;
+    }
+
+    private void makeTextEditable() {
+        fabSave.setVisibility(View.VISIBLE);
+
+        name.setFocusableInTouchMode(true);
+        paiddate.setFocusableInTouchMode(true);
+        surname.setFocusableInTouchMode(true);
+        armyno.setFocusableInTouchMode(true);
+        granted.setFocusableInTouchMode(true);
+        paid.setFocusableInTouchMode(true);
+        unpaidamount.setFocusableInTouchMode(true);
+        grant.setFocusableInTouchMode(true);
+        itemsgiven.setFocusableInTouchMode(true);
+        category.setFocusableInTouchMode(true);
+        totalcost.setFocusableInTouchMode(true);
+        grantedamount.setFocusableInTouchMode(true);
+        datehandedover.setFocusableInTouchMode(true);
+        pvno.setFocusableInTouchMode(true);
+        sponsername.setFocusableInTouchMode(true);
+    }
 }

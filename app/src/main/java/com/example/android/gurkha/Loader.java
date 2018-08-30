@@ -130,7 +130,7 @@ public class Loader extends FragmentActivity implements OnMapReadyCallback {
         polylineOptions.addAll(polylineList);
         polylineOptions
                 .width(7)
-                .color(Color.GREEN);
+                .color(getResources().getColor(android.R.color.holo_green_light));
         LatLng start = polylineList.get(0);
         LatLng end = polylineList.get(polylineList.size() - 1);
 

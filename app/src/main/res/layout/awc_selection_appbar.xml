@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:background="#008558"
+    android:elevation="4dp"
     app:theme="@style/ThemeOverlay.AppCompat.Dark"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     >
@@ -14,6 +15,7 @@
         android:layout_height="wrap_content"
         android:text="SELECT AWC"
         android:textColor="#ffffff"
+        android:fontFamily="@font/core_regular"
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_gravity="center"

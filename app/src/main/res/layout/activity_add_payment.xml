@@ -28,7 +28,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorAccent">
+                android:background="@color/colorSecondary">
 
                 <ScrollView
                     android:layout_width="match_parent"
@@ -47,6 +47,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
+                                android:fontFamily="@font/core_regular"
                                 android:layout_marginTop="10dp"
                                 android:text="Select Person"
                                 android:textSize="20sp" />
@@ -58,6 +59,7 @@
                                 android:layout_below="@+id/text"
                                 android:layout_centerHorizontal="true"
                                 android:layout_margin="7dp"
+                                android:fontFamily="@font/core_regular"
                                 android:background="@android:drawable/btn_dropdown"
                                 android:gravity="center"
                                 android:padding="5dp"
@@ -72,6 +74,7 @@
                             android:layout_below="@+id/text"
                             android:layout_centerHorizontal="true"
                             android:layout_margin="7dp"
+                            android:fontFamily="@font/core_regular"
                             android:background="@android:drawable/btn_dropdown"
                             android:gravity="center"
                             android:padding="5dp"
@@ -86,11 +89,11 @@
                                 android:layout_below="@+id/textperson"
                                 android:layout_centerHorizontal="true"
                                 android:layout_margin="7dp"
-                                android:background="@drawable/onmenuclick"
                                 android:clickable="true"
+                                android:focusable="false"
+                                android:fontFamily="@font/core_regular"
                                 android:gravity="center"
                                 android:hint="Pick Paid Date"
-                                android:padding="5dp"
                                 android:textSize="20sp" />
 
 
@@ -100,11 +103,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/textgranted"
                                 android:layout_margin="7dp"
-                                android:background="@drawable/onmenuclick"
-                                android:gravity="center"
+                                android:fontFamily="@font/core_regular" android:gravity="center"
                                 android:hint="Paid"
                                 android:inputType="number"
-                                android:padding="5dp"
                                 android:textColor="@android:color/black"
                                 android:textSize="20sp" />
 
@@ -114,11 +115,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/textpaid"
                                 android:layout_margin="7dp"
-                                android:background="@drawable/onmenuclick"
+                                android:fontFamily="@font/core_regular"
                                 android:gravity="center"
                                 android:hint="Unpaid Amount"
                                 android:inputType="number"
-                                android:padding="5dp"
                                 android:textColor="@android:color/black"
                                 android:textSize="20sp" />
 
@@ -129,9 +129,8 @@
                                 android:layout_below="@+id/textunpaidamount"
                                 android:layout_centerHorizontal="true"
                                 android:layout_margin="7dp"
-                                android:background="@android:drawable/btn_dropdown"
+                                android:fontFamily="@font/core_regular"
                                 android:gravity="center"
-                                android:padding="5dp"
                                 android:spinnerMode="dropdown"
                                 android:textColor="@android:color/black"
                                 android:textSize="20sp" />
@@ -143,10 +142,9 @@
                                 android:layout_below="@+id/textgrant"
                                 android:layout_centerHorizontal="true"
                                 android:layout_margin="7dp"
-                                android:background="@drawable/onmenuclick"
                                 android:gravity="center"
+                                android:fontFamily="@font/core_regular"
                                 android:hint="Items Given"
-                                android:padding="5dp"
                                 android:textColor="@android:color/black"
                                 android:textSize="20sp" />
 
@@ -158,10 +156,9 @@
                                 android:layout_below="@id/textitemsgiven"
                                 android:layout_centerHorizontal="true"
                                 android:layout_margin="7dp"
-                                android:background="@drawable/onmenuclick"
+                                android:fontFamily="@font/core_regular"
                                 android:gravity="center"
                                 android:hint="Category"
-                                android:padding="5dp"
                                 android:textColor="@android:color/black"
                                 android:textSize="20sp" />
 
@@ -173,11 +170,10 @@
                                 android:layout_below="@+id/textcategory"
                                 android:layout_centerHorizontal="true"
                                 android:layout_margin="7dp"
-                                android:background="@drawable/onmenuclick"
+                                android:fontFamily="@font/core_regular"
                                 android:gravity="center"
                                 android:hint="Total Cost"
                                 android:inputType="number"
-                                android:padding="5dp"
                                 android:textColor="@android:color/black"
                                 android:textSize="20sp" />
 
@@ -188,11 +184,10 @@
                                 android:layout_below="@+id/texttotalcost"
                                 android:layout_centerHorizontal="true"
                                 android:layout_margin="7dp"
-                                android:background="@drawable/onmenuclick"
+                                android:fontFamily="@font/core_regular"
                                 android:gravity="center"
                                 android:hint="Granted Amount"
                                 android:inputType="number"
-                                android:padding="5dp"
                                 android:textColor="@android:color/black"
                                 android:textSize="20sp" />
 
@@ -203,10 +198,10 @@
                                 android:layout_below="@+id/textgrantedamount"
                                 android:layout_centerHorizontal="true"
                                 android:layout_margin="7dp"
-                                android:background="@drawable/onmenuclick"
+                                android:fontFamily="@font/core_regular"
                                 android:gravity="center"
+                                android:focusable="false"
                                 android:hint="Pick Date Granted Over"
-                                android:padding="5dp"
                                 android:textColor="@android:color/black"
                                 android:textSize="20sp" />
 
@@ -217,10 +212,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/textdategrantedover"
                                 android:layout_margin="7dp"
-                                android:background="@drawable/onmenuclick"
                                 android:gravity="center"
+                                android:fontFamily="@font/core_regular"
                                 android:hint="PV/NO"
-                                android:padding="5dp"
                                 android:textColor="@android:color/black"
                                 android:textSize="20sp" />
 
@@ -230,20 +224,25 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/textpvno"
                                 android:layout_margin="7dp"
-                                android:background="@drawable/onmenuclick"
                                 android:gravity="center"
+                                android:fontFamily="@font/core_regular"
                                 android:hint="Sponser Name"
-                                android:padding="5dp"
                                 android:textColor="@android:color/black"
                                 android:textSize="20sp" />
 
-                            <Button
+                            <android.support.v7.widget.AppCompatButton
                                 android:id="@+id/btn"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/textsponsername"
                                 android:layout_marginTop="10dp"
-                                android:background="@android:drawable/btn_default"
+                                android:focusable="true"
+                                android:clickable="true"
+                                android:layout_margin="10dp"
+                                android:textColor="@android:color/white"
+                                android:foreground="?attr/selectableItemBackground"
+                                android:background="@color/colorButton"
+                                android:fontFamily="@font/core_regular"
                                 android:text="ADD" />
 
                         <TextView
@@ -253,6 +252,7 @@
                             android:layout_below="@+id/btn"
                             android:layout_margin="5dp"
                             android:padding="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:textAlignment="center"
                             android:visibility="invisible" />
 

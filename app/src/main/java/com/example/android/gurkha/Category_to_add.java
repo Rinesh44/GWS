@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -23,7 +26,9 @@ public class Category_to_add extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     Toolbar toolbar;
     TextView title;
+    Typeface face;
     List<String> values;
+    private int lastPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +36,7 @@ public class Category_to_add extends AppCompatActivity {
         setContentView(R.layout.activity_category_to_add);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
         title = (TextView) findViewById(R.id.title);
         title.setTypeface(face);
 
@@ -48,7 +53,18 @@ public class Category_to_add extends AppCompatActivity {
         values.add("Community Aid");
 
 
-        adapter = new ArrayAdapter<String>(Category_to_add.this, android.R.layout.simple_list_item_1, values);
+        adapter = new ArrayAdapter<String>(Category_to_add.this, android.R.layout.simple_list_item_1, values){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView text = (TextView) view.findViewById(android.R.id.text1);
+                text.setTypeface(face);
+                Animation animation = AnimationUtils.loadAnimation(Category_to_add.this, (position > lastPosition) ? R.anim.item_animation_fall_down : R.anim.item_animation_fall_down);
+                view.startAnimation(animation);
+                lastPosition = position;
+                return view;
+            }
+        };
         category.setAdapter(adapter);
         category.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -29,7 +29,7 @@ public class marker_details extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.select);
 
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
 
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);

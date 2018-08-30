@@ -12,8 +12,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="GURKHA WELFARE SCHEME"
+        android:text="GURKHA WELFARE TRUST"
         android:textColor="#ffffff"
+        android:fontFamily="@font/core_regular"
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_gravity="center"

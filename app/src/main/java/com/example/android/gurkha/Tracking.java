@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.location.Location;
+import android.media.MediaCas;
 import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -23,12 +24,14 @@ import android.os.NetworkOnMainThreadException;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 
+import android.support.v4.content.FileProvider;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +43,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.birbit.android.jobqueue.JobManager;
+import com.example.android.gurkha.JobQueue.PostJob;
+import com.example.android.gurkha.application.GurkhaApplication;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -106,6 +112,7 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
     private ArrayList<String> markerId;
     private ArrayList<String> base64Encoded;
     private ArrayList<String> descriptionText;
+    String token, id;
     private ArrayList<String> userId;
     public File[] allFiles;
     Polyline line; //added
@@ -117,11 +124,11 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
     private GoogleApiClient googleApiClient;
     private Location currentLocation;
     String mLastUpdateTime;
-    Button mSave;
+    FloatingActionButton mSave;
     public static int RESULT_LOAD_IMAGE = 1;
     public static String cameraImagePath;
-    private Button delete;
-    private static final String url = "http://pagodalabs.com.np/gws/track/api/track";
+    private FloatingActionButton delete;
+    private static final String url = "http://pagodalabs.com.np/gws/track/api/track?api_token=";
     public ArrayList<String> polylineValues;
     String savedText;
     private static final int REQUEST_PERMISSIONS = 124;
@@ -130,9 +137,12 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
     Context context;
     String imagePath;
     String currentMarker;
+    SessionManager sessionManager;
+    FbSessionManager fbSessionManager;
     private static final int CAMERA_REQUEST = 1888;
     public HashMap<String, String> infoWindowNote;
     public HashMap<String, String> infoWindowImageName;
+    public JobManager mJobManager;
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.CAMERA,
@@ -174,13 +184,18 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
 
         googleApiClient.connect();
 
+        sessionManager = new SessionManager(getApplicationContext());
+        fbSessionManager = new FbSessionManager(getApplicationContext());
+
         final Dialog start = new Dialog(Tracking.this);
         start.getWindow();
         start.requestWindowFeature(Window.FEATURE_NO_TITLE);
         start.setContentView(R.layout.pathname);
+        start.setCancelable(false);
         start.show();
 
         Button ok = (Button) start.findViewById(R.id.btn);
+        Button cancel = (Button) start.findViewById(R.id.cancel);
         final EditText routeName = (EditText) start.findViewById(R.id.name);
 
         ok.setOnClickListener(new View.OnClickListener() {
@@ -189,7 +204,7 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
                 imageDir = routeName.getText().toString() + "_onFoot" + getTimeStamp();
                 Toast.makeText(Tracking.this, "Route name saved as:" + imageDir, Toast.LENGTH_SHORT).show();
                 start.dismiss();
-                Toast.makeText(Tracking.this, "Start moving to create path", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Tracking.this, "Start moving to create path", Toast.LENGTH_LONG).show();
                 Toast.makeText(Tracking.this, "Long press on map to add marker on pressed area", Toast.LENGTH_LONG).show();
 /*
                 Intent intent = new Intent(Tracking.this, Alarm.class);
@@ -202,9 +217,15 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
             }
         });
 
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start.dismiss();
+            }
+        });
 
-        mSave = (Button) findViewById(R.id.save);
-        delete = (Button) findViewById(R.id.delete);
+        mSave = findViewById(R.id.save);
+        delete = findViewById(R.id.delete);
 
 /*
         notes.setOnClickListener(new View.OnClickListener() {
@@ -231,14 +252,16 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
         });
 */
 
+        mJobManager = GurkhaApplication.getInstance().getJobManager();
+
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (InternetConnection.checkConnection(getApplicationContext())) {
+//                if (InternetConnection.checkConnection(getApplicationContext())) {
 
-                    if (markerValues.size() <= 0) {
-                        Toast.makeText(Tracking.this, "Please add at least one marker. Long press on area to add marker", Toast.LENGTH_LONG).show();
-                    } else {
+                if (markerValues.size() <= 0) {
+                    Toast.makeText(Tracking.this, "Please add at least one marker. Long press on area to add marker", Toast.LENGTH_LONG).show();
+                } else {
                         /*
                         final Dialog dialog = new Dialog(Tracking.this);
                         dialog.getWindow();
@@ -252,32 +275,56 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
                         ok.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-*/
-                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                        userId.add(MainActivity.checkAdmin);
-                        JSONObject parameter = new JSONObject();
-                        JSONObject name = new JSONObject();
-                        //JSONObject id = new JSONObject();
-                        try {
-                            JSONArray list = new JSONArray(pointsString);
-                            JSONArray markerlist = new JSONArray(markerValues);
-                            JSONArray imageList = new JSONArray(base64Encoded);
-                            JSONArray markerIdList = new JSONArray(markerId);
-                            JSONArray noteList = new JSONArray(descriptionText);
-                            JSONArray idList = new JSONArray(userId);
-                            name.put("polyline", list);
-                            name.put("marker", markerlist);
-                            name.put("marker_id", markerIdList);
-                            name.put("user_id", idList);
-                            name.put("images", imageList);
-                            name.put("notes", noteList);
-                            parameter.put(imageDir, name);
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                            */
+                    if (sessionManager.getUserDetails() != null) {
+                        HashMap<String, String> user = sessionManager.getUserDetails();
+                        token = user.get(SessionManager.KEY_TOKEN);
+                        id = user.get(SessionManager.KEY_ID);
+                    }
 
-                        OkHttpClient client = new OkHttpClient();
+                    if (fbSessionManager.getUserDetails() != null) {
+                        HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
+                        if (fbUser.get(SessionManager.KEY_TOKEN) != null)
+                            token = fbUser.get(SessionManager.KEY_TOKEN);
+                        if (fbUser.get(SessionManager.KEY_ID) != null)
+                            id = fbUser.get(SessionManager.KEY_ID);
+                    }
+
+
+//                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                    userId.add(id);
+                    JSONObject parameter = new JSONObject();
+                    JSONObject name = new JSONObject();
+                    //JSONObject id = new JSONObject();
+                    try {
+                        JSONArray list = new JSONArray(pointsString);
+                        JSONArray markerlist = new JSONArray(markerValues);
+                        JSONArray imageList = new JSONArray(base64Encoded);
+                        JSONArray markerIdList = new JSONArray(markerId);
+                        JSONArray noteList = new JSONArray(descriptionText);
+                        JSONArray idList = new JSONArray(userId);
+                        name.put("polyline", list);
+                        name.put("marker", markerlist);
+                        name.put("marker_id", markerIdList);
+                        name.put("user_id", idList);
+                        name.put("images", imageList);
+                        name.put("notes", noteList);
+                        name.put("api_token", token);
+                        parameter.put(imageDir, name);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.e("parameterJSON:", parameter.toString());
+                    Log.e("imageSIze:", String.valueOf(base64Encoded.size()));
+
+                    mJobManager.addJobInBackground(new PostJob(url, parameter.toString()));
+
+
+
+                      /*  OkHttpClient client = new OkHttpClient();
                         final RequestBody body = RequestBody.create(JSON, parameter.toString());
                         Request request = new Request.Builder()
                                 .url(url)
@@ -285,8 +332,6 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
                                 .addHeader("content-type", "application/json; charset=utf-8")
                                 .build();
 
-                        Log.e("parameterJSON:", parameter.toString());
-                        Log.e("imageSIze:", String.valueOf(base64Encoded.size()));
 
                         client.newCall(request).enqueue(new Callback() {
                             @Override
@@ -302,9 +347,9 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
                             }
 
                         });
-
-                        Toast.makeText(getBaseContext(), "The path has been saved", Toast.LENGTH_SHORT).show();
-                        //dialog.dismiss();
+*/
+                    Toast.makeText(getBaseContext(), "The path has been saved", Toast.LENGTH_SHORT).show();
+                    //dialog.dismiss();
                         /*
                         Intent intent = new Intent(Tracking.this, Alarm.class);
                         intent.setAction(Long.toString(System.currentTimeMillis()));
@@ -313,12 +358,14 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
                         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                         am.cancel(alarmIntent);
 */
-                        finish();
+                    finish();
 
-                    }
+               /*     }
                 } else {
                     Toast.makeText(Tracking.this, "Please connect to internet to save path", Toast.LENGTH_SHORT).show();
+                }*/
                 }
+
             }
         });
 
@@ -425,7 +472,6 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
             }
         });
 
-        mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setAllGesturesEnabled(true);
         mMap.setOnMapLongClickListener(this);
         //mMap.setOnMapClickListener(this);
@@ -441,7 +487,7 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
             public View getInfoContents(Marker marker) {
                 // Getting view from the layout file info_window_layout
 
-                    final View v = getLayoutInflater().inflate(R.layout.map_info, null);
+                final View v = getLayoutInflater().inflate(R.layout.map_info, null);
                 // Getting the position from the marker
                 LatLng click = marker.getPosition();
 
@@ -463,7 +509,7 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
                         imageName.setText("Click to add data");
                     } else
                         imageName.setText(getName);
-                }else {
+                } else {
                     imageName.setText(mLastUpdateTime);
                     imageDesc.setVisibility(View.GONE);
                 }
@@ -495,7 +541,8 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
                                 @Override
                                 public void onClick(View v) {
                                     File image = new File(appFolderCheckandCreate(), "img" + getTimeStamp() + ".jpg");
-                                    Uri uriSavedImage = Uri.fromFile(image);
+                                    // Uri uriSavedImage = Uri.fromFile(image);
+                                    Uri uriSavedImage = FileProvider.getUriForFile(Tracking.this, BuildConfig.APPLICATION_ID + ".provider", image);
                                     String imagePathName = image.getName();
                                     infoWindowImageName.put(marker.getId(), imagePathName);
 
@@ -504,6 +551,7 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
                                     i.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
                                     i.putExtra("return-data", true);
                                     startActivityForResult(i, CAMERA_REQUEST);
+                                    marker.hideInfoWindow();
 
                                 }
                             });
@@ -532,6 +580,7 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
                                             markerId.add(marker.getId());
                                             dialogNotes.dismiss();
                                             dialog.dismiss();
+                                            marker.hideInfoWindow();
                                         }
                                     });
                                 }
@@ -570,7 +619,7 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
 
         //mMap.clear();  //clears all Markers and Polylines
 
-        PolylineOptions options = new PolylineOptions().width(7).color(Color.BLUE).geodesic(true);
+        PolylineOptions options = new PolylineOptions().width(7).color(getResources().getColor(android.R.color.holo_blue_light)).geodesic(true);
         for (int i = 0; i < points.size(); i++) {
             LatLng point = points.get(i);
             options.add(point);
@@ -671,10 +720,6 @@ public class Tracking extends FragmentActivity implements OnMapReadyCallback, Lo
 */
 
 
-    public void openCamera() {
-
-
-    }
 
     private String appFolderCheckandCreate() {
 

@@ -35,17 +35,17 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/colorAccent"
-                        android:padding="5dp">
+                        android:background="@color/colorSecondary"
+                        android:padding="10dp">
 
                         <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                             android:id="@+id/spinnerAwc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="7dp"
                             android:background="@android:drawable/btn_dropdown"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
-                            android:paddingLeft="5dp"
+                            android:padding="5dp"
                             android:spinnerMode="dropdown"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
@@ -54,13 +54,12 @@
                             android:id="@+id/textscheme"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:background="@drawable/onmenuclick"
-                            android:hint="Scheme_no"
-                            android:layout_margin="7dp"
-                            android:gravity="center"
-                            android:padding="5dp"
                             android:layout_below="@+id/textdistrict"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:hint="Scheme_no"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -69,12 +68,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/textscheme"
-                            android:layout_margin="7dp"
-                            android:gravity="center"
-                            android:padding="5dp"
-                            android:hint="Village"
-                            android:background="@drawable/onmenuclick"
                             android:layout_centerHorizontal="true"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:hint="Village"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -83,12 +81,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/textvillage"
-                            android:layout_margin="7dp"
-                            android:hint="VDC"
-                            android:gravity="center"
-                            android:padding="5dp"
                             android:layout_centerHorizontal="true"
-                            android:background="@drawable/onmenuclick"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:hint="VDC"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -98,12 +95,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/textvdc"
-                            android:hint="W/No"
-                            android:gravity="center"
                             android:layout_margin="7dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:hint="W/No"
                             android:inputType="number"
-                            android:padding="5dp"
-                            android:background="@drawable/onmenuclick"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -113,11 +109,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/textwno"
-                            android:layout_margin="7dp"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
                             android:hint="Service Type"
-                            android:padding="5dp"
-                            android:background="@drawable/onmenuclick"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -127,12 +122,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/textservicetype"
-                            android:layout_margin="7dp"
-                            android:hint="HH Total"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
+                            android:hint="HH Total"
                             android:inputType="number"
-                            android:padding="5dp"
-                            android:background="@drawable/onmenuclick"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -141,12 +135,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/texthhtotal"
-                            android:layout_margin="7dp"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
-                            android:inputType="number"
                             android:hint="Tenta.Tap No/Block"
-                            android:padding="5dp"
-                            android:background="@drawable/onmenuclick"
+                            android:inputType="number"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -157,12 +150,11 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/texttenta"
                             android:layout_centerHorizontal="true"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
                             android:hint="Total Population"
-                            android:layout_margin="7dp"
                             android:inputType="number"
-                            android:padding="5dp"
-                            android:background="@drawable/onmenuclick"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -172,6 +164,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/textpopulation"
                             android:layout_centerHorizontal="true"
+                            android:fontFamily="@font/core_regular"
                             android:padding="5dp"
                             android:text="School Coverage in W/S:"
                             android:textColor="@android:color/black"
@@ -182,11 +175,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/coveragelevel"
-                            android:hint="Level"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
-                            android:layout_margin="7dp"
-                            android:padding="5dp"
-                            android:background="@drawable/onmenuclick"
+                            android:hint="Level"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -196,12 +188,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/textlevel"
-                            android:layout_margin="7dp"
-                            android:hint="Population"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
-                            android:padding="5dp"
+                            android:hint="Population"
                             android:inputType="number"
-                            android:background="@drawable/onmenuclick"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -211,6 +202,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/texttotpopulation"
                             android:layout_centerHorizontal="true"
+                            android:fontFamily="@font/core_regular"
                             android:padding="5dp"
                             android:text="Rough Indication of Cost(RIC)"
                             android:textColor="@android:color/black"
@@ -222,12 +214,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/ric"
-                            android:hint="GWS/KAAA"
-                            android:layout_margin="7dp"
-                            android:inputType="number"
-                            android:padding="5dp"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
-                            android:background="@drawable/onmenuclick"
+                            android:hint="GWS/KAAA"
+                            android:inputType="number"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -238,11 +229,10 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/textgws"
                             android:layout_margin="7dp"
-                            android:hint="Community"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
+                            android:hint="Community"
                             android:inputType="number"
-                            android:padding="5dp"
-                            android:background="@drawable/onmenuclick"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -251,12 +241,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/textcommunity"
-                            android:hint="Total"
-                            android:layout_margin="7dp"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
+                            android:hint="Total"
                             android:inputType="number"
-                            android:padding="5dp"
-                            android:background="@drawable/onmenuclick"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -265,11 +254,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/texttotal"
-                            android:layout_margin="7dp"
-                            android:hint="Funder"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
-                            android:padding="5dp"
-                            android:background="@drawable/onmenuclick"
+                            android:hint="Funder"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -278,23 +266,27 @@
                             android:id="@+id/textdistrict"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="7dp"
-                            android:padding="5dp"
-                            android:hint="District"
                             android:layout_below="@+id/spinnerAwc"
+                            android:layout_margin="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:gravity="center"
-                            android:background="@drawable/onmenuclick"
+                            android:hint="District"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
-                        <Button
+                        <android.support.v7.widget.AppCompatButton
                             android:id="@+id/btn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/textfunder"
-                            android:layout_marginTop="10dp"
-                            android:background="@android:drawable/btn_default"
-                            android:text="ADD" />
+                            android:layout_margin="5dp"
+                            android:background="@color/colorButton"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:fontFamily="@font/core_regular"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:text="ADD"
+                            android:textColor="@android:color/white" />
 
                         <TextView
                             android:id="@+id/hiddenDate"
@@ -302,7 +294,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/btn"
                             android:layout_margin="5dp"
-                            android:padding="5dp"
+                            android:fontFamily="@font/core_regular"
                             android:textAlignment="center"
                             android:visibility="invisible" />
 
@@ -311,13 +303,4 @@
             </ScrollView>
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
-
-    <fragment
-        android:id="@+id/fragment_navigation_drawer"
-        android:name="com.example.android.gurkha.NavigationDrawer"
-        android:layout_width="300dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:layout="@layout/fragment_navigation_drawer"
-        tools:layout="@layout/fragment_navigation_drawer" />
 </android.support.v4.widget.DrawerLayout>

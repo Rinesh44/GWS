@@ -16,7 +16,7 @@
             android:id="@+id/rootview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#D7DBB8"
+            android:background="@color/colorSecondary"
             android:orientation="vertical"
             android:weightSum="1"
             tools:context="com.example.android.gurkha.Village_List">
@@ -44,6 +44,7 @@
                     android:layout_height="45dp"
                     android:background="#ABCDB4"
                     android:layout_marginTop="5dp"
+                    android:fontFamily="@font/core_regular"
                     android:gravity="center_vertical"
                     android:text="\tSelect Person"
                     android:textColor="@android:color/white"
@@ -54,6 +55,7 @@
                     android:layout_height="30dp"
                     android:hint="Search"
                     android:layout_alignRight="@+id/title"
+                    android:fontFamily="@font/core_regular"
                     android:layout_marginTop="12dp"
                     android:textColor="@android:color/black"
                     android:drawableLeft="@drawable/ic_search"
@@ -68,6 +70,7 @@
                     android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:fontFamily="@font/core_regular"
                     android:layout_below="@+id/title"></ListView>
 
                 <TextView
@@ -75,6 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+                    android:fontFamily="@font/core_regular"
                     android:textAppearance="?android:textAppearanceMedium"/>
 
             </RelativeLayout>

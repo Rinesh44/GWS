@@ -10,6 +10,8 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/core_regular"
+
         android:text="@string/message_read_tag"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_gravity="center"/>
@@ -28,7 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:text="@string/message_tap_tag"
         android:layout_gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:fontFamily="@font/core_regular"/>
 
 </LinearLayout>

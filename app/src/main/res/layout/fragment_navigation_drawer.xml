@@ -19,17 +19,29 @@
             android:scaleType="centerCrop"
             android:src="@drawable/materail" />
 
-        <com.facebook.login.widget.ProfilePictureView
-            android:id="@+id/imgProfilePic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:visibility="visible"
+                <com.facebook.login.widget.ProfilePictureView
+                    android:id="@+id/imgProfilePic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:visibility="invisible"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true" />
+
+
+
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/userImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/com_facebook_profile_picture_blank_portrait"
+            android:padding="10dp"
+            app:civ_border_color="#FFFFFF"
+            app:civ_border_width="2dp" />
 
-
-        <ImageView
+        <!--<ImageView
             android:id="@+id/userImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -37,14 +49,15 @@
             android:scaleType="fitXY"
             android:visibility="visible"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true" />-->
         <TextView
             android:id="@+id/txtFbName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imgProfilePic"
-            android:padding="5dp"
             android:layout_centerHorizontal="true"
+            android:fontFamily="@font/core_regular"
+            android:padding="5dp"
             android:textColor="#ffffff"
             android:textSize="18dp" />
 
@@ -53,8 +66,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/userImage"
-            android:padding="5dp"
             android:layout_centerHorizontal="true"
+            android:fontFamily="@font/core_regular"
+            android:padding="5dp"
             android:textColor="#ffffff"
             android:textSize="18dp" />
 
@@ -65,7 +79,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/llProfile"
-        android:background="#FFFFFF">
+        android:background="#FFFFFF"
+        android:fontFamily="@font/core_regular">
 
     </android.support.v7.widget.RecyclerView>
 

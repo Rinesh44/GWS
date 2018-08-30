@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent">
+    android:background="@color/colorSecondary">
 
     <include
         android:id="@+id/select"
@@ -12,62 +13,100 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-    <TextView
-        android:id="@+id/textId"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/select"
-        android:layout_margin="7dp"
-        android:textColor="@android:color/black"
-        android:text="SIM ID:"
-        android:textSize="18sp" />
+        android:layout_margin="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
 
-    <TextView
-        android:id="@+id/serialid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/select"
-        android:layout_margin="7dp"
-        android:layout_toRightOf="@+id/textId"
-        android:textSize="18sp" />
+        <RelativeLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/ip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imei"
-        android:layout_margin="7dp"
-        android:layout_toRightOf="@+id/textIP"
-        android:textSize="18sp" />
+            <ImageView
+                android:id="@+id/info_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="20dp"
+                android:src="@drawable/ic_info_outline" />
 
-    <TextView
-        android:id="@+id/textIP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imei"
-        android:layout_margin="7dp"
-        android:textColor="@android:color/black"
-        android:text="IP:"
-        android:textSize="18sp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_below="@+id/info_image">
 
-    <TextView
-        android:id="@+id/textImei"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textId"
-        android:text="IMEI:"
-        android:textColor="@android:color/black"
-        android:layout_margin="7dp"
-        android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/textId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="7dp"
+                    android:fontFamily="@font/core_regular"
+                    android:text="SIM ID:"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/imei"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textId"
-        android:layout_margin="7dp"
-        android:layout_toRightOf="@+id/textImei"
-        android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/serialid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="7dp"
+                    android:layout_toRightOf="@+id/textId"
+                    android:fontFamily="@font/core_regular"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/ip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imei"
+                    android:layout_margin="7dp"
+                    android:layout_toRightOf="@+id/textIP"
+                    android:fontFamily="@font/core_regular"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/textIP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imei"
+                    android:layout_margin="7dp"
+                    android:fontFamily="@font/core_regular"
+                    android:text="IP:"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/textImei"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textId"
+                    android:layout_margin="7dp"
+                    android:fontFamily="@font/core_regular"
+                    android:text="IMEI:"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/imei"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textId"
+                    android:layout_margin="7dp"
+                    android:layout_toRightOf="@+id/textImei"
+                    android:fontFamily="@font/core_regular"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>
 

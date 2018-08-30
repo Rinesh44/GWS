@@ -17,6 +17,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -56,11 +58,21 @@ public class Ca_servicetype extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private ListView listView;
     private EditText search;
+    String token;
+    Typeface face;
     private TextView mEmptyStateTextView;
     private static String base_url = "http://pagodalabs.com.np/";
-    private static String url = "http://pagodalabs.com.np/gws/ca/api/ca/";
+    private static String url = "http://pagodalabs.com.np/gws/ca/api/ca?api_token=";
     ArrayList<HashMap<String, String>> servicetype;
     Call<ResponseBody> call;
+    private int lastPosition = -1;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        progressDialog.dismiss();
+    }
+
     SessionManager sessionManager;
     FbSessionManager fbSessionManager;
 
@@ -71,7 +83,7 @@ public class Ca_servicetype extends AppCompatActivity {
         servicetype = new ArrayList<>();
 
         TextView tv = (TextView) findViewById(R.id.toolbar_title);
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
         tv.setTypeface(face);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -83,7 +95,18 @@ public class Ca_servicetype extends AppCompatActivity {
         fbSessionManager = new FbSessionManager(getApplicationContext());
 
         adapter = new SimpleAdapter(Ca_servicetype.this, servicetype,
-                R.layout.list_item, new String[]{"service_type"}, new int[]{R.id.name});
+                R.layout.list_item, new String[]{"service_type"}, new int[]{R.id.name}) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView name = (TextView) view.findViewById(R.id.name);
+                name.setTypeface(face);
+                Animation animation = AnimationUtils.loadAnimation(Ca_servicetype.this, (position > lastPosition) ? R.anim.item_animation_fall_down : R.anim.item_animation_fall_down);
+                view.startAnimation(animation);
+                lastPosition = position;
+                return view;
+            }
+        };
 
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
@@ -118,7 +141,7 @@ public class Ca_servicetype extends AppCompatActivity {
 
     /**
      * Interceptor to cache data and maintain it for a minute.
-     *
+     * <p>
      * If the same network request is sent within a minute,
      * the response is retrieved from cache.
      */
@@ -134,7 +157,7 @@ public class Ca_servicetype extends AppCompatActivity {
 
     /**
      * Interceptor to cache data and maintain it for four weeks.
-     *
+     * <p>
      * If the device is offline, stale (at most 2 weeks old)
      * response is fetched from the cache.
      */
@@ -159,8 +182,8 @@ public class Ca_servicetype extends AppCompatActivity {
         if (sessionManager.getUserDetails() != null) {
             HashMap<String, String> user = sessionManager.getUserDetails();
             String id = user.get(SessionManager.KEY_ID);
-
-            if (id != null){
+            token = user.get(SessionManager.KEY_TOKEN);
+            if (id != null) {
                 if (id.matches("1")) {
 
                     progressDialog = new ProgressDialog(Ca_servicetype.this);
@@ -186,7 +209,7 @@ public class Ca_servicetype extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(CaInterface.class).getResponse("gws/ca/api/ca/");
+                    call = retrofit.create(CaInterface.class).getResponse("gws/ca/api/ca?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -206,7 +229,13 @@ public class Ca_servicetype extends AppCompatActivity {
 
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(Ca_servicetype.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
+
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
                                 JSONArray data = jsonObject.getJSONArray("CA");
@@ -361,7 +390,7 @@ public class Ca_servicetype extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(CaInterface.class).getResponse("gws/ca/api/ca/" + awc);
+                    call = retrofit.create(CaInterface.class).getResponse("gws/ca/api/ca/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -381,6 +410,12 @@ public class Ca_servicetype extends AppCompatActivity {
 
 
                             try {
+
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(Ca_servicetype.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -519,8 +554,10 @@ public class Ca_servicetype extends AppCompatActivity {
         if (fbSessionManager.getUserDetails() != null) {
             HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
             String fbId = fbUser.get(SessionManager.KEY_ID);
+            //HashMap<String, String> user = sessionManager.getUserDetails();
+            token = fbUser.get(SessionManager.KEY_TOKEN);
 
-            if (fbId != null){
+            if (fbId != null) {
                 if (fbId.matches("1")) {
 
                     progressDialog = new ProgressDialog(Ca_servicetype.this);
@@ -546,7 +583,7 @@ public class Ca_servicetype extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(CaInterface.class).getResponse("gws/ca/api/ca/");
+                    call = retrofit.create(CaInterface.class).getResponse("gws/ca/api/ca?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -566,6 +603,11 @@ public class Ca_servicetype extends AppCompatActivity {
 
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(Ca_servicetype.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -721,7 +763,7 @@ public class Ca_servicetype extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(CaInterface.class).getResponse("gws/ca/api/ca/" + awc);
+                    call = retrofit.create(CaInterface.class).getResponse("gws/ca/api/ca/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -741,6 +783,12 @@ public class Ca_servicetype extends AppCompatActivity {
 
 
                             try {
+
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(Ca_servicetype.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -877,6 +925,7 @@ public class Ca_servicetype extends AppCompatActivity {
         }
 
     }
+
     /**
      * Async task class to get json by making HTTP call
      */
@@ -1167,7 +1216,7 @@ public class Ca_servicetype extends AppCompatActivity {
 
     }
 
-    public void timerDelayRemoveDialog(long time, final ProgressDialog d){
+    public void timerDelayRemoveDialog(long time, final ProgressDialog d) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {

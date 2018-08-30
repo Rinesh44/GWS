@@ -72,7 +72,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private SearchableSpinner awc;
     private ArrayList<String> list;
     TextView hiddenText;
-    private static final String url = "http://pagodalabs.com.np/gws/auth/api/register";
+    String token;
+    SessionManager sessionManager;
+    private static final String url = "http://pagodalabs.com.np/gws/auth/api/register?api_token=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         awc = (SearchableSpinner) findViewById(R.id.spinnerAwc);
         String[] awc_items = new String[]{"Select Area Welfare Center", "Bheri", "Myagdi", "Syangja", "Butwal", "Tanahun", "Lamjung", "Gulmi", "Chitwan", "Gorkha", "Bagmati",
                 "Jiri", "Rumjatar", "Diktel", "Bhojpur", "Khandbari", "Tehrathum", "Taplejung", "Phidim", "Damak",
-                "Darjeeling", "The Kulbir Thapa VC Residental Home", "The Rambahadur Limbu VC Residential Home"};
+                "Darjeeling", "Dharan", "The Kulbir Thapa VC Residental Home", "The Rambahadur Limbu VC Residential Home"};
         ArrayAdapter<String> adapt_awc = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, awc_items);
         awc.setAdapter(adapt_awc);
 
@@ -150,6 +152,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      */
     private void initObjects() {
         inputValidation = new InputValidation(activity);
+        sessionManager = new SessionManager(getApplicationContext());
         //databaseHelper = new DatabaseHelper(activity);
 
     }
@@ -238,12 +241,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 params.put("username", mUsername);
                 //params.put("id", mId);
 
+                    HashMap<String, String> user = sessionManager.getUserDetails();
+                    token = user.get(SessionManager.KEY_TOKEN);
                 JSONObject parameter = new JSONObject(params);
                 Log.e("JSON:", parameter.toString());
                 OkHttpClient client = new OkHttpClient();
                 final RequestBody body = RequestBody.create(JSON, parameter.toString());
                 Request request = new Request.Builder()
-                        .url(url)
+                        .url(url + token)
                         .post(body)
                         .addHeader("content-type", "application/json; charset=utf-8")
                         .build();

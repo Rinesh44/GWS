@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -38,7 +41,9 @@ public class Category extends AppCompatActivity {
     TextView title;
     private static final String url = "http://pagodalabs.com.np/gws/awc/api/awc/";
     List<String> values;
+    Typeface face;
     String awc = "Jiri";
+    private int lastPosition = -1 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +51,7 @@ public class Category extends AppCompatActivity {
         setContentView(R.layout.activity_category);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
         title = (TextView) findViewById(R.id.title);
         title.setTypeface(face);
 
@@ -64,7 +69,18 @@ public class Category extends AppCompatActivity {
         values.add("Device Info");
 
 
-        adapter = new ArrayAdapter<String>(Category.this, android.R.layout.simple_list_item_1, values);
+        adapter = new ArrayAdapter<String>(Category.this, android.R.layout.simple_list_item_1, values){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView text = (TextView) view.findViewById(android.R.id.text1);
+                text.setTypeface(face);
+                Animation animation = AnimationUtils.loadAnimation(getContext(), (position > lastPosition) ? R.anim.down_from_top : R.anim.down_from_top);
+                view.startAnimation(animation);
+                lastPosition = position;
+                return view;
+            }
+        };
         category.setAdapter(adapter);
         category.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

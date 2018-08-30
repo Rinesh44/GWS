@@ -58,7 +58,7 @@ public class Awc_category extends AppCompatActivity {
                     startActivity(names1);
                 }
 
-                if (position == 1) {
+              /*  if (position == 1) {
                     Intent names2 = new Intent(Awc_category.this, awc_name2.class);
                     startActivity(names2);
                 }
@@ -67,7 +67,7 @@ public class Awc_category extends AppCompatActivity {
                     Intent names3 = new Intent(Awc_category.this, awc_name3.class);
                     startActivity(names3);
                 }
-
+*/
             }
 
 

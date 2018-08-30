@@ -20,7 +20,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
+import android.view.*;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -63,12 +65,13 @@ public class ChoosePath extends AppCompatActivity {
     private SimpleAdapter adapter;
     private ProgressDialog progressDialog;
     private ListView listView;
+    Typeface face;
     private EditText search;
     ArrayList<HashMap<String, Object>> pathlist;
     private static final int REQUEST_PERMISSIONS = 1246;
     private static String base_url = "http://pagodalabs.com.np/";
     // URL to get peoplelist JSON
-    private static String url = "http://pagodalabs.com.np/gws/track/api/track";
+    private static String url = "http://pagodalabs.com.np/gws/track/api/track?api_token=";
     private static String[] PERMISSIONS_STORAGE = {
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -76,9 +79,13 @@ public class ChoosePath extends AppCompatActivity {
     };
     static JSONArray images;
     static String name;
+    String token;
+    SessionManager sessionManager;
+    String userId;
     JSONArray imagePathArray;
     private TextView mEmptyStateTextView;
     Call<ResponseBody> call;
+    private int lastPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,16 +96,40 @@ public class ChoosePath extends AppCompatActivity {
         }
         pathlist = new ArrayList<>();
 
+
         TextView tv = (TextView) findViewById(R.id.toolbar_title);
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
         tv.setTypeface(face);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         title = (TextView) findViewById(R.id.title);
         title.setTypeface(face);
 
-        adapter = new SimpleAdapter(ChoosePath.this, pathlist, R.layout.list_item, new String[]{"name"}, new int[]{R.id.name});
+        sessionManager = new SessionManager(getApplicationContext());
+
+        adapter = new SimpleAdapter(ChoosePath.this, pathlist, R.layout.list_item, new String[]{"name"}, new int[]{R.id.name}) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView name = (TextView) view.findViewById(R.id.name);
+                TextView surname = (TextView) view.findViewById(R.id.surname);
+                TextView army_no = (TextView) view.findViewById(R.id.army_no);
+                TextView id = (TextView) view.findViewById(R.id.id);
+                name.setTypeface(face);
+                surname.setTypeface(face);
+                army_no.setTypeface(face);
+                id.setTypeface(face);
+                Animation animation = AnimationUtils.loadAnimation(ChoosePath.this, (position > lastPosition) ? R.anim.item_animation_fall_down : R.anim.item_animation_fall_down);
+                view.startAnimation(animation);
+                lastPosition = position;
+
+                return view;
+            }
+        };
         adapter.notifyDataSetChanged();
 
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
@@ -133,9 +164,38 @@ public class ChoosePath extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.load_all_routes, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_show_all:
+                try {
+                    getAllRoutes();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case R.id.action_my_routes:
+                try {
+                    run();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+        // case blocks for other MenuItems (if any)
+        return false;
+    }
+
     /**
      * Interceptor to cache data and maintain it for a minute.
-     *
+     * <p>
      * If the same network request is sent within a minute,
      * the response is retrieved from cache.
      */
@@ -149,9 +209,16 @@ public class ChoosePath extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        progressDialog.dismiss();
+    }
+
     /**
      * Interceptor to cache data and maintain it for four weeks.
-     *
+     * <p>
      * If the device is offline, stale (at most 2 weeks)
      * response is fetched from the cache.
      */
@@ -170,13 +237,12 @@ public class ChoosePath extends AppCompatActivity {
     }
 
     void run() throws IOException {
-        OkHttpClient client = new OkHttpClient();
-
+        pathlist.clear();
         progressDialog = new ProgressDialog(ChoosePath.this);
         progressDialog.setMessage("Please wait...");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        timerDelayRemoveDialog(7000,progressDialog);
+        timerDelayRemoveDialog(7000, progressDialog);
 
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -189,6 +255,10 @@ public class ChoosePath extends AppCompatActivity {
                         "choosePathApiResponses"), 5 * 1024 * 1024))
                 .build();
 
+        HashMap<String, String> user = sessionManager.getUserDetails();
+        token = user.get(SessionManager.KEY_TOKEN);
+        userId = user.get(SessionManager.KEY_ID);
+        Log.e("UserId:", userId);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(base_url) // that means base url + the left url in interface
@@ -196,7 +266,7 @@ public class ChoosePath extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        call = retrofit.create(ChoosePathInterface.class).getResponse();
+        call = retrofit.create(ChoosePathInterface.class).getResponse("gws/track/api/getAll/" + userId + "?api_token=" + token);
 
         if (call.isExecuted())
             call = call.clone();
@@ -216,7 +286,202 @@ public class ChoosePath extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 try {
+                    if (!(response.isSuccessful())) {
+                        Toast.makeText(ChoosePath.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
+                    }
                     final String myResponse = response.body().string();
+                    Log.e("ResponsePath:", myResponse);
+                    if (myResponse == null) {
+                        Toast.makeText(ChoosePath.this, "Cache not found. Please connect to internet and try again", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    JSONObject jsonObject = new JSONObject(myResponse);
+                    JSONArray data = jsonObject.getJSONArray("Info");
+                    for (int i = 0; i < data.length(); i++) {
+                        JSONObject c = data.getJSONObject(i);
+
+                        String name = c.getString("name");
+                        String gps_id = c.getString("gps_id");
+                        JSONArray marker_id = c.getJSONArray("marker_id");
+                        images = c.getJSONArray("encoded_images");
+                        JSONArray marker = c.getJSONArray("marker");
+                        Log.e("markerExtrated:", marker.toString());
+                        JSONArray polyline = c.getJSONArray("polyline");
+                        JSONArray notes = c.getJSONArray("notes");
+
+                        // tmp hash map for single data
+                        HashMap<String, Object> contact = new HashMap<>();
+                        contact.put("name", name);
+                        contact.put("marker", marker);
+                        contact.put("polyline", polyline);
+                        contact.put("marker_id", marker_id);
+                        contact.put("notes", notes);
+                        contact.put("images", images);
+                        contact.put("gps_id", gps_id);
+
+                        pathlist.add(contact);
+
+                        adapter.notifyDataSetChanged();
+
+                    }
+                } catch (JSONException | IOException e) {
+                    e.printStackTrace();
+                }
+
+                progressDialog.dismiss();
+                call.cancel();
+
+
+                ChoosePath.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+
+                        mEmptyStateTextView.setText(R.string.no_data);
+                        listView.setAdapter(adapter);
+
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
+                                JSONArray marker = (JSONArray) obj.get("marker");
+                                JSONArray polyline = (JSONArray) obj.get("polyline");
+                                JSONArray notes = (JSONArray) obj.get("notes");
+                                name = (String) obj.get("name");
+                                String gps_id = (String) obj.get("gps_id");
+                                JSONArray marker_id = (JSONArray) obj.get("marker_id");
+                                JSONArray images = (JSONArray) obj.get("images");
+                                imagePathArray = new JSONArray();
+                                try {
+                                    for (int j = 0; j < images.length(); j++) {
+                                        String base64 = images.get(j).toString();
+                                        byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                                        final Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                        //File folderPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GWS/" + "MarkerImages/" + name);
+                                        File image = new File(appFolderCheckandCreate(), "img" + getTimeStamp() + ".jpg");
+                                        if (image.exists())
+                                            image.delete();
+                                        String imagePath = image.getAbsolutePath();
+                                        imagePathArray.put(imagePath);
+                                        try {
+                                            FileOutputStream out = new FileOutputStream(image);
+                                            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, out);
+                                            out.flush();
+                                            out.close();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        image.deleteOnExit();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                Intent parse = new Intent(ChoosePath.this, Loader.class);
+                                parse.putExtra("marker", marker.toString());
+                                parse.putExtra("polyline", polyline.toString());
+                                parse.putExtra("notes", notes.toString());
+                                parse.putExtra("name", name);
+                                parse.putExtra("marker_id", marker_id.toString());
+                                parse.putExtra("image_path", imagePathArray.toString());
+                                parse.putExtra("gps_id", gps_id);
+                                startActivity(parse);
+                            }
+                        });
+
+                        search.addTextChangedListener(new TextWatcher() {
+
+                            @Override
+                            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                                // When user changed the Text
+                                ChoosePath.this.adapter.getFilter().filter(cs);
+                            }
+
+                            @Override
+                            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                                          int arg3) {
+                                // TODO Auto-generated method stub
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable arg0) {
+                                // TODO Auto-generated method stub
+                            }
+                        });
+                    }
+
+                });
+            }
+        });
+    }
+
+    void getAllRoutes() throws IOException {
+        pathlist.clear();
+        progressDialog = new ProgressDialog(ChoosePath.this);
+        progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        timerDelayRemoveDialog(7000, progressDialog);
+
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                // Enable response caching
+                .addNetworkInterceptor(new ResponseCacheInterceptor())
+                .addInterceptor(new OfflineResponseCacheInterceptor())
+                // Set the cache location and size (5 MB)
+                .cache(new Cache(new File(ChoosePath.this
+                        .getCacheDir(),
+                        "choosePathApiResponses"), 5 * 1024 * 1024))
+                .build();
+
+        HashMap<String, String> user = sessionManager.getUserDetails();
+        token = user.get(SessionManager.KEY_TOKEN);
+        userId = user.get(SessionManager.KEY_ID);
+        Log.e("UserId:", userId);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(base_url) // that means base url + the left url in interface
+                .client(okHttpClient)//adding okhttp3 object that we have created
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        call = retrofit.create(ChoosePathInterface.class).getResponse("gws/track/api/track?api_token=" + token);
+
+        if (call.isExecuted())
+            call = call.clone();
+
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("ChoosePath", t.toString());
+                Toast.makeText(ChoosePath.this, "Error has occurred: \n" + t.toString(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                mEmptyStateTextView.setText(R.string.no_data);
+            }
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                try {
+                    if (!(response.isSuccessful())) {
+                        Toast.makeText(ChoosePath.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
+                    }
+                    final String myResponse = response.body().string();
+                    Log.e("ResponsePath:", myResponse);
+                    if (myResponse == null) {
+                        Toast.makeText(ChoosePath.this, "Cache not found. Please connect to internet and try again", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     JSONObject jsonObject = new JSONObject(myResponse);
                     JSONArray data = jsonObject.getJSONArray("Info");
                     for (int i = 0; i < data.length(); i++) {
@@ -342,171 +607,6 @@ public class ChoosePath extends AppCompatActivity {
         });
     }
 
-            // Async task class to get json by making HTTP call
-
-            private class GetPath extends AsyncTask<Void, Void, Void> {
-
-                @Override
-                protected void onPreExecute() {
-                    super.onPreExecute();
-                    // Showing progress dialog
-                    progressDialog = new ProgressDialog(ChoosePath.this);
-                    progressDialog.setMessage("Please wait...");
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
-                }
-
-
-                @Override
-                protected Void doInBackground(Void... arg0) {
-                    JSONObject jsonObject = JSONParser.getPath();
-
-                    Log.e(TAG, "Response from url: " + jsonObject);
-                    if (jsonObject != null) {
-                        try {
-
-                            // Getting JSON Array node
-                            JSONArray data = jsonObject.getJSONArray("Info");
-                            // looping through All data
-                            for (int i = 0; i < data.length(); i++) {
-                                JSONObject c = data.getJSONObject(i);
-
-                                String name = c.getString("name");
-                                String gps_id = c.getString("gps_id");
-                                JSONArray marker_id = c.getJSONArray("marker_id");
-                                images = c.getJSONArray("encoded_images");
-                                JSONArray marker = c.getJSONArray("marker");
-                                Log.e("markerExtrated:", marker.toString());
-                                JSONArray polyline = c.getJSONArray("polyline");
-                                JSONArray notes = c.getJSONArray("notes");
-
-                                // tmp hash map for single data
-                                HashMap<String, Object> contact = new HashMap<>();
-                                contact.put("name", name);
-                                contact.put("marker", marker);
-                                contact.put("polyline", polyline);
-                                contact.put("marker_id", marker_id);
-                                contact.put("notes", notes);
-                                contact.put("images", images);
-                                contact.put("gps_id", gps_id);
-
-                                pathlist.add(contact);
-
-                                adapter.notifyDataSetChanged();
-
-                            }
-                        } catch (final JSONException e) {
-                            Log.e(TAG, "Json parsing error: " + e.getMessage());
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Json parsing error: " + e.getMessage(),
-                                            Toast.LENGTH_LONG)
-                                            .show();
-                                }
-                            });
-
-                        }
-                    } else {
-                        Log.e(TAG, "Couldn't get json from server.");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(),
-                                        "Connection timeout! Please check internet connection",
-                                        Toast.LENGTH_LONG)
-                                        .show();
-                            }
-                        });
-
-                    }
-
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Void result) {
-                    super.onPostExecute(result);
-                    // Dismiss the progress dialog
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
-
-                    listView.setAdapter(adapter);
-
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                            HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
-                            JSONArray marker = (JSONArray) obj.get("marker");
-                            JSONArray polyline = (JSONArray) obj.get("polyline");
-                            JSONArray notes = (JSONArray) obj.get("notes");
-                            name = (String) obj.get("name");
-                            String gps_id = (String) obj.get("gps_id");
-                            JSONArray marker_id = (JSONArray) obj.get("marker_id");
-                            JSONArray images = (JSONArray) obj.get("images");
-                            imagePathArray = new JSONArray();
-                            try {
-                                for (int j = 0; j < images.length(); j++) {
-                                    String base64 = images.get(j).toString();
-                                    byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-                                    final Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                    //File folderPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GWS/" + "MarkerImages/" + name);
-                                    File image = new File(appFolderCheckandCreate(), "img" + getTimeStamp() + ".jpg");
-                                    if (image.exists())
-                                        image.delete();
-                                    String imagePath = image.getAbsolutePath();
-                                    imagePathArray.put(imagePath);
-                                    try {
-                                        FileOutputStream out = new FileOutputStream(image);
-                                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, out);
-                                        out.flush();
-                                        out.close();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    image.deleteOnExit();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                            Intent parse = new Intent(ChoosePath.this, Loader.class);
-                            parse.putExtra("marker", marker.toString());
-                            parse.putExtra("polyline", polyline.toString());
-                            parse.putExtra("notes", notes.toString());
-                            parse.putExtra("name", name);
-                            parse.putExtra("marker_id", marker_id.toString());
-                            parse.putExtra("image_path", imagePathArray.toString());
-                            parse.putExtra("gps_id", gps_id);
-                            startActivity(parse);
-                        }
-                    });
-
-                    search.addTextChangedListener(new TextWatcher() {
-
-                        @Override
-                        public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                            // When user changed the Text
-                            ChoosePath.this.adapter.getFilter().filter(cs);
-                        }
-
-                        @Override
-                        public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                                      int arg3) {
-                            // TODO Auto-generated method stub
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable arg0) {
-                            // TODO Auto-generated method stub
-                        }
-                    });
-
-                }
-            }
-
 
     private String appFolderCheckandCreate() {
 
@@ -540,7 +640,7 @@ public class ChoosePath extends AppCompatActivity {
         return timeString;
     }
 
-    public void timerDelayRemoveDialog(long time, final ProgressDialog d){
+    public void timerDelayRemoveDialog(long time, final ProgressDialog d) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {

@@ -18,8 +18,10 @@ import android.widget.TextView;
 import com.example.android.gurkha.NFC;
 import com.example.android.gurkha.NFCInterface.Listener;
 import com.example.android.gurkha.R;
+import com.scottyab.aescrypt.AESCrypt;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 public class NFCReadFragment extends DialogFragment {
 
@@ -71,11 +73,12 @@ public class NFCReadFragment extends DialogFragment {
             ndef.connect();
             NdefMessage ndefMessage = ndef.getNdefMessage();
             String message = new String(ndefMessage.getRecords()[0].getPayload());
-            Log.d(TAG, "readFromNFC: "+message);
-            mTvMessage.setText(message);
+            String password = "password";
+            String decryptedMessage = AESCrypt.decrypt(password, message);
+            mTvMessage.setText(decryptedMessage);
             ndef.close();
 
-        } catch (IOException | FormatException e) {
+        } catch (IOException | FormatException | GeneralSecurityException e) {
             e.printStackTrace();
 
         }

@@ -3,14 +3,18 @@ package com.example.android.gurkha;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.birbit.android.jobqueue.JobManager;
+import com.birbit.android.jobqueue.config.Configuration;
+import com.birbit.android.jobqueue.log.CustomLogger;
+import com.example.android.gurkha.JobQueue.PostJob;
+import com.example.android.gurkha.application.GurkhaApplication;
+import com.toptoche.searchablespinnerlibrary.SearchableListDialog;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import okhttp3.Cache;
@@ -53,7 +63,7 @@ import java.util.Random;
 
 public class Add_investigation extends AppCompatActivity {
     public static EditText person, investigator, paymentbase, date, startdate, reviewdate;
-    private static final String url = "http://pagodalabs.com.np/gws/investigate/api/investigate";
+    private static final String url = "http://pagodalabs.com.np/gws/investigate/api/investigate?api_token=";
     Button btn;
     private ArrayList<Object> list;
     private SpinnerAdapter adapt;
@@ -64,13 +74,28 @@ public class Add_investigation extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private int year, month, day;
     Object[] person_items;
+    String token;
+    SessionManager sessionManager;
+    FbSessionManager fbSessionManager;
+    Toolbar toolbar;
+    Typeface face;
     Call<ResponseBody> call;
     TextView hiddenDate;
+    JobManager mJobManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_investigation);
+
+        toolbar = findViewById(R.id.select);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
+        face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
 
         //   person = (EditText) findViewById(R.id.textperson);
         investigator = (EditText) findViewById(R.id.textinvestigator);
@@ -86,12 +111,22 @@ public class Add_investigation extends AppCompatActivity {
         hiddenDate = (TextView) findViewById(R.id.hiddenDate);
 
         name = (SearchableSpinner) findViewById(R.id.textperson);
+        sessionManager = new SessionManager(getApplicationContext());
+        fbSessionManager = new FbSessionManager(getApplicationContext());
 
         awc = (SearchableSpinner) findViewById(R.id.spinnerAwc);
         String[] awc_items = new String[]{"Select Area Welfare Center", "Bheri", "Myagdi", "Syangja", "Butwal", "Tanahun", "Lamjung", "Gulmi", "Chitwan", "Gorkha", "Bagmati",
                 "Jiri", "Rumjatar", "Diktel", "Bhojpur", "Khandbari", "Tehrathum", "Taplejung", "Phidim", "Damak",
-                "Darjeeling", "The Kulbir Thapa VC Residental Home", "The Rambahadur Limbu VC Residential Home"};
-        ArrayAdapter<String> adapt_awc = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, awc_items);
+                "Darjeeling", "Dharan", "Kaski", "The Kulbir Thapa VC Residental Home", "The Rambahadur Limbu VC Residential Home"};
+        ArrayAdapter<String> adapt_awc = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, awc_items){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView name = (TextView) view.findViewById(android.R.id.text1);
+                name.setTypeface(face);
+                return view;
+            }
+        };
         awc.setAdapter(adapt_awc);
 
 
@@ -134,15 +169,15 @@ public class Add_investigation extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        mJobManager = GurkhaApplication.getInstance().getJobManager();
 
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (InternetConnection.checkConnection(getApplicationContext())) {
+//                if (InternetConnection.checkConnection(getApplicationContext())) {
                     String mPerson = name.getSelectedItem().toString();
                     String id = mPerson.substring(mPerson.lastIndexOf(":") + 1);
-                    Log.e("identity", id);
                     String mInvestigator = investigator.getText().toString().trim();
                     String mPaymentbase = paymentbase.getText().toString().trim();
                     String mDate = date.getText().toString().trim();
@@ -159,6 +194,16 @@ public class Add_investigation extends AppCompatActivity {
 
                     String mHiddenDate = hiddenDate.getText().toString().trim();
 
+                    if(sessionManager.getUserDetails() != null) {
+                        HashMap<String, String> user = sessionManager.getUserDetails();
+                        token = user.get(SessionManager.KEY_TOKEN);
+                    }
+                    if(fbSessionManager.getUserDetails() != null) {
+                        HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
+                        if(fbUser.get(SessionManager.KEY_TOKEN) != null)
+                        token = fbUser.get(SessionManager.KEY_TOKEN);
+                    }
+
 
                     MediaType JSON = MediaType.parse("application/json; charset=utf-8");
                     Map<String, String> params = new HashMap<String, String>();
@@ -170,12 +215,21 @@ public class Add_investigation extends AppCompatActivity {
                     params.put("review_date", mReviewdate);
                     params.put("awc", mAwc);
                     params.put("created_at", mHiddenDate);
+                    params.put("api_token", token);
+
+                if(mAwc.equals("Select Area Welfare Center")){
+                    Toast.makeText(Add_investigation.this, "Please select area welfare center", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                     JSONObject parameter = new JSONObject(params);
                     Log.e("JSON:", parameter.toString());
 
-                    OkHttpClient client = new OkHttpClient();
-                    final okhttp3.RequestBody body = okhttp3.RequestBody.create(JSON, parameter.toString());
+//                    OkHttpClient client = new OkHttpClient();
+
+                    mJobManager.addJobInBackground(new PostJob(url, parameter.toString()));
+
+                   /* final okhttp3.RequestBody body = okhttp3.RequestBody.create(JSON, parameter.toString());
                     Request request = new Request.Builder()
                             .url(url)
                             .post(body)
@@ -196,17 +250,26 @@ public class Add_investigation extends AppCompatActivity {
                         }
 
                     });
-
+*/
                     Toast.makeText(Add_investigation.this, "Investigation Details Added", Toast.LENGTH_SHORT).show();
                     finish();
-                } else {
+                /*} else {
                     Toast.makeText(Add_investigation.this, "Unable to save. No internet connection", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
 
         });
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+        }
+        return false;
     }
 
     /**
@@ -238,7 +301,7 @@ public class Add_investigation extends AppCompatActivity {
             if (!InternetConnection.checkConnection(Add_investigation.this)) {
                 request = request.newBuilder()
                         .header("Cache-Control",
-                                "public, only-if-cached, max-stale=" + 28800)// 8 hrs
+                                "public, only-if-cached, max-stale=" + 1209600)// 2 weeks
                         .build();
             }
             return chain.proceed(request);
@@ -262,13 +325,23 @@ public class Add_investigation extends AppCompatActivity {
                 .build();
 
 
+        if(sessionManager.getUserDetails() != null) {
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            token = user.get(SessionManager.KEY_TOKEN);
+        }
+        if(fbSessionManager.getUserDetails() != null) {
+            HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
+            if(fbUser.get(SessionManager.KEY_TOKEN) != null)
+            token = fbUser.get(SessionManager.KEY_TOKEN);
+        }
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(base_url) // that means base url + the left url in interface
                 .client(okHttpClient)//adding okhttp3 object that we have created
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail");
+        call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail?api_token=" + token);
 
         if (call.isExecuted())
             call = call.clone();
@@ -286,8 +359,15 @@ public class Add_investigation extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 try {
+                    if (!(response.isSuccessful())){
+                        Toast.makeText(Add_investigation.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
+                    }
                     final String myResponse = response.body().string();
                     Log.e("getResponse:", myResponse);
+
+
                     JSONObject jsonObject = new JSONObject(myResponse);
                     JSONArray data = jsonObject.getJSONArray("personal");
                     for (int i = 0; i < data.length(); i++) {
@@ -298,7 +378,7 @@ public class Add_investigation extends AppCompatActivity {
                         String army_no = innerObject.getString("army_no");
                         String personal_id = innerObject.getString("personal_id");
 
-                        list.add(name + " " + surname + "," + " " + "Army_No:" + army_no + "," + " " + "id:" + personal_id);
+                        list.add(name + " " + surname + " " + army_no + "," + " " + "id:" + personal_id);
                         person_items = list.toArray();
 
                     }
@@ -314,7 +394,15 @@ public class Add_investigation extends AppCompatActivity {
                     public void run() {
                         progressDialog.dismiss();
 
-                        ArrayAdapter<Object> adapt_person = new ArrayAdapter<Object>(Add_investigation.this, R.layout.support_simple_spinner_dropdown_item, person_items);
+                        ArrayAdapter<Object> adapt_person = new ArrayAdapter<Object>(Add_investigation.this, R.layout.support_simple_spinner_dropdown_item, person_items){
+                            @Override
+                            public View getView(int position, View convertView, ViewGroup parent) {
+                                View view = super.getView(position, convertView, parent);
+                                TextView name = (TextView) view.findViewById(android.R.id.text1);
+                                name.setTypeface(face);
+                                return view;
+                            }
+                        };
                         name.setAdapter(adapt_person);
                     }
 

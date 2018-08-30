@@ -41,158 +41,252 @@
                 android:textColor="@color/colorPrimary"
                 android:visibility="gone" />
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#D7DBB8"
-                android:orientation="vertical">
+                android:fillViewport="true">
 
-                <LinearLayout
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:background="#EEEEEE"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/top_left"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_marginTop="10dp"
                         android:layout_weight="1"
-                        android:background="@drawable/onmenuclick"
-                        android:drawableTop="@drawable/listvillages"
-                        android:gravity="center"
-                        android:padding="15dp"
-                        android:scaleType="fitXY"
-                        android:text="Information" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/top_left"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/listvillages"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:scaleType="fitXY"
+                            android:text="Information" />
 
 
-                    <TextView
-                        android:id="@+id/top_right"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/onmenuclick"
-                        android:drawableTop="@drawable/lastvisit"
-                        android:gravity="center"
-                        android:padding="15dp"
-                        android:scaleType="fitXY"
-                        android:text="Visited Places" />
+                        <TextView
+                            android:id="@+id/top_right"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/lastvisit"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="Visited Places" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/middle_left"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/search_person"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="Search Person" />
+
+                        <TextView
+                            android:id="@+id/middle_right"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/current_location"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="Current Location" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/directions"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/ic_directions"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="Directions" />
+
+                        <TextView
+                            android:id="@+id/bottom_right"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/ic_ar"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="AR View" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/qrscanner"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/ic_payment_56dp"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="Make Payment" />
+
+                        <TextView
+                            android:id="@+id/addinfo"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/ic_addinfo"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="Add Information" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/poll"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/ic_info"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="Risk Update" />
+
+                        <TextView
+                            android:id="@+id/risk_update"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/ic_question_answer"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="QNA" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/psa"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/ic_poll"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="Pensioner Risk Assessment" />
+
+                        <TextView
+                            android:id="@+id/add_photos"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/onmenuclick"
+                            android:drawableTop="@drawable/ic_add_pictures"
+                            android:elevation="4dp"
+                            android:fontFamily="@font/core_regular"
+                            android:gravity="center"
+                            android:padding="15dp"
+                            android:text="Add Pictures" />
+
+
+                    </LinearLayout>
 
                 </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/middle_left"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/onmenuclick"
-                        android:drawableTop="@drawable/search_person"
-                        android:gravity="center"
-                        android:padding="15dp"
-                        android:scaleType="fitXY"
-                        android:text="Search Person" />
-
-                    <TextView
-                        android:id="@+id/middle_right"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/onmenuclick"
-                        android:drawableTop="@drawable/current_location"
-                        android:gravity="center"
-                        android:padding="15dp"
-                        android:scaleType="fitXY"
-                        android:text="Current Location" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/directions"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/onmenuclick"
-                        android:drawableTop="@drawable/ic_directions"
-                        android:gravity="center"
-                        android:padding="15dp"
-                        android:text="Directions" />
-
-                    <TextView
-                        android:id="@+id/bottom_right"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/onmenuclick"
-                        android:drawableTop="@drawable/ic_ar"
-                        android:gravity="center"
-                        android:padding="15dp"
-                        android:scaleType="fitXY"
-                        android:text="AR View" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/qrscanner"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/onmenuclick"
-                        android:drawableTop="@drawable/scanner"
-                        android:gravity="center"
-                        android:padding="15dp"
-                        android:text="QR Scanner" />
-
-                    <TextView
-                        android:id="@+id/addinfo"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/onmenuclick"
-                        android:drawableTop="@drawable/ic_addinfo"
-                        android:gravity="center"
-                        android:padding="15dp"
-                        android:text="Add Information" />
-
-                </LinearLayout>
-            </LinearLayout>
+            </ScrollView>
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 

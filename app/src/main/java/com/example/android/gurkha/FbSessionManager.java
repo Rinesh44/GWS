@@ -39,6 +39,9 @@ public class FbSessionManager {
 
     public static final String KEY_PROPIC = "propic";
 
+    public static final String KEY_TOKEN = "token";
+
+
     // Constructor
     public FbSessionManager(Context context){
         this._context = context;
@@ -49,7 +52,7 @@ public class FbSessionManager {
     /**
      * Create login session
      * */
-    public void createLoginSession(String id, String email, String propic){
+    public void createLoginSession(String id, String email, String propic, String token){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -62,8 +65,11 @@ public class FbSessionManager {
         //Storing fb profile pic
         editor.putString(KEY_PROPIC, propic);
 
+        // Storing token in pref
+        editor.putString(KEY_TOKEN, token);
+
         // commit changes
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -101,6 +107,9 @@ public class FbSessionManager {
         // user email id
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
 
+        // user token
+        user.put(KEY_TOKEN, pref.getString(KEY_TOKEN, null));
+
         // return user
         return user;
     }
@@ -111,7 +120,7 @@ public class FbSessionManager {
     public void logoutUser(){
         // Clearing all data from Shared Preferences
         editor.clear();
-        editor.commit();
+        editor.apply();
 
     }
 

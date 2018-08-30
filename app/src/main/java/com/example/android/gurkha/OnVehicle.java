@@ -20,12 +20,14 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import android.support.v4.content.ContextCompat;
 
+import android.support.v4.content.FileProvider;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +39,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.birbit.android.jobqueue.JobManager;
+import com.example.android.gurkha.JobQueue.PostJob;
+import com.example.android.gurkha.application.GurkhaApplication;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -104,13 +109,16 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
     private GoogleApiClient googleApiClient;
     private Location currentLocation;
     String mLastUpdateTime;
-    Button mSave;
+    FloatingActionButton mSave;
     public static int RESULT_LOAD_IMAGE = 1;
     public static String cameraImagePath;
-    private Button delete;
+    private FloatingActionButton delete;
     String imagePath;
-    private static final String url = "http://pagodalabs.com.np/gws/track/api/track";
+    private static final String url = "http://pagodalabs.com.np/gws/track/api/track?api_token=";
     public ArrayList<String> polylineValues;
+    String token, id;
+    SessionManager sessionManager;
+    FbSessionManager fbSessionManager;
     public HashMap<String, String> infoWindowNote;
     public HashMap<String, String> infoWindowImageName;
     private static final int CAMERA_REQUEST = 1777;
@@ -118,6 +126,7 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
     String imageDir;
     EditText field;
     private static final int REQUEST_PERMISSIONS = 124;
+    JobManager mJobManager;
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.CAMERA,
@@ -162,13 +171,18 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
 
         googleApiClient.connect();
 
+        sessionManager = new SessionManager(getApplicationContext());
+        fbSessionManager = new FbSessionManager(getApplicationContext());
+
 
         final Dialog start = new Dialog(OnVehicle.this);
         start.getWindow();
         start.requestWindowFeature(Window.FEATURE_NO_TITLE);
         start.setContentView(R.layout.pathname);
+        start.setCancelable(false);
         start.show();
         Button ok = (Button) start.findViewById(R.id.btn);
+        Button cancel = (Button) start.findViewById(R.id.cancel);
         final EditText routeName = (EditText) start.findViewById(R.id.name);
 
         ok.setOnClickListener(new View.OnClickListener() {
@@ -191,8 +205,14 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
             }
         });
 
-        mSave = (Button) findViewById(R.id.save);
-        delete = (Button) findViewById(R.id.delete);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start.dismiss();
+            }
+        });
+        mSave = findViewById(R.id.save);
+        delete = findViewById(R.id.delete);
         /*
         notes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,13 +237,28 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
             }
         });
 */
+
+        mJobManager = GurkhaApplication.getInstance().getJobManager();
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (InternetConnection.checkConnection(getApplicationContext())) {
-                    if (markerValues.size() <= 0) {
-                        Toast.makeText(OnVehicle.this, "Please add at least one marker. Long press on area to add marker", Toast.LENGTH_LONG).show();
-                    } else {
+//                if (InternetConnection.checkConnection(getApplicationContext())) {
+                if (markerValues.size() <= 0) {
+                    Toast.makeText(OnVehicle.this, "Please add at least one marker. Long press on area to add marker", Toast.LENGTH_LONG).show();
+                } else {
+
+                    if (sessionManager.getUserDetails() != null) {
+                        HashMap<String, String> user = sessionManager.getUserDetails();
+                        token = user.get(SessionManager.KEY_TOKEN);
+                        id = user.get(SessionManager.KEY_ID);
+                    }
+                    if (fbSessionManager.getUserDetails() != null) {
+                        HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
+                        if (fbUser.get(SessionManager.KEY_TOKEN) != null)
+                            token = fbUser.get(SessionManager.KEY_TOKEN);
+                        if (fbUser.get(SessionManager.KEY_ID) != null)
+                            id = fbUser.get(SessionManager.KEY_ID);
+                    }
                         /*
                         final Dialog dialog = new Dialog(OnVehicle.this);
                         dialog.getWindow();
@@ -239,31 +274,37 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
                             public void onClick(View v) {
 
 */
-                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                        userId.add(MainActivity.checkAdmin);
-                        JSONObject parameter = new JSONObject();
-                        JSONObject name = new JSONObject();
-                        JSONObject id = new JSONObject();
-                        try {
-                            JSONArray list = new JSONArray(pointsString);
-                            JSONArray markerlist = new JSONArray(markerValues);
-                            JSONArray imageList = new JSONArray(images);
-                            JSONArray noteList = new JSONArray(descriptionText);
-                            JSONArray markerIdList = new JSONArray(markerId);
-                            JSONArray idList = new JSONArray(userId);
-                            name.put("marker", markerlist);
-                            name.put("notes", noteList);
-                            name.put("user_id", idList);
-                            name.put("marker_id", markerIdList);
-                            name.put("polyline", list);
-                            name.put("images", imageList);
-                            parameter.put(imageDir, name);
+//                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                    userId.add(id);
+                    JSONObject parameter = new JSONObject();
+                    JSONObject name = new JSONObject();
+                    JSONObject id = new JSONObject();
+                    try {
+                        JSONArray list = new JSONArray(pointsString);
+                        JSONArray markerlist = new JSONArray(markerValues);
+                        JSONArray imageList = new JSONArray(images);
+                        JSONArray noteList = new JSONArray(descriptionText);
+                        JSONArray markerIdList = new JSONArray(markerId);
+                        JSONArray idList = new JSONArray(userId);
+                        name.put("marker", markerlist);
+                        name.put("notes", noteList);
+                        name.put("user_id", idList);
+                        name.put("marker_id", markerIdList);
+                        name.put("polyline", list);
+                        name.put("images", imageList);
+                        name.put("api_token", token);
+                        parameter.put(imageDir, name);
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                        OkHttpClient client = new OkHttpClient();
+                    Log.e("parameterJSON:", parameter.toString());
+
+                    mJobManager.addJobInBackground(new PostJob(url, parameter.toString()));
+
+
+                       /* OkHttpClient client = new OkHttpClient();
                         final RequestBody body = RequestBody.create(JSON, parameter.toString());
                         Request request = new Request.Builder()
                                 .url(url)
@@ -271,7 +312,7 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
                                 .addHeader("content-type", "application/json; charset=utf-8")
                                 .build();
 
-                        Log.e("parameterJSON:", parameter.toString());
+
 
 
                         client.newCall(request).enqueue(new Callback() {
@@ -287,10 +328,10 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
                                 }
                             }
 
-                        });
+                        });*/
 
-                        Toast.makeText(getBaseContext(), "The path has been saved", Toast.LENGTH_SHORT).show();
-                        //dialog.dismiss();
+                    Toast.makeText(getBaseContext(), "The path has been saved", Toast.LENGTH_SHORT).show();
+                    //dialog.dismiss();
 /*
                         Intent intent = new Intent(OnVehicle.this, Alarm.class);
                         intent.setAction(Long.toString(System.currentTimeMillis()));
@@ -299,13 +340,13 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
                         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                         am.cancel(alarmIntent);
                         */
-                        finish();
+                    finish();
 
 
-                    }
-                } else {
-                    Toast.makeText(OnVehicle.this, "Please connect to internet to save path", Toast.LENGTH_SHORT).show();
                 }
+               /* } else {
+                    Toast.makeText(OnVehicle.this, "Please connect to internet to save path", Toast.LENGTH_SHORT).show();
+                }*/
             }
         });
 
@@ -406,7 +447,6 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
         });
 
 
-        mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setAllGesturesEnabled(true);
         mMap.setOnMapLongClickListener(this);
 
@@ -440,7 +480,7 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
                         imageName.setText("Click to add data");
                     } else
                         imageName.setText(getName);
-                }else {
+                } else {
                     imageName.setText(mLastUpdateTime);
                     imageDesc.setVisibility(View.GONE);
                 }
@@ -471,7 +511,8 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
                             @Override
                             public void onClick(View v) {
                                 File image = new File(appFolderCheckandCreate(), "img" + getTimeStamp() + ".jpg");
-                                Uri uriSavedImage = Uri.fromFile(image);
+                                // Uri uriSavedImage = Uri.fromFile(image);
+                                Uri uriSavedImage = FileProvider.getUriForFile(OnVehicle.this, BuildConfig.APPLICATION_ID + ".provider", image);
                                 String imagePathName = image.getName();
                                 infoWindowImageName.put(marker.getId(), imagePathName);
                                 Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -527,7 +568,6 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
     @Override
     public void onLocationChanged(Location location) {
 
-
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
 
@@ -547,7 +587,7 @@ public class OnVehicle extends FragmentActivity implements OnMapReadyCallback, L
 
         // mMap.clear();  //clears all Markers and Polylines
 
-        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+        PolylineOptions options = new PolylineOptions().width(7).color(getResources().getColor(android.R.color.holo_blue_light)).geodesic(true);
         for (int i = 0; i < points.size(); i++) {
             LatLng point = points.get(i);
             options.add(point);

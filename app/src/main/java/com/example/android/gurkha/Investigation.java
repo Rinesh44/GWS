@@ -1,27 +1,29 @@
 package com.example.android.gurkha;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -37,7 +39,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import okhttp3.Cache;
-import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -49,21 +50,31 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Investigation extends AppCompatActivity {
-    private String TAG = Village_List.class.getSimpleName();
+    private String TAG = Investigation.class.getSimpleName();
     private TextView title;
     private Toolbar toolbar;
     private SimpleAdapter adapter;
     private ProgressDialog progressDialog;
     private ListView listView;
+    Typeface face;
+    String token;
+    Menu menu;
     private EditText search;
     // URL to get villagelist JSON
     private static String base_url = "http://pagodalabs.com.np/";
-    private static String url = "http://pagodalabs.com.np/gws/investigate/api/investigate/";
+    private static String url = "http://pagodalabs.com.np/gws/investigate/api/investigate?api_token=";
     ArrayList<HashMap<String, String>> personlist;
     Call<ResponseBody> call;
     private TextView mEmptyStateTextView;
     SessionManager sessionManager;
     FbSessionManager fbSessionManager;
+    private int lastPosition = -1;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        progressDialog.dismiss();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +83,12 @@ public class Investigation extends AppCompatActivity {
         personlist = new ArrayList<>();
 
         TextView tv = (TextView) findViewById(R.id.toolbar_title);
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
         tv.setTypeface(face);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         title = (TextView) findViewById(R.id.title);
         title.setTypeface(face);
@@ -84,7 +97,22 @@ public class Investigation extends AppCompatActivity {
         fbSessionManager = new FbSessionManager(getApplicationContext());
 
         adapter = new SimpleAdapter(Investigation.this, personlist,
-                R.layout.list_item, new String[]{"name", "surname", "army_no"}, new int[]{R.id.name, R.id.surname, R.id.army_no});
+                R.layout.list_item, new String[]{"name", "surname", "army_no"}, new int[]{R.id.name, R.id.surname, R.id.army_no}) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView name = (TextView) view.findViewById(R.id.name);
+                TextView surname = (TextView) view.findViewById(R.id.surname);
+                TextView army_no = (TextView) view.findViewById(R.id.army_no);
+                name.setTypeface(face);
+                surname.setTypeface(face);
+                army_no.setTypeface(face);
+                Animation animation = AnimationUtils.loadAnimation(Investigation.this, (position > lastPosition) ? R.anim.item_animation_fall_down : R.anim.item_animation_fall_down);
+                view.startAnimation(animation);
+                lastPosition = position;
+                return view;
+            }
+        };
 
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
@@ -95,6 +123,16 @@ public class Investigation extends AppCompatActivity {
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         listView.setEmptyView(mEmptyStateTextView);
+
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                MenuItem deleteBtn = menu.findItem(R.id.action_delete);
+                deleteBtn.setVisible(true);
+                return false;
+            }
+        });
 
         try {
             run();
@@ -120,7 +158,7 @@ public class Investigation extends AppCompatActivity {
 
     /**
      * Interceptor to cache data and maintain it for a minute.
-     *
+     * <p>
      * If the same network request is sent within a minute,
      * the response is retrieved from cache.
      */
@@ -136,7 +174,7 @@ public class Investigation extends AppCompatActivity {
 
     /**
      * Interceptor to cache data and maintain it for four weeks.
-     *
+     * <p>
      * If the device is offline, stale (at most 2 weeks)
      * response is fetched from the cache.
      */
@@ -154,15 +192,61 @@ public class Investigation extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.delete, menu);
+        this.menu = menu;
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                showAlertDialog();
+                break;
+        }
+        return false;
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(Investigation.this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(Investigation.this);
+        }
+        builder.setTitle("Delete entry")
+                .setMessage("Are you sure you want to delete this entry?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        dialog.dismiss();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
     void run() throws IOException {
         OkHttpClient client = new OkHttpClient();
         final String awc = SelectAwc.awc;
 
         if (sessionManager.getUserDetails() != null) {
             HashMap<String, String> user = sessionManager.getUserDetails();
+            token = user.get(SessionManager.KEY_TOKEN);
             String id = user.get(SessionManager.KEY_ID);
 
-            if (id != null){
+            Log.e(TAG, "TOKEN:" + token);
+
+            if (id != null) {
                 if (id.matches("1")) {
                     progressDialog = new ProgressDialog(Investigation.this);
                     progressDialog.setMessage("Please wait...");
@@ -187,7 +271,8 @@ public class Investigation extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(InvestigationInterface.class).getResponse("gws/investigate/api/investigate/");
+
+                    call = retrofit.create(InvestigationInterface.class).getResponse("gws/investigate/api/investigate?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -208,6 +293,11 @@ public class Investigation extends AppCompatActivity {
 
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(Investigation.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -217,6 +307,7 @@ public class Investigation extends AppCompatActivity {
 
                                     final String investigator = c.getString("investigator");
                                     final String name = c.getString("name");
+                                    final String personal_id = c.getString("personal_id");
                                     final String surname = c.getString("surname");
                                     final String payment_base = c.getString("payment_base");
                                     final String date = c.getString("date");
@@ -232,6 +323,7 @@ public class Investigation extends AppCompatActivity {
 
                                     contact.put("investigator", investigator);
                                     contact.put("name", name);
+                                    contact.put("personal_id", personal_id);
                                     contact.put("surname", surname);
                                     contact.put("payment_base", payment_base);
                                     contact.put("date", date);
@@ -269,6 +361,7 @@ public class Investigation extends AppCompatActivity {
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
                                             final String investigator = (String) obj.get("investigator");
+                                            final String personal_id = (String) obj.get("personal_id");
                                             final String name = (String) obj.get("name");
                                             final String surname = (String) obj.get("surname");
                                             final String payment_base = (String) obj.get("payment_base");
@@ -279,6 +372,7 @@ public class Investigation extends AppCompatActivity {
 
                                             Intent in = new Intent(Investigation.this, Investigation_details.class);
                                             in.putExtra("investigator", investigator);
+                                            in.putExtra("personal_id", personal_id);
                                             in.putExtra("name", name);
                                             in.putExtra("surname", surname);
                                             in.putExtra("payment_base", payment_base);
@@ -338,7 +432,7 @@ public class Investigation extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(InvestigationInterface.class).getResponse("gws/investigate/api/investigate/" + awc);
+                    call = retrofit.create(InvestigationInterface.class).getResponse("gws/investigate/api/investigate/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -358,6 +452,11 @@ public class Investigation extends AppCompatActivity {
 
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(Investigation.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -366,6 +465,7 @@ public class Investigation extends AppCompatActivity {
                                     JSONObject c = data.getJSONObject(i);
 
                                     final String investigator = c.getString("investigator");
+                                    final String personal_id = c.getString("personal_id");
                                     final String name = c.getString("name");
                                     final String surname = c.getString("surname");
                                     final String payment_base = c.getString("payment_base");
@@ -381,6 +481,7 @@ public class Investigation extends AppCompatActivity {
                                     // adding each child node to HashMap key => value
 
                                     contact.put("investigator", investigator);
+                                    contact.put("personal_id", personal_id);
                                     contact.put("name", name);
                                     contact.put("surname", surname);
                                     contact.put("payment_base", payment_base);
@@ -419,6 +520,7 @@ public class Investigation extends AppCompatActivity {
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
                                             final String investigator = (String) obj.get("investigator");
+                                            final String personal_id = (String) obj.get("personal_id");
                                             final String name = (String) obj.get("name");
                                             final String surname = (String) obj.get("surname");
                                             final String payment_base = (String) obj.get("payment_base");
@@ -429,6 +531,7 @@ public class Investigation extends AppCompatActivity {
 
                                             Intent in = new Intent(Investigation.this, Investigation_details.class);
                                             in.putExtra("investigator", investigator);
+                                            in.putExtra("personal_id", personal_id);
                                             in.putExtra("name", name);
                                             in.putExtra("surname", surname);
                                             in.putExtra("payment_base", payment_base);
@@ -465,14 +568,16 @@ public class Investigation extends AppCompatActivity {
                         }
                     });
                 }
+            }
         }
-    }
 
         if (fbSessionManager.getUserDetails() != null) {
             HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
+            //HashMap<String, String> user = sessionManager.getUserDetails();
             String fbId = fbUser.get(SessionManager.KEY_ID);
+            token = fbUser.get(SessionManager.KEY_TOKEN);
 
-            if (fbId != null){
+            if (fbId != null) {
                 if (fbId.matches("1")) {
                     progressDialog = new ProgressDialog(Investigation.this);
                     progressDialog.setMessage("Please wait...");
@@ -497,7 +602,7 @@ public class Investigation extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(InvestigationInterface.class).getResponse("gws/investigate/api/investigate/");
+                    call = retrofit.create(InvestigationInterface.class).getResponse("gws/investigate/api/investigate?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -518,6 +623,11 @@ public class Investigation extends AppCompatActivity {
 
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(Investigation.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -526,6 +636,7 @@ public class Investigation extends AppCompatActivity {
                                     JSONObject c = data.getJSONObject(i);
 
                                     final String investigator = c.getString("investigator");
+                                    final String personal_id = c.getString("personal_id");
                                     final String name = c.getString("name");
                                     final String surname = c.getString("surname");
                                     final String payment_base = c.getString("payment_base");
@@ -541,6 +652,7 @@ public class Investigation extends AppCompatActivity {
                                     // adding each child node to HashMap key => value
 
                                     contact.put("investigator", investigator);
+                                    contact.put("personal_id", personal_id);
                                     contact.put("name", name);
                                     contact.put("surname", surname);
                                     contact.put("payment_base", payment_base);
@@ -579,6 +691,7 @@ public class Investigation extends AppCompatActivity {
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
                                             final String investigator = (String) obj.get("investigator");
+                                            final String personal_id = (String) obj.get("personal_id");
                                             final String name = (String) obj.get("name");
                                             final String surname = (String) obj.get("surname");
                                             final String payment_base = (String) obj.get("payment_base");
@@ -589,6 +702,7 @@ public class Investigation extends AppCompatActivity {
 
                                             Intent in = new Intent(Investigation.this, Investigation_details.class);
                                             in.putExtra("investigator", investigator);
+                                            in.putExtra("personal_id", personal_id);
                                             in.putExtra("name", name);
                                             in.putExtra("surname", surname);
                                             in.putExtra("payment_base", payment_base);
@@ -648,7 +762,7 @@ public class Investigation extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(InvestigationInterface.class).getResponse("gws/investigate/api/investigate/" + awc);
+                    call = retrofit.create(InvestigationInterface.class).getResponse("gws/investigate/api/investigate/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -668,6 +782,11 @@ public class Investigation extends AppCompatActivity {
 
 
                             try {
+                                if (!(response.isSuccessful())) {
+                                    Toast.makeText(Investigation.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -675,6 +794,7 @@ public class Investigation extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String personal_id = c.getString("personal_id");
                                     final String investigator = c.getString("investigator");
                                     final String name = c.getString("name");
                                     final String surname = c.getString("surname");
@@ -691,6 +811,7 @@ public class Investigation extends AppCompatActivity {
                                     // adding each child node to HashMap key => value
 
                                     contact.put("investigator", investigator);
+                                    contact.put("personal_id", personal_id);
                                     contact.put("name", name);
                                     contact.put("surname", surname);
                                     contact.put("payment_base", payment_base);
@@ -729,6 +850,7 @@ public class Investigation extends AppCompatActivity {
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
                                             final String investigator = (String) obj.get("investigator");
+                                            final String personal_id = (String) obj.get("personal_id");
                                             final String name = (String) obj.get("name");
                                             final String surname = (String) obj.get("surname");
                                             final String payment_base = (String) obj.get("payment_base");
@@ -739,6 +861,7 @@ public class Investigation extends AppCompatActivity {
 
                                             Intent in = new Intent(Investigation.this, Investigation_details.class);
                                             in.putExtra("investigator", investigator);
+                                            in.putExtra("personal_id", personal_id);
                                             in.putExtra("name", name);
                                             in.putExtra("surname", surname);
                                             in.putExtra("payment_base", payment_base);
@@ -793,7 +916,7 @@ public class Investigation extends AppCompatActivity {
             progressDialog.setMessage("Please wait...");
             progressDialog.setCancelable(false);
             progressDialog.show();
-            timerDelayRemoveDialog(7000,progressDialog);
+            timerDelayRemoveDialog(7000, progressDialog);
         }
 
         @Override
@@ -1035,7 +1158,7 @@ public class Investigation extends AppCompatActivity {
 
     }
 
-    public void timerDelayRemoveDialog(long time, final ProgressDialog d){
+    public void timerDelayRemoveDialog(long time, final ProgressDialog d) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {

@@ -18,20 +18,6 @@
             android:orientation="vertical"
             tools:context=".SearchPerson">
 
-            <include
-                android:id="@+id/select"
-                layout="@layout/appbar_for_searchperson"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <View
-                android:id="@+id/elevation"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_below="@+id/select"
-                android:background="@drawable/shadow" />
-
-
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:map="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -42,17 +28,20 @@
                 android:layout_below="@+id/elevation"
                 tools:context="com.example.android.gurkha.SearchPerson" />
 
-            <Button
+            <android.support.design.widget.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:id="@+id/remove"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="7dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:background="#40000000"
-                android:text="Delete All Markers" />
+                android:backgroundTint="#EF5350"
+                app:fabSize="mini"
+                app:borderWidth="0dp"
+                android:clickable="true"
+                app:elevation="8dp"
+                android:layout_marginBottom="25dp"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/ic_delete"
+                android:id="@+id/remove"/>
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
 

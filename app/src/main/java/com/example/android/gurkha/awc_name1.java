@@ -17,6 +17,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -59,12 +61,21 @@ public class awc_name1 extends AppCompatActivity {
 
     private static String base_url = "http://pagodalabs.com.np/";
     // URL to get villagelist JSON
-    private static String url = "http://pagodalabs.com.np/gws/awc/api/awc/";
+    private static String url = "http://pagodalabs.com.np/gws/awc/api/awc?api_token=";
     ArrayList<HashMap<String, String>> names1;
     Call<ResponseBody> call;
+    Typeface face;
+    String token;
     private TextView mEmptyStateTextView;
     SessionManager sessionManager;
     FbSessionManager fbSessionManager;
+    private int lastPosition = -1;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        progressDialog.dismiss();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +84,7 @@ public class awc_name1 extends AppCompatActivity {
         names1 = new ArrayList<>();
 
         TextView tv = (TextView) findViewById(R.id.toolbar_title);
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/nunito.otf");
+        face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
         tv.setTypeface(face);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -85,7 +96,20 @@ public class awc_name1 extends AppCompatActivity {
         fbSessionManager = new FbSessionManager(getApplicationContext());
 
         adapter = new SimpleAdapter(awc_name1.this, names1,
-                R.layout.list_item, new String[]{"name", "army_no"}, new int[]{R.id.name, R.id.army_no});
+                R.layout.list_item, new String[]{"name", "army_no"}, new int[]{R.id.name, R.id.army_no}){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView name = (TextView) view.findViewById(R.id.name);
+                TextView army_no = (TextView) view.findViewById(R.id.army_no);
+                name.setTypeface(face);
+                army_no.setTypeface(face);
+                Animation animation = AnimationUtils.loadAnimation(awc_name1.this, (position > lastPosition) ? R.anim.item_animation_fall_down : R.anim.item_animation_fall_down);
+                view.startAnimation(animation);
+                lastPosition = position;
+                return view;
+            }
+        };
 
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
@@ -163,7 +187,7 @@ public class awc_name1 extends AppCompatActivity {
         if (sessionManager.getUserDetails() != null) {
             HashMap<String, String> user = sessionManager.getUserDetails();
             String id = user.get(SessionManager.KEY_ID);
-
+            token = user.get(SessionManager.KEY_TOKEN);
             if (id != null){
                 if (id.matches("1")) {
 
@@ -191,7 +215,7 @@ public class awc_name1 extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(AwcInterface.class).getResponse("gws/awc/api/awc/");
+                    call = retrofit.create(AwcInterface.class).getResponse("gws/awc/api/awc?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -211,6 +235,11 @@ public class awc_name1 extends AppCompatActivity {
 
 
                             try {
+                                if (!(response.isSuccessful())){
+                                Toast.makeText(awc_name1.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                finish();
+                                return;
+                            }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -352,7 +381,7 @@ public class awc_name1 extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(AwcInterface.class).getResponse("gws/awc/api/awc/" + awc);
+                    call = retrofit.create(AwcInterface.class).getResponse("gws/awc/api/awc/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -372,6 +401,11 @@ public class awc_name1 extends AppCompatActivity {
 
 
                             try {
+                                if (!(response.isSuccessful())){
+                                    Toast.makeText(awc_name1.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -495,6 +529,8 @@ public class awc_name1 extends AppCompatActivity {
         if (fbSessionManager.getUserDetails() != null) {
             HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
             String fbId = fbUser.get(SessionManager.KEY_ID);
+           // HashMap<String, String> user = sessionManager.getUserDetails();
+            token = fbUser.get(SessionManager.KEY_TOKEN);
 
             if (fbId != null){
                 if (fbId.matches("1")) {
@@ -523,7 +559,7 @@ public class awc_name1 extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(AwcInterface.class).getResponse("gws/awc/api/awc/");
+                    call = retrofit.create(AwcInterface.class).getResponse("gws/awc/api/awc?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -543,6 +579,11 @@ public class awc_name1 extends AppCompatActivity {
 
 
                             try {
+                                if (!(response.isSuccessful())){
+                                    Toast.makeText(awc_name1.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -684,7 +725,7 @@ public class awc_name1 extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(AwcInterface.class).getResponse("gws/awc/api/awc/" + awc);
+                    call = retrofit.create(AwcInterface.class).getResponse("gws/awc/api/awc/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -704,6 +745,12 @@ public class awc_name1 extends AppCompatActivity {
 
 
                             try {
+
+                                if (!(response.isSuccessful())){
+                                    Toast.makeText(awc_name1.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -849,7 +896,7 @@ public class awc_name1 extends AppCompatActivity {
             // Making a request to url and getting response
             if (checkAdmin.matches("1")) {
 
-                String jsonStr = sh.makeServiceCall(url);
+                String jsonStr = sh.makeServiceCall(url + MainActivity.accessToken);
 
                 Log.e(TAG, "Response from url: " + jsonStr);
 
@@ -926,7 +973,7 @@ public class awc_name1 extends AppCompatActivity {
 
                 return null;
             } else {
-                String jsonStr = sh.makeServiceCall(url + awc);
+                String jsonStr = sh.makeServiceCall(url + awc + "?api_token=" + MainActivity.accessToken);
 
                 Log.e(TAG, "Response from url: " + jsonStr);
 

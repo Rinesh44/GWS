@@ -33,356 +33,450 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <RelativeLayout
+                    <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/alternate"
-                        android:padding="5dp">
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/select"
+                        android:layout_margin="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardElevation="4dp"
+                        app:cardUseCompatPadding="true">
 
-                        <TextView
-                            android:id="@+id/location"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:text="Location:"
-                            android:textStyle="italic"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textlocation"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/location"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-                        <TextView
-                            android:id="@+id/scheme"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/location"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Location:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textlocation"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/location"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/scheme"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/location"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Scheme no:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textscheme"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/location"
+                                android:layout_centerHorizontal="true"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/scheme"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/village"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/scheme"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Village:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textvillage"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/scheme"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/village"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+
+                            <TextView
+                                android:id="@+id/vdc"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/village"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="VDC:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textvdc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/village"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/vdc"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/wno"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/vdc"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="W/No:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textwno"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/vdc"
+                                android:focusableInTouchMode="false"
+                                android:inputType="number"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/wno"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+
+                            <TextView
+                                android:id="@+id/servicetype"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/wno"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Service Type:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textservicetype"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textwno"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/servicetype"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/hhtotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textservicetype"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="HH Total:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/texthhtotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textservicetype"
+                                android:inputType="number"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/hhtotal"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/tenta"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/hhtotal"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Tap No/Block:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/texttenta"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/hhtotal"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/tenta"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/population"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tenta"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Population:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textpopulation"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tenta"
+                                android:layout_centerHorizontal="true"
+                                android:inputType="number"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/population"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/coveragelevel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/population"
+                                android:layout_centerHorizontal="true"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="School Coverage in W/S:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <TextView
+                                android:id="@+id/level"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/coveragelevel"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Level:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textlevel"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/coveragelevel"
+                                android:layout_toRightOf="@+id/level"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/totpopulation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/level"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Total Population:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/texttotpopulation"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textlevel"
+                                android:focusableInTouchMode="false"
+                                android:inputType="number"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/totpopulation"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/ric"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/texttotpopulation"
+                                android:layout_centerHorizontal="true"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Rough Indication of Cost(RIC)"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <TextView
+                                android:id="@+id/gws"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/ric"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="GWS/KAAA:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textgws"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/ric"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/gws"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/community"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/gws"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Community:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textcommunity"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_below="@+id/gws"
+                                android:layout_toRightOf="@+id/community"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/total"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/community"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Total:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/texttotal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:layout_below="@+id/textcommunity"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/total"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/funder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/total"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Funder:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textfunder"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/texttotal"
+                                android:layout_toRightOf="@+id/funder"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                        </RelativeLayout>
+
+                        <android.support.design.widget.FloatingActionButton
+                            android:id="@+id/save"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:layout_below="@+id/location"
-                            android:text="Scheme no:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textscheme"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_below="@id/location"
-                            android:layout_toRightOf="@+id/scheme"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/village"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/scheme"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:text="Village:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textvillage"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/scheme"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/village"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-
-                        <TextView
-                            android:id="@+id/vdc"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/village"
-                            android:textStyle="italic"
-                            android:padding="5dp"
-                            android:text="VDC:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textvdc"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/village"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/vdc"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/wno"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/vdc"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:text="W/No:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textwno"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/vdc"
-                            android:layout_toRightOf="@+id/wno"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-
-                        <TextView
-                            android:id="@+id/servicetype"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/wno"
-                            android:padding="5dp"
-                            android:text="Service Type:"
-                            android:textStyle="italic"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textservicetype"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textwno"
-                            android:layout_toRightOf="@+id/servicetype"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/hhtotal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textservicetype"
-                            android:textStyle="italic"
-                            android:padding="5dp"
-                            android:text="HH Total:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/texthhtotal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textservicetype"
-                            android:layout_toRightOf="@+id/hhtotal"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/tenta"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="italic"
-                            android:layout_below="@+id/hhtotal"
-                            android:padding="5dp"
-                            android:text="Tap No/Block:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/texttenta"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/hhtotal"
-                            android:layout_toRightOf="@+id/tenta"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/population"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tenta"
-                            android:padding="5dp"
-                            android:text="Population:"
-                            android:textStyle="italic"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textpopulation"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tenta"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/population"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/coveragelevel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="italic"
-                            android:layout_below="@+id/population"
-                            android:layout_centerHorizontal="true"
-                            android:padding="5dp"
-                            android:text="School Coverage in W/S:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/level"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/coveragelevel"
-                            android:padding="5dp"
-                            android:text="Level:"
-                            android:textStyle="italic"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textlevel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/coveragelevel"
-                            android:layout_toRightOf="@+id/level"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/totpopulation"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/level"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:text="Total Population:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/texttotpopulation"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textlevel"
-                            android:layout_toRightOf="@+id/totpopulation"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/ric"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/texttotpopulation"
-                            android:textStyle="italic"
-                            android:layout_centerHorizontal="true"
-                            android:padding="5dp"
-                            android:text="Rough Indication of Cost(RIC)"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/gws"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/ric"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:text="GWS/KAAA:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textgws"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/ric"
-                            android:layout_toRightOf="@+id/gws"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/community"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/gws"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:text="Community:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textcommunity"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/gws"
-                            android:layout_toRightOf="@+id/community"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/total"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="italic"
-                            android:layout_below="@+id/community"
-                            android:padding="5dp"
-                            android:text="Total:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/texttotal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textcommunity"
-                            android:layout_toRightOf="@+id/total"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/funder"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/total"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:text="Funder:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textfunder"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/texttotal"
-                            android:layout_toRightOf="@+id/funder"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                    </RelativeLayout>
+                            android:layout_gravity="end|bottom"
+                            android:layout_margin="20dp"
+                            android:clickable="true"
+                            android:backgroundTint="#dd4b39"
+                            android:focusable="true"
+                            app:borderWidth="0dp"
+                            app:fabSize="mini"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_done_all"
+                            app:elevation="8dp" />
+                    </android.support.v7.widget.CardView>
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>

@@ -11,193 +11,262 @@
         android:orientation="vertical"
         tools:context="com.example.android.gurkha.Person_Details">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <include
-                android:id="@+id/select"
-                layout="@layout/appbar_for_maps_activity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true" />
-
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <RelativeLayout
+                <include
+                    android:id="@+id/select"
+                    layout="@layout/appbar_for_maps_activity"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/alternate"
-                    android:padding="5dp">
-                    <TextView
-                        android:id="@+id/armyno"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Army No:"
-                        android:textStyle="italic"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/textarmyno"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:padding="5dp"
-                        android:layout_toRightOf="@+id/armyno"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/person"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Name:"
-                        android:textStyle="italic"
-                        android:layout_below="@+id/armyno"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/textperson"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@id/armyno"
-                        android:padding="5dp"
-                        android:layout_toRightOf="@+id/person"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/textpersonsurname"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/armyno"
-                        android:padding="5dp"
-                        android:layout_toRightOf="@+id/textperson"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true" />
 
 
-                    <TextView
-                        android:id="@+id/investigator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/person"
-                        android:padding="5dp"
-                        android:textStyle="italic"
-                        android:text="Investigator:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/textinvestigator"
+                    <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/person"
-                        android:padding="5dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_toRightOf="@+id/investigator"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        android:layout_below="@+id/select"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_margin="10dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardElevation="4dp"
+                        app:cardUseCompatPadding="true">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/armyno"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Army No:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textarmyno"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:focusableInTouchMode="false"
+                                android:inputType="number"
+                                android:background="@android:color/transparent"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/armyno"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/person"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/armyno"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Name:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textperson"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/armyno"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/person"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <EditText
+                                android:id="@+id/textpersonsurname"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/armyno"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/textperson"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
 
-                    <TextView
-                        android:id="@+id/paymentbase"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/investigator"
-                        android:padding="5dp"
-                        android:textStyle="italic"
-                        android:text="Payment Base:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/investigator"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/person"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Investigator:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/textpaymentbase"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/investigator"
-                        android:layout_toRightOf="@+id/paymentbase"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textinvestigator"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/person"
+                                android:layout_centerHorizontal="true"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/investigator"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/paymentbase"
-                        android:padding="5dp"
-                        android:text="Date:"
-                        android:textStyle="italic"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/textdate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/paymentbase"
-                        android:layout_toRightOf="@+id/date"
-                        android:padding="5dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/paymentbase"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/investigator"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Payment Base:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/startdate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/date"
-                        android:padding="5dp"
-                        android:textStyle="italic"
-                        android:text="Start Date:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textpaymentbase"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/investigator"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/paymentbase"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/textstartdate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:layout_below="@+id/date"
-                        android:layout_toRightOf="@+id/startdate"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/paymentbase"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Date:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                    <TextView
-                        android:id="@+id/reviewdate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/startdate"
-                        android:padding="5dp"
-                        android:textStyle="italic"
-                        android:text="Review Date:"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <EditText
+                                android:id="@+id/textdate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/paymentbase"
+                                android:inputType="number"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/date"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/textreviewdate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/startdate"
-                        android:padding="5dp"
-                        android:layout_toRightOf="@+id/reviewdate"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                            <TextView
+                                android:id="@+id/startdate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/date"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Start Date:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
 
-                </RelativeLayout>
+                            <EditText
+                                android:id="@+id/textstartdate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/date"
+                                android:inputType="number"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/startdate"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/reviewdate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/startdate"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Review Date:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textreviewdate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/startdate"
+                                android:inputType="number"
+                                android:focusableInTouchMode="false"
+                                android:background="@android:color/transparent"
+                                android:layout_toRightOf="@+id/reviewdate"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                        </RelativeLayout>
+
+                        <android.support.design.widget.FloatingActionButton
+                            android:id="@+id/save"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|bottom"
+                            android:layout_margin="20dp"
+                            android:clickable="true"
+                            android:backgroundTint="#dd4b39"
+                            android:focusable="true"
+                            app:borderWidth="0dp"
+                            app:fabSize="mini"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_done_all"
+                            app:elevation="8dp" />
+
+                    </android.support.v7.widget.CardView>
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
+        </ScrollView>
     </android.support.design.widget.CoordinatorLayout>
 
     <fragment

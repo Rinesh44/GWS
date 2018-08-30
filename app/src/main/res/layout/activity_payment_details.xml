@@ -14,345 +14,444 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorSecondary"
             android:orientation="vertical">
 
             <include
                 android:id="@+id/select"
                 layout="@layout/appbar_for_maps_activity"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <ScrollView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true" />
-
-
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@color/colorSecondary">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/alternate"
-                        android:padding="5dp">
+                    <android.support.v7.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardElevation="4dp"
+                        app:cardUseCompatPadding="true">
 
-                        <TextView
-                            android:id="@+id/armyno"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:text="Army No:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textarmyno"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/armyno"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
 
-                        <TextView
-                            android:id="@+id/person"
+                            <TextView
+                                android:id="@+id/armyno"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Army No:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textarmyno"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/armyno"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/person"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/armyno"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Name:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textperson"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/armyno"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/person"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <EditText
+                                android:id="@+id/textpersonsurname"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/armyno"
+                                android:layout_toRightOf="@+id/textperson"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:paddingBottom="5dp"
+                                android:paddingRight="5dp"
+                                android:paddingTop="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+
+                            <TextView
+                                android:id="@+id/paiddate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/person"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Paid Date:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textpaiddate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/person"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/paiddate"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+
+                            <TextView
+                                android:id="@+id/granted"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/paiddate"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Granted:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textgranted"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textpaiddate"
+                                android:layout_toRightOf="@+id/granted"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/paid"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textgranted"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Paid:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textpaid"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textgranted"
+                                android:layout_toRightOf="@+id/paid"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/unpaidamount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textpaid"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Unpaid Amount:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textunpaidamount"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/paid"
+                                android:layout_toRightOf="@+id/unpaidamount"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/grant"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/unpaidamount"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Grant:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textgrant"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textunpaidamount"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/grant"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/itemsgiven"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/grant"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Items Given:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textitemsgiven"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/grant"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/itemsgiven"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/category"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textitemsgiven"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Category:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textcategory"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/textitemsgiven"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/category"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/totalcost"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textcategory"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Total Cost:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/texttotalcost"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textcategory"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/totalcost"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/grantedamount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/totalcost"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Granted Amount:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textgrantedamount"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/texttotalcost"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/grantedamount"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/datehandedover"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/grantedamount"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Date Handed Over:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textdategrantedover"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/grantedamount"
+                                android:layout_centerHorizontal="true"
+                                android:layout_toRightOf="@+id/datehandedover"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/pvno"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/datehandedover"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Pv No:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textpvno"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/datehandedover"
+                                android:layout_toRightOf="@+id/pvno"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:inputType="number"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/sponsername"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/pvno"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:text="Sponser Name:"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp"
+                                android:textStyle="italic" />
+
+                            <EditText
+                                android:id="@+id/textsponsername"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/textpvno"
+                                android:layout_toRightOf="@+id/sponsername"
+                                android:background="@android:color/transparent"
+                                android:focusableInTouchMode="false"
+                                android:fontFamily="@font/core_regular"
+                                android:padding="5dp"
+                                android:textColor="@android:color/black"
+                                android:textSize="20sp" />
+
+
+                        </RelativeLayout>
+
+                        <android.support.design.widget.FloatingActionButton
+                            android:id="@+id/save"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:layout_below="@+id/armyno"
-                            android:text="Name:"
-                            android:textStyle="italic"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:layout_gravity="end|bottom"
+                            android:layout_margin="20dp"
+                            android:clickable="true"
+                            android:backgroundTint="#dd4b39"
+                            android:focusable="true"
+                            android:visibility="gone"
+                            app:borderWidth="0dp"
+                            app:fabSize="mini"
+                            android:src="@drawable/ic_done_all"
+                            app:elevation="8dp" />
 
-                        <TextView
-                            android:id="@+id/textperson"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                           android:layout_below="@+id/armyno"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/person"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-                        <TextView
-                            android:id="@+id/textpersonsurname"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/armyno"
-                            android:layout_toRightOf="@+id/textperson"
-                            android:paddingRight="5dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-
-                        <TextView
-                            android:id="@+id/paiddate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/person"
-                            android:padding="5dp"
-                            android:text="Paid Date:"
-                            android:textStyle="italic"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textpaiddate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/person"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/paiddate"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-
-                        <TextView
-                            android:id="@+id/granted"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/paiddate"
-                            android:padding="5dp"
-                            android:text="Granted:"
-                            android:textStyle="italic"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textgranted"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textpaiddate"
-                            android:layout_toRightOf="@+id/granted"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/paid"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textgranted"
-                            android:textStyle="italic"
-                            android:padding="5dp"
-                            android:text="Paid:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textpaid"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textgranted"
-                            android:layout_toRightOf="@+id/paid"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/unpaidamount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="italic"
-                            android:layout_below="@+id/textpaid"
-                            android:padding="5dp"
-                            android:text="Unpaid Amount:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textunpaidamount"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/paid"
-                            android:layout_toRightOf="@+id/unpaidamount"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/grant"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/unpaidamount"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:text="Grant:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textgrant"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textunpaidamount"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/grant"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/itemsgiven"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/grant"
-                            android:textStyle="italic"
-                            android:padding="5dp"
-                            android:text="Items Given:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textitemsgiven"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/grant"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/itemsgiven"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/category"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textitemsgiven"
-                            android:textStyle="italic"
-                            android:padding="5dp"
-                            android:text="Category:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textcategory"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/textitemsgiven"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/category"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/totalcost"
-                            android:layout_width="wrap_content"
-                            android:textStyle="italic"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textcategory"
-                            android:padding="5dp"
-                            android:text="Total Cost:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/texttotalcost"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textcategory"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/totalcost"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/grantedamount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/totalcost"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:text="Granted Amount:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textgrantedamount"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/texttotalcost"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/grantedamount"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/datehandedover"
-                            android:textStyle="italic"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/grantedamount"
-                            android:padding="5dp"
-                            android:text="Date Handed Over:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textdategrantedover"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/grantedamount"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toRightOf="@+id/datehandedover"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/pvno"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/datehandedover"
-                            android:padding="5dp"
-                            android:textStyle="italic"
-                            android:text="Pv No:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textpvno"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/datehandedover"
-                            android:layout_toRightOf="@+id/pvno"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/sponsername"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/pvno"
-                            android:textStyle="italic"
-                            android:padding="5dp"
-                            android:text="Sponser Name:"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/textsponsername"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/textpvno"
-                            android:layout_toRightOf="@+id/sponsername"
-                            android:padding="5dp"
-                            android:textColor="@android:color/black"
-                            android:textSize="20sp" />
-
-
-                    </RelativeLayout>
+                    </android.support.v7.widget.CardView>
                 </LinearLayout>
+            </ScrollView>
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 

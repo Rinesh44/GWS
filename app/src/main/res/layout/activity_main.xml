@@ -24,6 +24,17 @@
         android:layout_below="@+id/select"
         android:background="@drawable/shadow" />
 
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
     <ImageView
         android:id="@+id/logo"
         android:layout_width="125dp"
@@ -61,6 +72,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/border"
             android:ems="10"
+            android:fontFamily="@font/core_regular"
             android:gravity="center_horizontal"
             android:hint="Email"
             android:inputType="textEmailAddress"
@@ -89,6 +101,7 @@
             android:ems="10"
             android:gravity="center_horizontal"
             android:hint="      Password"
+            android:fontFamily="@font/core_regular"
             android:inputType="textPassword"
             android:padding="15dp"
             android:textAlignment="center"
@@ -101,6 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
+        android:fontFamily="@font/core_regular"
         android:layout_marginTop="5dp"
         android:text="Forgot password?"
         android:textColor="@drawable/text_on_pressed_color"
@@ -110,6 +124,7 @@
         android:id="@+id/appCompatButtonLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/core_regular"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:background="@drawable/on_pressed_color"
@@ -135,6 +150,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:text="Create New Account"
+        android:fontFamily="@font/core_regular"
         android:textColor="@drawable/text_on_pressed_color"
         android:textSize="17sp" />
 
@@ -151,6 +167,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:paddingTop="5dp"
+        android:fontFamily="@font/core_regular"
         android:text="OR"
         android:textColor="@android:color/white" />
 
@@ -158,9 +175,14 @@
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/core_regular"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
         android:layout_marginTop="10dp"
         android:elevation="2dp" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </android.support.v7.widget.LinearLayoutCompat>
 

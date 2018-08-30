@@ -1,6 +1,7 @@
 package com.example.android.gurkha;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,14 @@ import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     List<Information> data = Collections.emptyList();
+    Context context;
     private LayoutInflater inflater;
+    Typeface face;
 
     public Adapter(Context context, List<Information> data) {
         inflater = LayoutInflater.from(context);
         this.data = data;
+        this.context = context;
     }
 
     @Override
@@ -35,7 +39,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(Adapter.MyViewHolder holder, int position) {
         Information current = data.get(position);
+        face = Typeface.createFromAsset(context.getAssets(), "fonts/core_regular.otf");
         holder.title.setText(current.title);
+        holder.title.setTypeface(face);
         holder.image.setImageResource(current.iconId);
     }
 
