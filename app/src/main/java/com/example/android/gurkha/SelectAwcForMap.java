@@ -14,11 +14,17 @@ import android.widget.Toast;
 
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public class SelectAwcForMap extends AppCompatActivity {
     private SearchableSpinner awcSpinner;
     static String awc;
     AppCompatButton btn;
     Typeface face;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,10 +32,21 @@ public class SelectAwcForMap extends AppCompatActivity {
 
         face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
         awcSpinner = (SearchableSpinner) findViewById(R.id.spinnerAwc);
-        String[] awc_items = new String[]{"Select Area Welfare Center", "Bheri", "Myagdi", "Syangja", "Butwal", "Tanahun", "Lamjung", "Gulmi", "Chitwan", "Gorkha", "Bagmati",
+        String[] awc_items = new String[]{"Bheri", "Myagdi", "Syangja", "Butwal", "Tanahun", "Lamjung", "Gulmi", "Chitwan", "Gorkha", "Bagmati",
                 "Jiri", "Rumjatar", "Diktel", "Bhojpur", "Khandbari", "Tehrathum", "Taplejung", "Phidim", "Damak",
                 "Darjeeling", "Dharan", "Kaski"};
-        ArrayAdapter<String> adapt_awc = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, awc_items){
+
+        List<String> awc_list = Arrays.asList(awc_items);
+
+        Collections.sort(awc_list, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+
+
+        ArrayAdapter<String> adapt_awc = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, awc_items) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
@@ -41,14 +58,14 @@ public class SelectAwcForMap extends AppCompatActivity {
         awcSpinner.setAdapter(adapt_awc);
 
 
-        btn = (AppCompatButton)findViewById(R.id.btnNext);
+        btn = (AppCompatButton) findViewById(R.id.btnNext);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 awc = awcSpinner.getSelectedItem().toString();
 
-                if(awc.equals("Select Area Welfare Center")) {
+                if (awc.equals("Select Area Welfare Center")) {
                     Toast.makeText(SelectAwcForMap.this, "Please select an AWC", Toast.LENGTH_SHORT).show();
                     return;
                 }

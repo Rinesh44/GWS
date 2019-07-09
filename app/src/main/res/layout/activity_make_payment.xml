@@ -186,7 +186,7 @@
             android:layout_margin="10dp"
             android:fontFamily="@font/core_regular"
             android:gravity="center"
-            android:text="Date of Transaction"
+            android:text="Date"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 

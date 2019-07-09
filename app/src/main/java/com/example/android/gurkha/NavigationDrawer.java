@@ -1,13 +1,11 @@
 package com.example.android.gurkha;
 
 
-import android.*;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -17,9 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -33,12 +29,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.gurkha.QnA.AnswersResult;
-import com.example.android.gurkha.QnA.Results;
+import com.example.android.gurkha.Adapters.Adapter;
+import com.example.android.gurkha.activities.QnA.AnswersResult;
+import com.example.android.gurkha.activities.QnA.Results;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -51,11 +47,9 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.ProfilePictureView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +74,7 @@ public class NavigationDrawer extends Fragment {
     private boolean mUserLearnedDrawer;
     private boolean mFromSavedInstanceState;
     public View containerView;
-    public com.example.android.gurkha.Adapter adapter;
+    public Adapter adapter;
     static public TextView txtName, txtFbName;
     private static final int RC_SIGN_IN = 007;
     public ProfilePictureView imgPic;
@@ -163,7 +157,7 @@ public class NavigationDrawer extends Fragment {
         getUserName = email;
         txtFbName = (TextView) layout.findViewById(R.id.txtFbName);
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
-        adapter = new com.example.android.gurkha.Adapter(getActivity(), getData());
+        adapter = new Adapter(getActivity(), getData());
         recyclerView.setAdapter(adapter);
 
         userImage = (CircleImageView) layout.findViewById(R.id.userImage);
@@ -209,7 +203,8 @@ public class NavigationDrawer extends Fragment {
                     menu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(menu);
                 }
-                if (position == 1) {
+
+               /* if (position == 1) {
                     if (Build.VERSION.SDK_INT > 22) {
                         if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
@@ -219,49 +214,49 @@ public class NavigationDrawer extends Fragment {
 
                     File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GWS/");
                     if (folder.exists()) {
-                       /* allFiles = folder.listFiles();
+                       *//* allFiles = folder.listFiles();
                         for (int i = 0; i < allFiles.length; i++) {
                             new SingleMediaScanner(getActivity(), allFiles[i]);
-                        }*/
+                        }*//*
                         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         Uri selectedUri = Uri.parse(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GWS/");
                         intent.setDataAndType(selectedUri, "text/csv");
                         startActivity(Intent.createChooser(intent, "Open folder"));
 
-                      /*  if (intent.resolveActivityInfo(getActivity().getPackageManager(), 0) != null)
+                      *//*  if (intent.resolveActivityInfo(getActivity().getPackageManager(), 0) != null)
                         {
                             startActivity(intent);
-                        }*/
-                       /* else
+                        }*//*
+                 *//* else
                         {
                             // if you reach this place, it means there is no any file
                             // explorer app installed on your device
                             Toast.makeText(getActivity(), "Problem locating to the directory", Toast.LENGTH_SHORT).show();
-                        }*/
+                        }*//*
 
                     } else {
                         Toast.makeText(getActivity(), "No saved pictures found", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                }
+                }*/
 
-                if (position == 2) {
+                if (position == 1) {
                     Intent nfc = new Intent(getActivity(), NFC.class);
                     startActivity(nfc);
                 }
 
-                if (position == 3) {
+                if (position == 2) {
                     Intent results = new Intent(getActivity(), Results.class);
                     startActivity(results);
                 }
 
-                if (position == 4) {
+                if (position == 3) {
                     Intent pollResult = new Intent(getActivity(), AnswersResult.class);
                     startActivity(pollResult);
                 }
 
-                if (position == 5) {
+                if (position == 4) {
 
                     AlertDialog.Builder builder;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -294,7 +289,8 @@ public class NavigationDrawer extends Fragment {
 
 
                 }
-                if (position == 6) {
+
+                if (position == 5) {
                     LoginManager.getInstance().logOut();
                     getLoginData.removeExtra("name");
                     getLoginData.removeExtra("profile_picID");
@@ -369,8 +365,8 @@ public class NavigationDrawer extends Fragment {
     public static List<Information> getData() {
         int i;
         List<Information> data = new ArrayList<>();
-        int[] icons = {R.drawable.menu, R.drawable.ic_pic, R.drawable.ic_nfc, R.drawable.ic_result, R.drawable.ic_result, R.drawable.ic_clear_cache, R.drawable.ic_account_circle};
-        String[] titles = {"Menu", "Saved Pictures", "Read NFC Tag", "Conditions Outome", "Poll Outcome", "Clear Cached data", "Logout"};
+        int[] icons = {R.drawable.menu, R.drawable.ic_nfc, R.drawable.ic_result, R.drawable.ic_result, R.drawable.ic_clear_cache, R.drawable.ic_account_circle};
+        String[] titles = {"Menu", "Read NFC Tag", "Conditions Outome", "Poll Outcome", "Clear Cached data", "Logout"};
 
 
         for (i = 0; i < titles.length && i < icons.length; i++) {

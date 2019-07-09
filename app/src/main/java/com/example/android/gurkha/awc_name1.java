@@ -1,16 +1,18 @@
 package com.example.android.gurkha;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.provider.Settings;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,14 +22,16 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.birbit.android.jobqueue.JobManager;
+import com.example.android.gurkha.EventListener.ResponseListener;
+import com.example.android.gurkha.JobQueue.PostJob;
+import com.example.android.gurkha.application.GurkhaApplication;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,10 +41,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import okhttp3.Cache;
-import okhttp3.CacheControl;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
@@ -50,7 +56,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class awc_name1 extends AppCompatActivity {
+public class awc_name1 extends AppCompatActivity implements ResponseListener {
     private String TAG = Village_List.class.getSimpleName();
     private TextView title;
     private Toolbar toolbar;
@@ -59,9 +65,10 @@ public class awc_name1 extends AppCompatActivity {
     private ListView listView;
     private EditText search;
 
-    private static String base_url = "http://pagodalabs.com.np/";
+    private static String base_url = "http://gws.pagodalabs.com.np/";
     // URL to get villagelist JSON
-    private static String url = "http://pagodalabs.com.np/gws/awc/api/awc?api_token=";
+    private static String url = "http://gws.pagodalabs.com.np/awc/api/awc?api_token=";
+    private static String urlDelete = "http://gws.pagodalabs.com.np/awc/api/deleteAwc?api_token=";
     ArrayList<HashMap<String, String>> names1;
     Call<ResponseBody> call;
     Typeface face;
@@ -70,11 +77,15 @@ public class awc_name1 extends AppCompatActivity {
     SessionManager sessionManager;
     FbSessionManager fbSessionManager;
     private int lastPosition = -1;
+    MaterialProgressBar progressBar;
+    JobManager mJobManager;
+    private boolean searchByAwc;
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        progressDialog.dismiss();
+        if (progressDialog.isShowing()) progressDialog.dismiss();
+
     }
 
     @Override
@@ -92,11 +103,16 @@ public class awc_name1 extends AppCompatActivity {
         title = (TextView) findViewById(R.id.title);
         title.setTypeface(face);
 
+        checkIfSearchByAwc();
+
         sessionManager = new SessionManager(getApplicationContext());
         fbSessionManager = new FbSessionManager(getApplicationContext());
 
+        progressBar = findViewById(R.id.progressBar);
+        mJobManager = GurkhaApplication.getInstance().getJobManager();
+
         adapter = new SimpleAdapter(awc_name1.this, names1,
-                R.layout.list_item, new String[]{"name", "army_no"}, new int[]{R.id.name, R.id.army_no}){
+                R.layout.list_item, new String[]{"name", "army_no"}, new int[]{R.id.name, R.id.army_no}) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
@@ -123,6 +139,40 @@ public class awc_name1 extends AppCompatActivity {
         listView.setEmptyView(mEmptyStateTextView);
 
 
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(awc_name1.this, android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(awc_name1.this);
+                }
+                builder.setTitle("Delete")
+                        .setMessage("Are you sure you want to delete this data?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    HashMap<String, String> obj = (HashMap<String, String>) adapterView.getItemAtPosition(i);
+                                    String id = obj.get("id");
+                                    deleteItem(id);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return true;
+            }
+        });
+
         try {
             run();
         } catch (IOException e) {
@@ -143,9 +193,75 @@ public class awc_name1 extends AppCompatActivity {
 */
     }
 
+    private void checkIfSearchByAwc() {
+        Intent i = getIntent();
+        searchByAwc = i.getBooleanExtra("search_by_awc", false);
+    }
+
+    private void deleteItem(String id) {
+        progressBar.setVisibility(View.VISIBLE);
+        if (sessionManager.getUserDetails() != null) {
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            token = user.get(SessionManager.KEY_TOKEN);
+        }
+        if (fbSessionManager.getUserDetails() != null) {
+            HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
+            if (fbUser.get(SessionManager.KEY_TOKEN) != null)
+                token = fbUser.get(SessionManager.KEY_TOKEN);
+        }
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("id", id);
+        params.put("api_token", token);
+
+        Log.e(TAG, "ID:" + id + "token:" + token);
+
+        JSONObject parameter = new JSONObject(params);
+
+        mJobManager.addJobInBackground(new PostJob(urlDelete, parameter.toString(), awc_name1.this));
+    }
+
+    @Override
+    public void responseSuccess(okhttp3.Response response) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+//
+                    if (progressBar.getVisibility() == View.VISIBLE)
+                        progressBar.setVisibility(View.INVISIBLE);
+                    String responseString = response.body().string();
+                    JSONObject responseObj = new JSONObject(responseString);
+                    boolean responseBoolean = responseObj.getBoolean("success");
+                    String msg = responseObj.getString("msg");
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(awc_name1.this, msg, Toast.LENGTH_SHORT).show();
+                    finish();
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public void responseFail(String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+                Toast.makeText(awc_name1.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     /**
      * Interceptor to cache data and maintain it for a minute.
-     *
+     * <p>
      * If the same network request is sent within a minute,
      * the response is retrieved from cache.
      */
@@ -161,7 +277,7 @@ public class awc_name1 extends AppCompatActivity {
 
     /**
      * Interceptor to cache data and maintain it for four weeks.
-     *
+     * <p>
      * If the device is offline, stale (at most 2 weeks)
      * response is fetched from the cache.
      */
@@ -182,14 +298,16 @@ public class awc_name1 extends AppCompatActivity {
 
     void run() throws IOException {
         OkHttpClient client = new OkHttpClient();
-        final String awc = SelectAwc.awc;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+//        final String awc = preferences.getString("awc", null);
+        String awc = SelectAwc.awc;
         if (sessionManager.getUserDetails() != null) {
             HashMap<String, String> user = sessionManager.getUserDetails();
             String id = user.get(SessionManager.KEY_ID);
             token = user.get(SessionManager.KEY_TOKEN);
-            if (id != null){
-                if (id.matches("1")) {
+            if (id != null) {
+                if (!searchByAwc) {
 
                     progressDialog = new ProgressDialog(awc_name1.this);
                     progressDialog.setMessage("Please wait...");
@@ -215,7 +333,7 @@ public class awc_name1 extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(AwcInterface.class).getResponse("gws/awc/api/awc?api_token=" + token);
+                    call = retrofit.create(AwcInterface.class).getResponse("awc/api/awc?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -235,11 +353,11 @@ public class awc_name1 extends AppCompatActivity {
 
 
                             try {
-                                if (!(response.isSuccessful())){
-                                Toast.makeText(awc_name1.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
-                                finish();
-                                return;
-                            }
+                                if (String.valueOf(response.code()).equals("504")) {
+                                    Toast.makeText(awc_name1.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 final String myResponse = response.body().string();
                                 Log.e("getResponse:", myResponse);
                                 JSONObject jsonObject = new JSONObject(myResponse);
@@ -247,6 +365,7 @@ public class awc_name1 extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String id = c.getString("id");
                                     final String name = c.getString("name");
                                     final String wp_sp = c.getString("wp_sp");
                                     final String address = c.getString("address");
@@ -264,6 +383,7 @@ public class awc_name1 extends AppCompatActivity {
 
                                     // adding each child node to HashMap key => value
 
+                                    contact.put("id", id);
                                     contact.put("name", name);
                                     contact.put("wp_sp", wp_sp);
                                     contact.put("address", address);
@@ -304,6 +424,7 @@ public class awc_name1 extends AppCompatActivity {
 
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                            final String awc_id = (String) obj.get("id");
                                             final String name = (String) obj.get("name");
                                             final String wp_sp = (String) obj.get("wp_sp");
                                             final String address = (String) obj.get("address");
@@ -317,6 +438,7 @@ public class awc_name1 extends AppCompatActivity {
                                             final String army_no = (String) obj.get("army_no");
 
                                             Intent in = new Intent(awc_name1.this, awc_details.class);
+                                            in.putExtra("id", awc_id);
                                             in.putExtra("name", name);
                                             in.putExtra("wp_sp", wp_sp);
                                             in.putExtra("address", address);
@@ -381,7 +503,7 @@ public class awc_name1 extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(AwcInterface.class).getResponse("gws/awc/api/awc/" + awc + "?api_token=" + token);
+                    call = retrofit.create(AwcInterface.class).getResponse("awc/api/awc/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -401,7 +523,7 @@ public class awc_name1 extends AppCompatActivity {
 
 
                             try {
-                                if (!(response.isSuccessful())){
+                                if (String.valueOf(response.code()).equals("504")) {
                                     Toast.makeText(awc_name1.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                     finish();
                                     return;
@@ -413,6 +535,7 @@ public class awc_name1 extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String id = c.getString("id");
                                     final String name = c.getString("name");
                                     final String wp_sp = c.getString("wp_sp");
                                     final String address = c.getString("address");
@@ -430,6 +553,7 @@ public class awc_name1 extends AppCompatActivity {
 
                                     // adding each child node to HashMap key => value
 
+                                    contact.put("id", id);
                                     contact.put("name", name);
                                     contact.put("wp_sp", wp_sp);
                                     contact.put("address", address);
@@ -470,6 +594,7 @@ public class awc_name1 extends AppCompatActivity {
 
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                            final String awc_id = (String) obj.get("id");
                                             final String name = (String) obj.get("name");
                                             final String wp_sp = (String) obj.get("wp_sp");
                                             final String address = (String) obj.get("address");
@@ -483,6 +608,7 @@ public class awc_name1 extends AppCompatActivity {
                                             final String army_no = (String) obj.get("army_no");
 
                                             Intent in = new Intent(awc_name1.this, awc_details.class);
+                                            in.putExtra("id", awc_id);
                                             in.putExtra("name", name);
                                             in.putExtra("wp_sp", wp_sp);
                                             in.putExtra("address", address);
@@ -523,16 +649,16 @@ public class awc_name1 extends AppCompatActivity {
                         }
                     });
                 }
+            }
         }
-    }
 
-        if (fbSessionManager.getUserDetails() != null) {
+     /*   if (fbSessionManager.getUserDetails() != null) {
             HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
             String fbId = fbUser.get(SessionManager.KEY_ID);
-           // HashMap<String, String> user = sessionManager.getUserDetails();
+            // HashMap<String, String> user = sessionManager.getUserDetails();
             token = fbUser.get(SessionManager.KEY_TOKEN);
 
-            if (fbId != null){
+            if (fbId != null) {
                 if (fbId.matches("1")) {
 
                     progressDialog = new ProgressDialog(awc_name1.this);
@@ -579,7 +705,7 @@ public class awc_name1 extends AppCompatActivity {
 
 
                             try {
-                                if (!(response.isSuccessful())){
+                                if (String.valueOf(response.code()).equals("504")) {
                                     Toast.makeText(awc_name1.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                     finish();
                                     return;
@@ -591,6 +717,7 @@ public class awc_name1 extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String id = c.getString("id");
                                     final String name = c.getString("name");
                                     final String wp_sp = c.getString("wp_sp");
                                     final String address = c.getString("address");
@@ -608,6 +735,7 @@ public class awc_name1 extends AppCompatActivity {
 
                                     // adding each child node to HashMap key => value
 
+                                    contact.put("id", id);
                                     contact.put("name", name);
                                     contact.put("wp_sp", wp_sp);
                                     contact.put("address", address);
@@ -648,6 +776,7 @@ public class awc_name1 extends AppCompatActivity {
 
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                            final String awc_id = (String) obj.get("id");
                                             final String name = (String) obj.get("name");
                                             final String wp_sp = (String) obj.get("wp_sp");
                                             final String address = (String) obj.get("address");
@@ -661,6 +790,7 @@ public class awc_name1 extends AppCompatActivity {
                                             final String army_no = (String) obj.get("army_no");
 
                                             Intent in = new Intent(awc_name1.this, awc_details.class);
+                                            in.putExtra("id", awc_id);
                                             in.putExtra("name", name);
                                             in.putExtra("wp_sp", wp_sp);
                                             in.putExtra("address", address);
@@ -746,7 +876,7 @@ public class awc_name1 extends AppCompatActivity {
 
                             try {
 
-                                if (!(response.isSuccessful())){
+                                if (String.valueOf(response.code()).equals("504")) {
                                     Toast.makeText(awc_name1.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                     finish();
                                     return;
@@ -758,6 +888,7 @@ public class awc_name1 extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String id = c.getString("id");
                                     final String name = c.getString("name");
                                     final String wp_sp = c.getString("wp_sp");
                                     final String address = c.getString("address");
@@ -775,6 +906,7 @@ public class awc_name1 extends AppCompatActivity {
 
                                     // adding each child node to HashMap key => value
 
+                                    contact.put("id", id);
                                     contact.put("name", name);
                                     contact.put("wp_sp", wp_sp);
                                     contact.put("address", address);
@@ -815,6 +947,7 @@ public class awc_name1 extends AppCompatActivity {
 
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                            final String awc_id = (String) obj.get("id");
                                             final String name = (String) obj.get("name");
                                             final String wp_sp = (String) obj.get("wp_sp");
                                             final String address = (String) obj.get("address");
@@ -828,6 +961,7 @@ public class awc_name1 extends AppCompatActivity {
                                             final String army_no = (String) obj.get("army_no");
 
                                             Intent in = new Intent(awc_name1.this, awc_details.class);
+                                            in.putExtra("id", awc_id);
                                             in.putExtra("name", name);
                                             in.putExtra("wp_sp", wp_sp);
                                             in.putExtra("address", address);
@@ -869,9 +1003,10 @@ public class awc_name1 extends AppCompatActivity {
                     });
                 }
             }
-        }
+        }*/
 
     }
+
     /**
      * Async task class to get json by making HTTP call
      */
@@ -911,6 +1046,7 @@ public class awc_name1 extends AppCompatActivity {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject c = data.getJSONObject(i);
 
+                            final String id = c.getString("id");
                             final String name = c.getString("name");
                             final String wp_sp = c.getString("wp_sp");
                             final String address = c.getString("address");
@@ -928,6 +1064,7 @@ public class awc_name1 extends AppCompatActivity {
 
                             // adding each child node to HashMap key => value
 
+                            contact.put("id", id);
                             contact.put("name", name);
                             contact.put("wp_sp", wp_sp);
                             contact.put("address", address);
@@ -988,6 +1125,7 @@ public class awc_name1 extends AppCompatActivity {
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject c = data.getJSONObject(i);
 
+                            final String id = c.getString("id");
                             final String name = c.getString("name");
                             final String wp_sp = c.getString("wp_sp");
                             final String address = c.getString("address");
@@ -1005,6 +1143,7 @@ public class awc_name1 extends AppCompatActivity {
 
                             // adding each child node to HashMap key => value
 
+                            contact.put("id", id);
                             contact.put("name", name);
                             contact.put("wp_sp", wp_sp);
                             contact.put("address", address);
@@ -1086,6 +1225,7 @@ public class awc_name1 extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
+                    final String awc_id = (String) obj.get("id");
                     final String name = (String) obj.get("name");
                     final String wp_sp = (String) obj.get("wp_sp");
                     final String address = (String) obj.get("address");
@@ -1099,6 +1239,7 @@ public class awc_name1 extends AppCompatActivity {
                     final String army_no = (String) obj.get("army_no");
 
                     Intent in = new Intent(awc_name1.this, awc_details.class);
+                    in.putExtra("id", awc_id);
                     in.putExtra("name", name);
                     in.putExtra("wp_sp", wp_sp);
                     in.putExtra("address", address);
@@ -1138,7 +1279,7 @@ public class awc_name1 extends AppCompatActivity {
 
     }
 
-    public void timerDelayRemoveDialog(long time, final ProgressDialog d){
+    public void timerDelayRemoveDialog(long time, final ProgressDialog d) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {

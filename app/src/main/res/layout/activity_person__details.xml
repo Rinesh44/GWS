@@ -41,6 +41,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
+                        app:cardBackgroundColor="#EEEEEE"
                         app:cardElevation="4dp"
                         app:cardUseCompatPadding="true">
 
@@ -57,7 +58,7 @@
                                 android:padding="5dp"
                                 android:text="Name:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -71,7 +72,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
 
                             <TextView
@@ -83,7 +84,7 @@
                                 android:padding="5dp"
                                 android:text="Relation:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -98,7 +99,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
 
                             <TextView
@@ -110,7 +111,7 @@
                                 android:padding="5dp"
                                 android:text="Latitude:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -125,7 +126,18 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
+
+
+                            <Button
+                                android:id="@+id/btn_show_map"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_below="@+id/age"
+                                android:layout_alignParentEnd="true"
+                                android:fontFamily="@font/core_regular"
+                                android:text="Show map"
+                                android:textSize="13sp" />
 
                             <TextView
                                 android:id="@+id/longitudes"
@@ -137,7 +149,7 @@
                                 android:padding="5dp"
                                 android:text="Longitude:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -151,7 +163,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/nominee"
@@ -162,7 +174,7 @@
                                 android:padding="5dp"
                                 android:text="Nominee:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -176,7 +188,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/armyno"
@@ -187,7 +199,7 @@
                                 android:padding="5dp"
                                 android:text="Army_no:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -203,7 +215,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/rank"
@@ -214,7 +226,7 @@
                                 android:padding="5dp"
                                 android:text="Rank:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -229,7 +241,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/surname"
@@ -240,7 +252,7 @@
                                 android:padding="5dp"
                                 android:text="Surname:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -255,7 +267,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/subunit"
@@ -266,7 +278,7 @@
                                 android:padding="5dp"
                                 android:text="Subunit:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -281,7 +293,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/unit"
@@ -292,7 +304,7 @@
                                 android:padding="5dp"
                                 android:text="Unit:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -307,7 +319,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/armyid"
@@ -318,7 +330,7 @@
                                 android:padding="5dp"
                                 android:text="Army_id:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -333,7 +345,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/age"
@@ -344,7 +356,7 @@
                                 android:padding="5dp"
                                 android:text="Age:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -359,7 +371,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/dob"
@@ -370,7 +382,7 @@
                                 android:padding="5dp"
                                 android:text="Date_Of_Birth:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -385,7 +397,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/doe"
@@ -396,7 +408,7 @@
                                 android:padding="5dp"
                                 android:text="Date Of Entry:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -411,7 +423,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/dod"
@@ -422,7 +434,7 @@
                                 android:padding="5dp"
                                 android:text="Date Of Discharge:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -437,7 +449,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/dc"
@@ -448,7 +460,7 @@
                                 android:padding="5dp"
                                 android:text="Documents:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -462,7 +474,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/retain"
@@ -473,7 +485,7 @@
                                 android:padding="5dp"
                                 android:text="Retain:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -487,7 +499,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/payee"
@@ -498,7 +510,7 @@
                                 android:padding="5dp"
                                 android:text="Payee:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -512,17 +524,17 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <LinearLayout
                                 android:id="@+id/child_container"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/textpayee"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="5dp">
 
                                 <LinearLayout
-                                    android:id="@+id/child_name_layout"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal">
@@ -534,7 +546,7 @@
                                         android:fontFamily="@font/core_regular"
                                         android:text="Child_Name:"
                                         android:textColor="@android:color/black"
-                                        android:textSize="20sp"
+                                        android:textSize="18sp"
                                         android:textStyle="italic" />
 
                                     <EditText
@@ -547,11 +559,10 @@
                                         android:fontFamily="@font/core_regular"
                                         android:padding="5dp"
                                         android:textColor="@android:color/black"
-                                        android:textSize="20sp" />
+                                        android:textSize="18sp" />
                                 </LinearLayout>
 
                                 <LinearLayout
-                                    android:id="@+id/child_dob_layout"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal">
@@ -563,7 +574,7 @@
                                         android:fontFamily="@font/core_regular"
                                         android:text="Child_DOB:"
                                         android:textColor="@android:color/black"
-                                        android:textSize="20sp"
+                                        android:textSize="18sp"
                                         android:textStyle="italic" />
 
                                     <EditText
@@ -577,11 +588,10 @@
                                         android:inputType="number"
                                         android:padding="5dp"
                                         android:textColor="@android:color/black"
-                                        android:textSize="20sp" />
+                                        android:textSize="18sp" />
                                 </LinearLayout>
 
                                 <LinearLayout
-                                    android:id="@+id/child_age_layout"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal">
@@ -593,7 +603,7 @@
                                         android:fontFamily="@font/core_regular"
                                         android:text="Child_Age:"
                                         android:textColor="@android:color/black"
-                                        android:textSize="20sp"
+                                        android:textSize="18sp"
                                         android:textStyle="italic" />
 
                                     <EditText
@@ -607,7 +617,7 @@
                                         android:inputType="number"
                                         android:padding="5dp"
                                         android:textColor="@android:color/black"
-                                        android:textSize="20sp" />
+                                        android:textSize="18sp" />
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -620,7 +630,7 @@
                                 android:padding="5dp"
                                 android:text="Dependent_Name:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -634,7 +644,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/dependentage"
@@ -645,7 +655,7 @@
                                 android:padding="5dp"
                                 android:text="Dependent_Age:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -660,7 +670,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/dependentdob"
@@ -671,7 +681,7 @@
                                 android:padding="5dp"
                                 android:text="Dependent_DOB:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -686,7 +696,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/healthstate"
@@ -697,7 +707,7 @@
                                 android:padding="5dp"
                                 android:text="Health_State:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -711,7 +721,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/paid"
@@ -722,7 +732,7 @@
                                 android:padding="5dp"
                                 android:text="Paid_To:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -736,7 +746,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/typeofwelfarepensioner"
@@ -747,7 +757,7 @@
                                 android:padding="5dp"
                                 android:text="Type Of Welfare Pensioner:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -761,7 +771,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/village"
@@ -772,7 +782,7 @@
                                 android:padding="5dp"
                                 android:text="Village:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -786,7 +796,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/district"
@@ -797,7 +807,7 @@
                                 android:padding="5dp"
                                 android:text="District:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -811,7 +821,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/vdcid"
@@ -822,7 +832,7 @@
                                 android:padding="5dp"
                                 android:text="VDC ID:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -837,7 +847,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/wardno"
@@ -848,7 +858,7 @@
                                 android:padding="5dp"
                                 android:text="Ward No:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -863,7 +873,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/po"
@@ -874,7 +884,7 @@
                                 android:padding="5dp"
                                 android:text="Post Office:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -888,79 +898,142 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
-                            <TextView
-                                android:id="@+id/photo1"
-                                android:layout_width="wrap_content"
+
+                            <LinearLayout
+                                android:id="@+id/ll_1"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/po"
-                                android:layout_marginTop="10dp"
-                                android:fontFamily="@font/core_regular"
-                                android:padding="5dp"
-                                android:text="Photo1:"
-                                android:textColor="@android:color/black"
-                                android:textSize="20sp"
-                                android:textStyle="italic" />
+                                android:orientation="horizontal">
 
-                            <ImageView
-                                android:id="@+id/imgphoto1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/po"
-                                android:layout_marginTop="10dp"
-                                android:layout_toRightOf="@+id/photo1"
-                                android:padding="5dp"
-                                android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                <TextView
+                                    android:id="@+id/photo1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/po"
+                                    android:layout_marginTop="10dp"
+                                    android:fontFamily="@font/core_regular"
+                                    android:padding="5dp"
+                                    android:text="Photo1:"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="italic" />
 
-                            <TextView
-                                android:id="@+id/photo2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/imgphoto1"
-                                android:layout_marginTop="10dp"
-                                android:fontFamily="@font/core_regular"
-                                android:padding="5dp"
-                                android:text="Photo2:"
-                                android:textColor="@android:color/black"
-                                android:textSize="20sp"
-                                android:textStyle="italic" />
+                                <Button
+                                    android:id="@+id/btn_photo1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="40dp"
+                                    android:layout_below="@+id/po"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_toEndOf="@+id/photo1"
+                                    android:fontFamily="@font/core_regular"
+                                    android:text="Add photo1"
+                                    android:textSize="13sp"
+                                    android:visibility="gone" />
 
-                            <ImageView
-                                android:id="@+id/imgphoto2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/imgphoto1"
-                                android:layout_marginTop="10dp"
-                                android:layout_toRightOf="@+id/photo2"
-                                android:padding="5dp"
-                                android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                <ImageView
+                                    android:id="@+id/imgphoto1"
+                                    android:layout_width="150dp"
+                                    android:layout_height="150dp"
+                                    android:layout_below="@+id/po"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_toRightOf="@+id/photo1"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="18sp" />
 
-                            <TextView
-                                android:id="@+id/photo3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/imgphoto2"
-                                android:layout_marginTop="10dp"
-                                android:fontFamily="@font/core_regular"
-                                android:padding="5dp"
-                                android:text="Photo3:"
-                                android:textColor="@android:color/black"
-                                android:textSize="20sp"
-                                android:textStyle="italic" />
+                            </LinearLayout>
 
-                            <ImageView
-                                android:id="@+id/imgphoto3"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:id="@+id/ll_2"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/imgphoto2"
-                                android:layout_marginTop="10dp"
-                                android:layout_toRightOf="@+id/photo3"
-                                android:padding="5dp"
-                                android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:layout_below="@+id/ll_1"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/photo2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/imgphoto1"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginBottom="20dp"
+                                    android:fontFamily="@font/core_regular"
+                                    android:padding="5dp"
+                                    android:text="Photo2:"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="italic" />
+
+                                <Button
+                                    android:id="@+id/btn_photo2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="40dp"
+                                    android:layout_below="@+id/photo1"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_toEndOf="@+id/photo2"
+                                    android:fontFamily="@font/core_regular"
+                                    android:text="Add photo2"
+                                    android:textSize="13sp"
+                                    android:visibility="gone" />
+
+                                <ImageView
+                                    android:id="@+id/imgphoto2"
+                                    android:layout_width="150dp"
+                                    android:layout_height="150dp"
+                                    android:layout_below="@+id/imgphoto1"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_toRightOf="@+id/photo2"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="18sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/ll_2"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/photo3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/imgphoto2"
+                                    android:layout_marginBottom="10dp"
+                                    android:fontFamily="@font/core_regular"
+                                    android:padding="5dp"
+                                    android:text="Photo3:"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="italic" />
+
+                                <Button
+                                    android:id="@+id/btn_photo3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="40dp"
+                                    android:layout_below="@+id/imgphoto2"
+                                    android:layout_toEndOf="@+id/photo3"
+                                    android:fontFamily="@font/core_regular"
+                                    android:text="Add photo3"
+                                    android:textSize="13sp"
+                                    android:visibility="gone" />
+
+
+                                <ImageView
+                                    android:id="@+id/imgphoto3"
+                                    android:layout_width="150dp"
+                                    android:layout_height="150dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_toRightOf="@+id/photo3"
+                                    android:padding="5dp"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="18sp" />
+
+                            </LinearLayout>
 
                         </RelativeLayout>
 
@@ -970,13 +1043,14 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="end|bottom"
                             android:layout_margin="20dp"
-                            android:clickable="true"
                             android:backgroundTint="#dd4b39"
+                            android:clickable="true"
                             android:focusable="true"
-                            app:borderWidth="0dp"
-                            app:fabSize="mini"
                             android:src="@drawable/ic_done_all"
-                            app:elevation="8dp" />
+                            android:visibility="gone"
+                            app:borderWidth="0dp"
+                            app:elevation="8dp"
+                            app:fabSize="mini" />
                     </android.support.v7.widget.CardView>
 
                 </LinearLayout>

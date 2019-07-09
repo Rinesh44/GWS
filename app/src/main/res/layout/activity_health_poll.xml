@@ -75,13 +75,11 @@
                 android:padding="3dp">
 
                 <RadioButton
-                    android:id="@+id/rb_eyesight_poor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Poor" />
 
                 <RadioButton
-                    android:id="@+id/rb_eyesight_verypoor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Very Poor" />
@@ -117,13 +115,11 @@
                 android:padding="3dp">
 
                 <RadioButton
-                    android:id="@+id/rb_hearing_poor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Poor" />
 
                 <RadioButton
-                    android:id="@+id/rb_hearing_verypoor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Very Poor" />
@@ -159,13 +155,11 @@
 
 
                 <RadioButton
-                    android:id="@+id/rb_mobility_poor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Poor" />
 
                 <RadioButton
-                    android:id="@+id/rb_mobility_verypoor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Very Poor" />
@@ -199,13 +193,11 @@
                 android:padding="3dp">
 
                 <RadioButton
-                    android:id="@+id/rb_mentalhealth_poor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Poor" />
 
                 <RadioButton
-                    android:id="@+id/rb_mentalhealth_verypoor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Very Poor" />
@@ -239,13 +231,11 @@
                 android:padding="3dp">
 
                 <RadioButton
-                    android:id="@+id/rb_movement_bedridded"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bedridden" />
 
                 <RadioButton
-                    android:id="@+id/rb_movement_wchair"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Wheel Chair" />
@@ -279,19 +269,16 @@
                 android:padding="3dp">
 
                 <RadioButton
-                    android:id="@+id/rb_ustool_toilet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Toilet" />
 
                 <RadioButton
-                    android:id="@+id/rb_ustool_commode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Commode" />
 
                 <RadioButton
-                    android:id="@+id/rb_ustool_diaper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Diaper" />
@@ -439,7 +426,6 @@
             android:layout_marginTop="5dp">
 
             <TextView
-                android:id="@+id/lives_with"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -458,7 +444,6 @@
                 android:orientation="vertical">
 
                 <RadioButton
-                    android:id="@+id/btn1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="50dp"
@@ -505,7 +490,6 @@
 
 
         <RelativeLayout
-            android:id="@+id/layout_family_members"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -531,7 +515,6 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/layout_sons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -557,7 +540,6 @@
                 android:inputType="number" />
 
             <TextView
-                android:id="@+id/married"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/et_total_sons"
@@ -608,7 +590,6 @@
 
 
         <RelativeLayout
-            android:id="@+id/layout_daughters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
@@ -658,7 +639,6 @@
                 android:inputType="number" />
 
             <TextView
-                android:id="@+id/unmarried_daughters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/et_married_daughters"
@@ -713,7 +693,6 @@
             android:layout_marginTop="5dp">
 
             <TextView
-                android:id="@+id/drawn_by"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"

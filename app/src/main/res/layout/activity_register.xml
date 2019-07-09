@@ -17,7 +17,6 @@
         android:layout_height="wrap_content" />
 
     <View
-        android:id="@+id/elevationup"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@+id/select"
@@ -100,7 +99,6 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-                android:id="@+id/awcText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"

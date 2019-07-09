@@ -6,6 +6,16 @@
     android:padding="10dp">
 
     <TextView
+        android:id="@+id/army_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="2dip"
+        android:layout_marginLeft="8dp"
+        android:paddingTop="6dip"
+        android:textColor="#008558"
+        android:textSize="20sp" />
+
+    <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,15 +35,7 @@
         android:textColor="#008558"
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/army_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="2dip"
-        android:layout_marginLeft="8dp"
-        android:paddingTop="6dip"
-        android:textColor="#008558"
-        android:textSize="20sp" />
+
 
     <TextView
         android:id="@+id/id"

@@ -1,28 +1,21 @@
 package com.example.android.gurkha;
 
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
@@ -35,7 +28,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.gurkha.helpers.InputValidation;
-
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
@@ -76,26 +73,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextInputEditText textInputEditTextPassword;
     private LinearLayoutCompat root;
     private InputValidation inputValidation;
-    private LoginButton loginButton;
+    //    private LoginButton loginButton;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
     private Boolean exit = false;
     private ProfileTracker profileTracker;
-    private static final String url = "http://pagodalabs.com.np/gws/auth/api/login";
-    private static final String fbUrl = "http://pagodalabs.com.np/gws/auth/api/account";
+    private static final String url = "http://gws.pagodalabs.com.np/auth/api/login";
+    private static final String fbUrl = "http://gws.pagodalabs.com.np/auth/api/account";
     static String awcName;
     static String accessToken, fbAccessToken;
     static String checkAdmin;
     static String mEmail, fbUserId;
     String fbEmail, fbId, fbFirstName, fbLastName, finalName, fbAwc;
-    public static final String change_password_url = "http://pagodalabs.com.np/gws/auth/api/forget";
+    public static final String change_password_url = "http://gws.pagodalabs.com.np/auth/api/forget";
     String sendName;
     SearchableSpinner selectAwc;
     static SessionManager session;
     FbSessionManager fbSession;
     public static boolean normalLogin = false;
-    public static boolean fbLogin = false;
-
+    //    public static boolean fbLogin = false;
+    private SharedPreferences preferences;
+/*
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
@@ -209,13 +207,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onError(FacebookException e) {
             Toast.makeText(activity, "Error Connecting to Facebook, Check Internet Connection", Toast.LENGTH_SHORT).show();
         }
-    };
+    };*/
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
 /*
         final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
@@ -363,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         forgotpassword = (TextView) findViewById(R.id.forgot);
         textViewLinkRegister = (TextView) findViewById(R.id.textViewLinkRegister);
         appCompatButtonLogin = (Button) findViewById(R.id.appCompatButtonLogin);
-        loginButton = (LoginButton) findViewById(R.id.login_button);
+//        loginButton = (LoginButton) findViewById(R.id.login_button);
 
     }
 
@@ -376,13 +377,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         forgotpassword.setOnClickListener(this);
     }
 
+    /*   */
+
     /**
      * This method is to initialize objects to be used
      */
     private void initObjects() {
         inputValidation = new InputValidation(activity);
-        loginButton.setReadPermissions("email");
-        loginButton.registerCallback(callbackManager, callback);
+/*        loginButton.setReadPermissions("email");
+        loginButton.registerCallback(callbackManager, callback);*/
     }
 
     @Override
@@ -504,9 +507,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (InternetConnection.checkConnection(
 
-                getApplicationContext()))
-
-        {
+                getApplicationContext())) {
             Toast.makeText(activity, "Please Wait", Toast.LENGTH_SHORT).show();
             TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -541,48 +542,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    String responseString = response.body().string();
+                    Log.e(TAG, "postResponse" + responseString);
+
                     if (response.isSuccessful()) {
-                        String responseString = response.body().string();
+                        Log.e(TAG, "responseSuccessful");
                         try {
+
+//                            Log.e("postResponse:", responseString);
                             JSONObject jsonObj = new JSONObject(responseString);
 
                             // Getting JSON Array node
                             JSONArray data = jsonObj.getJSONArray("user_data");
+                            Log.e(TAG, "userData:" + data.toString());
                             JSONObject c = data.getJSONObject(0);
+
                             awcName = c.getString("awc");
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("awc", awcName);
+                            editor.apply();
                             checkAdmin = c.getString("id");
                             accessToken = jsonObj.getString("api_token");
+
+                            String responseResult = jsonObj.getString("success");
+
+                            if (responseResult.equals("Success")) {
+
+
+                                Log.e("underResponseSuccess:", "True");
+                                session.createLoginSession(checkAdmin, mEmail, accessToken);
+                                Log.e(TAG, "checkSessionData:" + checkAdmin + mEmail + accessToken);
+                                normalLogin = true;
+//                                fbLogin = false;
+                                Intent login = new Intent(activity, Menu.class);
+                                login.putExtra("userName", textInputEditTextEmail.getText().toString());
+                                getIntent().removeExtra("startTest");
+                                startActivity(login);
+                                Intent runService = new Intent(MainActivity.this, Service.class);
+                                startService(runService);
+                                finish();
+
+                            } else
+                                Snackbar.make(root, getString(R.string.error_valid_email_password), Snackbar.LENGTH_LONG).show();
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.e(TAG, "loginError" + e.toString());
                         }
 
-                        Log.e("postResponse:", responseString);
-                        if (responseString.contains("Success")) {
 
-                            session.createLoginSession(checkAdmin, mEmail, accessToken);
-                            normalLogin = true;
-                            fbLogin = false;
-                            Intent login = new Intent(activity, Menu.class);
-                            Log.e("underResponseSuccess:", "True");
-                            login.putExtra("userName", textInputEditTextEmail.getText().toString());
-                            getIntent().removeExtra("startTest");
-                            startActivity(login);
-                            Intent runService = new Intent(MainActivity.this, Service.class);
-                            startService(runService);
-                            finish();
-
-                        } else
-                            Snackbar.make(root, getString(R.string.error_valid_email_password), Snackbar.LENGTH_LONG).show();
                         // emptyInputEditText();
-                    }
+                    } else
+                        Snackbar.make(root, getString(R.string.something_went_wrong), Snackbar.LENGTH_LONG).show();
+
                 }
             });
 
-        } else
-
-        {
+        } else {
             Toast.makeText(MainActivity.this, "Sorry internet connection is required.", Toast.LENGTH_SHORT).show();
         }
         //session.createLoginSession(textInputEditTextEmail.getText().toString().trim(), textInputEditTextPassword.getText().toString().trim());

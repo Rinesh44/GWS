@@ -19,6 +19,7 @@
         android:layout_below="@+id/select"
         android:layout_margin="10dp"
         android:clickable="true"
+        app:cardBackgroundColor="#EEEEEE"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
         app:cardElevation="4dp"

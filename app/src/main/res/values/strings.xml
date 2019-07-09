@@ -1,50 +1,29 @@
 <resources>
     <string name="app_name">Gurkha</string>
-    <string name="text_accounts">All Accounts</string>
     <string name="hint_name">Full Name</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm Password</string>
-    <string name="text_login">Login</string>
     <string name="text_register">Register</string>
     <string name="error_message_name">Enter Full Name</string>
     <string name="error_message_contact_no">Enter Contact No</string>
-    <string name="error_message_district">Enter District</string>
     <string name="error_message_email">Enter Valid Email</string>
-    <string name="error_message_age">Enter Age</string>
     <string name="error_message_password">Enter Password</string>
     <string name="success_message">Registration Successful</string>
-    <string name="text_not_member">No account yet? Create one</string>
-    <string name="text_already_member">Already a member? Login</string>
-    <string name="error_email_exists">Email Already Exists</string>
     <string name="error_password_match">Passwords Does Not Match</string>
     <string name="error_valid_email_password">Sorry! You are not authorised to login</string>
-    <string name="facebook_login_error">Sorry! User is registered but not authorized</string>
+    <string name="something_went_wrong">Something went wrong</string>
     <string name="select_awc">Please select Area Welfare Center</string>
     <string name="changed">Password changed!</string>
     <string name="not_changed">Incorrect Email Id</string>
 
-    <string name="action_settings">Settings</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
-    <string name="text_hello">Hello,</string>
-    <string name="text_title">Android Tutorials Hub</string>
     <string name="title_activity_maps">Map</string>
     <string name="facebook_app_id">166146894190129</string>
     <string name="google_maps_key"> AIzaSyAhLvnVHbSuGsuaAfaki6BGxUFMn3fb7yc </string>
     <string name="title_activity_last_visit">Map</string>
     <string name="title_activity_search_person">Map</string>
-    <string name="xAxis">X Axis:</string>
-    <string name="yAxis">Y Axis:</string>
-    <string name="zAxis">Z Axis:</string>
-    <string name="heading">Heading:</string>
-    <string name="pitch">Pitch:</string>
-    <string name="roll">Roll:</string>
-
-    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
-    <string name="empty"></string>
-    <string name="take_picture">Take picture</string>
-    <string name="request_permission">This sample needs camera permission.</string>
 
     <string name="error_timeout">Connection Not Found</string>
     <string name="error_auth_failure">Authorization Failure</string>
@@ -53,102 +32,96 @@
     <string name="error_parse">Parsing Not Established</string>
 
 
-    <string name="started">Started:</string>
-    <string name="latitude">Latitude:</string>
-    <string name="longitude">Longitude:</string>
-    <string name="altitude">Altitude:</string>
-    <string name="elapsed_time">Elapsed Time:</string>
-    <string name="start">Start</string>
-    <string name="stop">Stop</string>
-    <string name="gps_enabled">GPS Enabled</string>
-    <string name="gps_disabled">GPS Disabled</string>
-    <string name="new_run">New Run</string>
-    <string name="title_activity_run_list">Run List</string>
-    <string name="map">Map</string>
-    <string name="run_start">Run Start %s</string>
-    <string name="run_started_at_format">Run started at %s</string>
-    <string name="run_finish">Run Finish %s</string>
-    <string name="run_finished_at_format">Finished on: %1$s </string>
     <string name="title_activity_tracking">Map</string>
     <string name="title_activity_current__location">Map</string>
     <string name="title_activity_on_vehicle">Map</string>
     <string name="title_activity_loader">Map</string>
 
-    <string name="barcode_error_format">"Error reading barcode: %1$s"</string>
-
     <string name="no_data">No information found.</string>
+    <string name="no_pictures">No picture found.</string>
 
 
-    <string name="message_write_error">Error Writing Message !</string>
     <string name="message_write_success">Successfully written to Tag !</string>
     <string name="message_write_progress">Writing to Tag..</string>
     <string name="message_tag_detected">NFC Tag Detected !</string>
     <string name="message_read_tag">Read from NFC Tag</string>
     <string name="message_write_tag">Write to NFC Tag</string>
     <string name="message_tap_tag">Tap the NFC Tag to your device !</string>
-    <string name="hint_message">Message</string>
 
-    <string name="location_q1">The pensioner is living in a location where it is possible for them to walk easily to access public transport - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="location_q2">Public transport is available all year - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="location_q3">An ambulance service or transport that can be made available to hire to take the pensioner to hospital is available in the area - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="location_q4">A shop selling food items required is within easy walking distance for the pensioner - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="location_q5">A health post is within easy walking distance for the pensioner - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q1">Public transport is available all year - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q2">An ambulance service or transport that can be made available to hire to take me to hospital is available in the area and I know how to reach them - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q3">I can reach a shop selling food items within walking distance - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q4">I can reach the AWC without help - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q5">Electricity is available in my house - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q6">I live in an earthquake resistant house. - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q7">I live in a weather proof house with a CGI roof - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q8">A toilet exists in my house - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q9">A functioning water tap is in or close to the house - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q10">I have an adequate bed and mattress - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q11">I have what would appear to be safe wiring in my home - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="housing_and_environment_q12">I am using open fire in the house (to cook or for heating) - IF YES SCORE 1, IF NO SCORE 0</string>
 
-    <string name="house_and_facilities_q1">The pensioner lives in an earthquake resistant house - IF YES SCORE 2, IF NO SCORE 0</string>
-    <string name="house_and_facilities_q2">The pensioner lives in a weather proof house with a CGI roof - IF YES SCORE 2, IF NO SCORE 0</string>
-    <string name="house_and_facilities_q3">A toilet exists in, or within easy reach of the pensioner - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="house_and_facilities_q4">A functioning water tap is in, or close to the house - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="economic_and_finances_q1">I have ownership over my finances - IF YES SCORE 2, IF NO SCORE 0</string>
+    <string name="economic_and_finances_q2">I have enough money to buy food and other things I need without borrowing money from others - IF YES SCORE 2, IF NO SCORE 0</string>
+    <string name="economic_and_finances_q3">I spend my pension on supporting my family in their daily life - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="economic_and_finances_q4">I have borrowed money - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="economic_and_finances_q5">I can identify currency notes of different denominations and count them. - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="economic_and_finances_q6">I am paid my WP into the bank - IF YES SCORE 1, IF NO SCORE 0</string>
 
-    <string name="in_the_home_q1">The pensioner has an adequate bed - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="in_the_home_q2">The pensioner can get from his/her bed to a chair without help - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="in_the_home_q3">The pensioner can get to the toilet without help - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="in_the_home_q4">The pensioner can dress themselves - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="in_the_home_q5">The pensioner can wash and keep themselves clean without help - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="in_the_home_q6">The pensioner can climb a flight of stairs - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="in_the_home_q7">The pensioner has, what would appear to be, safe wiring within the home - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="in_the_home_q8">The pensioner can do moderate work around the home and look after animals - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="social_functioning_q1">I see family, friends and people from the community daily - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="social_functioning_q2">I have a working mobile phone and/or a landline which is charged most of the time - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="social_functioning_q3">I have access to a phone from others nearby and can use it - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="social_functioning_q4">I can call and receive calls on my phone - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="social_functioning_q5">My care giver delivers the support I need and on the times I need it - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="social_functioning_q6">The care giver feels he/she can easily give the right support - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="social_functioning_q7">The care giver can still take care of his/her own daily tasks and/or has help with thes - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="social_functioning_q8">If feel safe and secure with my care giver - IF YES SCORE 1, IF NO SCORE 0</string>
 
-    <string name="communication_q1">The pensioner has a mobile phone signal at their home - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="communication_q2">The pensioner has a mobile telephone and or a fixed line - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="communication_q3">The pensioner has access to a phone in a neighbouring house with someone who is willing to help - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="communication_q4">The pensioner can look up and dial numbers on the phone without help - IF YES SCORE 2, IF NO SCORE 0</string>
-    <string name="communication_q5">The pensioner can answer receive call but not make them - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="mental_health_q1">I am mentally healthy - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="mental_health_q2">I feel regular feelings of loneliness, sadness, confusion, anxiety, insercurity - IF YES SCORE 1, IF NO SCORE 0</string>
 
-    <string name="shopping_q1">The pensioner can plan and do shopping on their own- IF YES SCORE 2, IF NO SCORE 0</string>
-    <string name="shopping_q2">The pensioner can only shop independently for small items - IF YES SCORE 1, IF NO SCORE 0</string>
 
-    <string name="food_preparation_cooking_q1">The pensioner can plan, prepare and serve adequate meals - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="food_preparation_cooking_q2">The pensioner can eat without help - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="food_preparation_cooking_q3">The pensioner has a smokeless stove - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="food_preparation_cooking_q4">The pensioner has a kerosene or gas stove and can operate it - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="meaning_in_life_q1">I feel I have an important role in my family - IF YES SCORE 2, IF NO SCORE 0</string>
+    <string name="meaning_in_life_q2">If feel I have an important role in my community - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="meaning_in_life_q3">I feel my life is meaningful - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="meaning_in_life_q4">I can do the rituals I want to do when I want to do them - IF YES SCORE 1, IF NO SCORE 0</string>
 
-    <string name="laundry_clothes_washing_q1">The pensioner can do their own washing/laundry - IF YES SCORE 1, IF NO SCORE 0</string>
 
-    <string name="getting_about_q1">The pensioner can travel independently on public transport - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="getting_about_q2">The pensioner can get indepedently to the AWC - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="practical_functioning_q1">I can get from my bed to a chair without help - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="practical_functioning_q2">I can go to the toilet without help - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="practical_functioning_q3">I dress myself daily without help - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="practical_functioning_q4">I do laundry myself - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="practical_functioning_q5">I prepare a meal for myself - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="practical_functioning_q6">I can use public transport when needed - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="practical_functioning_q7">I can read and write - IF YES SCORE 1, IF NO SCORE 0</string>
 
-    <string name="medicine_q1">The pensioner is able to take their own medication at the correct time and in the right doses - IF YES SCORE 2, IF NO SCORE 0</string>
 
-    <string name="home_support_q1">The pensioner is supported by a GWS/GWT trained family member who is delivering good support - IF YES SCORE 7, IF NO SCORE 0</string>
-    <string name="home_support_q2">The pensioner is supported by a trained non family member delivering good support - IF YES SCORE 5, IF NO SCORE 0</string>
-    <string name="home_support_q3">The pensioner is supported by a trained individual who is offering only partial support - IF YES SCORE 3, IF NO SCORE 0</string>
-    <string name="home_support_q4">The pensioner is only partially supported by an untrained individual - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="health_q1">A health post / hospital is within walking distance - score 3, not managed - score 0</string>
+    <string name="health_q2">I am healthy - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="health_q3">I know which medical conditions I have and what I have to do to control them - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="health_q4">I think I need to see a medical person on a regular basis - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="health_q5">I take my medication as prescribed by my physician and without any help - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="health_q6">I can see well enough to perform daily tasks - IF YES SCORE 3, IF NO SCORE 0</string>
+    <string name="health_q7">I can hear well enough to understand conversations - IF YES SCORE 3, IF NO SCORE 0</string>
+    <string name="health_q8">My memory is good. - IF YES SCORE 3, IF NO SCORE 0</string>
+    <string name="health_q9">I tripped or fell in the last three months - IF YES SCORE 3, IF NO SCORE 0</string>
+    <string name="health_q10">Without wanting to I have lost or gained 5 kilos in the past six months - IF YES SCORE 3, IF NO SCORE 0</string>
+    <string name="health_q11">I have tooth or mouth problems - IF YES SCORE 3, IF NO SCORE 0</string>
+    <string name="health_q12">I eat at least two healthy meals a day, and take fruits, vegetables and dairy products daily - IF YES SCORE 3, IF NO SCORE 0</string>
+    <string name="health_q13">I take three or more alcoholic drinks like rakshi, beer, every day - IF YES SCORE 3, IF NO SCORE 0</string>
+    <string name="health_q14">I wash myself and brush my teeth daily without help - IF YES SCORE 3, IF NO SCORE 0</string>
 
-    <string name="economic_q1">The pensioner has not borrowed money to buy food - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="economic_q2">The pensioner has a small income generated from renting out a room, a garden of animals in addition to their welfare pension - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="economic_q3">The pensioner has limited financial support from relatives - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="daily_functioning_q1">I do daily moderate work, like sweeping, tidying, dusting, making the bed, in the house - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="daily_functioning_q2">I do daily work outside - IF YES SCORE 1, IF NO SCORE 0</string>
+    <string name="daily_functioning_q3">I have hobbies I do on a  daily or weekly basis - IF YES SCORE 1, IF NO SCORE 0</string>
 
-    <string name="safeguarding_q1">The pensioner is safe from exploitation (financial or other) - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="safeguarding_q2">The pensioner is safe from discrimination (by age, gender or by cast) - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="safeguarding_q3">The pensioner is safe from abuse (sexual or physical) - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="safeguarding_q4">The pensioner is safe from neglect (failure to provide food, shelter) - IF YES SCORE 1, IF NO SCORE 0</string>
 
-    <string name="medical_q1">Medical Conditions are - adequately managed - score 5, partially managed - score 3, not managed - score 0</string>
-    <string name="medical_q2">The pensioner can see well enough to perform daily tasks - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="medical_q3">The pensioner can hear well enough to understand conversation - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="medical_q4">The pensioner does not regularly require specialist medical treatment at a hospital - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="medical_q5">The pensioner has been provided with any waking aid or home support devices that have been recommended - IF YES SCORE 1, IF NO SCORE 0</string>
-    <string name="medical_q6">The pensioner has no outstanding prescribed medical treatment - IF YES SCORE 3, IF NO SCORE 0</string>
+    // not required for now
+
+
+    //
+
+
     <string name="all_routes">All routes</string>
     <string name="edit">Edit</string>
     <string name="my_routes">My routes</string>
@@ -161,6 +134,7 @@
     <string name="story_images">Your Story Images</string>
     <string name="write_something_about_this_picture">write something about picture</string>
     <string name="done">Done</string>
+    <string name="title_activity_individual_marker">Map</string>
 
 
 </resources>

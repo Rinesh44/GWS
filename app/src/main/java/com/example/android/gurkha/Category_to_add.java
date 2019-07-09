@@ -13,12 +13,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.example.android.gurkha.activities.AddData.Add_awc;
+import com.example.android.gurkha.activities.AddData.Add_ca;
+import com.example.android.gurkha.activities.AddData.Add_investigation;
+import com.example.android.gurkha.activities.AddData.Add_payment;
+import com.example.android.gurkha.activities.AddData.Add_personal;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 public class Category_to_add extends AppCompatActivity {

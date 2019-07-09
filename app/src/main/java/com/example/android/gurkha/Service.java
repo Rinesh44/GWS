@@ -20,7 +20,7 @@ public class Service extends android.app.Service {
     public void onCreate() {
         super.onCreate();
         //signs out after 8 weeks
-        CountDownTimer timer = new CountDownTimer(1209600000, 1000) {
+            CountDownTimer timer = new CountDownTimer(1209600000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 //Some code

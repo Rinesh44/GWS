@@ -1,11 +1,7 @@
 package com.example.android.gurkha;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -19,17 +15,12 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.gurkha.helpers.InputValidation;
-import com.example.android.gurkha.modal.User;
-import com.example.android.gurkha.sql.DatabaseHelper;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -74,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     TextView hiddenText;
     String token;
     SessionManager sessionManager;
-    private static final String url = "http://pagodalabs.com.np/gws/auth/api/register?api_token=";
+    private static final String url = "http://gws.pagodalabs.com.np/auth/api/register?api_token=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +194,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-                if (InternetConnection.checkConnection(getApplicationContext())) {
+        if (InternetConnection.checkConnection(getApplicationContext())) {
 /*
                 user.setName(textInputEditTextName.getText().toString().trim());
                 user.setEmail(textInputEditTextEmail.getText().toString().trim());
@@ -212,70 +203,70 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 user.setDistrictName(awc.getSelectedItem().toString().trim());
 
 */
-                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
-                //---get the IMEI number---
-                String IMEI = tm.getDeviceId();
-                String mName = textInputEditTextName.getText().toString().trim();
-                String mContact_no = textInputEditTextContactNo.getText().toString().trim();
-                String mAwc = awc.getSelectedItem().toString().trim();
-                String mEmail = textInputEditTextEmail.getText().toString().trim();
-                String mPassword = textInputEditTextPassword.getText().toString().trim();
-                String hiddenValue = hiddenText.getText().toString().trim();
-                String mUsername = textInputEditTextUsername.getText().toString().trim();
-                // String mId = String.valueOf(databaseHelper.getId(textInputEditTextEmail.getText().toString().trim()));
+            //---get the IMEI number---
+            String IMEI = tm.getDeviceId();
+            String mName = textInputEditTextName.getText().toString().trim();
+            String mContact_no = textInputEditTextContactNo.getText().toString().trim();
+            String mAwc = awc.getSelectedItem().toString().trim();
+            String mEmail = textInputEditTextEmail.getText().toString().trim();
+            String mPassword = textInputEditTextPassword.getText().toString().trim();
+            String hiddenValue = hiddenText.getText().toString().trim();
+            String mUsername = textInputEditTextUsername.getText().toString().trim();
+            // String mId = String.valueOf(databaseHelper.getId(textInputEditTextEmail.getText().toString().trim()));
 
-                    if(mAwc.matches("Select Area Welfare Center")) {
-                        Snackbar.make(root, getString(R.string.select_awc), Snackbar.LENGTH_LONG).show();
-                        return;
-                    }
-                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("imei_number", IMEI);
-                params.put("name", mName);
-                params.put("contact_no", mContact_no);
-                params.put("awc", mAwc);
-                params.put("email", mEmail);
-                params.put("password", mPassword);
-                params.put("group", hiddenValue);
-                params.put("username", mUsername);
-                //params.put("id", mId);
-
-                    HashMap<String, String> user = sessionManager.getUserDetails();
-                    token = user.get(SessionManager.KEY_TOKEN);
-                JSONObject parameter = new JSONObject(params);
-                Log.e("JSON:", parameter.toString());
-                OkHttpClient client = new OkHttpClient();
-                final RequestBody body = RequestBody.create(JSON, parameter.toString());
-                Request request = new Request.Builder()
-                        .url(url + token)
-                        .post(body)
-                        .addHeader("content-type", "application/json; charset=utf-8")
-                        .build();
-
-
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        Log.e("FailureResponse", call.request().body().toString());
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            String responseString = response.body().string();
-                            Log.e("postResponse:", responseString);
-                        }
-                    }
-
-                });
-
-                // Snack Bar to show success message that record saved successfully
-                Snackbar.make(root, getString(R.string.success_message), Snackbar.LENGTH_LONG).show();
-                emptyInputEditText();
-            } else {
-                Toast.makeText(RegisterActivity.this, "Sorry internet connection is required.", Toast.LENGTH_SHORT).show();
+            if (mAwc.matches("Select Area Welfare Center")) {
+                Snackbar.make(root, getString(R.string.select_awc), Snackbar.LENGTH_LONG).show();
+                return;
             }
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("imei_number", IMEI);
+            params.put("name", mName);
+            params.put("contact_no", mContact_no);
+            params.put("awc", mAwc);
+            params.put("email", mEmail);
+            params.put("password", mPassword);
+            params.put("group", hiddenValue);
+            params.put("username", mUsername);
+            //params.put("id", mId);
+
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            token = user.get(SessionManager.KEY_TOKEN);
+            JSONObject parameter = new JSONObject(params);
+            Log.e("JSON:", parameter.toString());
+            OkHttpClient client = new OkHttpClient();
+            final RequestBody body = RequestBody.create(JSON, parameter.toString());
+            Request request = new Request.Builder()
+                    .url(url + token)
+                    .post(body)
+                    .addHeader("content-type", "application/json; charset=utf-8")
+                    .build();
+
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.e("FailureResponse", call.request().body().toString());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        String responseString = response.body().string();
+                        Log.e("postResponse:", responseString);
+                    }
+                }
+
+            });
+
+            // Snack Bar to show success message that record saved successfully
+            Snackbar.make(root, getString(R.string.success_message), Snackbar.LENGTH_LONG).show();
+            emptyInputEditText();
+        } else {
+            Toast.makeText(RegisterActivity.this, "Sorry internet connection is required.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -289,111 +280,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         textInputEditTextContactNo.setText(null);
         textInputEditTextUsername.setText(null);
     }
-
-
-/*
-    class GetDataTask extends AsyncTask<Void, Void, Void> {
-
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            /**
-             * Progress Dialog for User Interaction
-
-            dialog = new ProgressDialog(RegisterActivity.this);
-            dialog.setTitle("Please Wait...");
-            dialog.setMessage("Getting Information");
-            dialog.setCancelable(false);
-            dialog.show();
-        }
-
-        @Nullable
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            /**
-             * Getting JSON Object from Web Using okHttp
-
-            JSONObject jsonObject = JSONParser.getCAData();
-            try {
-                /**
-                 * Check Whether Its NULL???
-
-                if (jsonObject != null) {
-                    /**
-                     * Check Length...
-
-                    if (jsonObject.length() > 0) {
-                        /**
-                         * Getting Array named "personal" From MAIN Json Object
-
-                        JSONArray array = jsonObject.getJSONArray("District");
-
-                        /**
-                         * Check Length of Array...
-
-                        int lenArray = array.length();
-                        if (lenArray > 0) {
-                            for (int jIndex = 0; jIndex < lenArray; jIndex++) {
-
-                                /**
-                                 * Creating Every time New Object
-                                 * and
-                                 * Adding into List
-                                 */
-
-
-                                /**
-                                 * Getting Inner Object from contacts array...
-                                 * and
-                                 * From that We will get Name of that Contact
-                                 *
-
-                                JSONObject innerObject = array.getJSONObject(jIndex);
-                                String name = innerObject.getString("district");
-
-                                /**
-                                 * Adding name and phone concatenation in List...
-
-                                list.add(name);
-
-                            }
-                        }
-                    }
-                } else {
-
-                }
-            } catch (JSONException je) {
-                Log.i(JSONParser.TAG, "" + je.getLocalizedMessage());
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            dialog.dismiss();
-
-            // districtAdapter = new SpinnerAdapter(RegisterActivity.this,list);
-            //awc.setAdapter(districtAdapter);
-            cancel(true);
-            /**
-             * Checking if List size if more than zero then
-             * Update ListView
-             */
-            /*
-            if(list.size() > 0) {
-                adapter.notifyDataSetChanged();
-            } else {
-                Toast.makeText(Add_investigation.this, "No Data Found!", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    }
-    */
-
 
 }
 

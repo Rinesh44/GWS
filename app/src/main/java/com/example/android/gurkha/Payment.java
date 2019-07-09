@@ -1,16 +1,18 @@
 package com.example.android.gurkha;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.provider.Settings;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,14 +22,16 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.birbit.android.jobqueue.JobManager;
+import com.example.android.gurkha.EventListener.ResponseListener;
+import com.example.android.gurkha.JobQueue.PostJob;
+import com.example.android.gurkha.application.GurkhaApplication;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,10 +41,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import okhttp3.Cache;
-import okhttp3.CacheControl;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
@@ -50,7 +56,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Payment extends AppCompatActivity {
+public class Payment extends AppCompatActivity implements ResponseListener {
     private String TAG = Village_List.class.getSimpleName();
     private TextView title;
     private Toolbar toolbar;
@@ -61,14 +67,18 @@ public class Payment extends AppCompatActivity {
     Typeface face;
     String token;
     private TextView mEmptyStateTextView;
-    private static String base_url = "http://pagodalabs.com.np/";
+    private static String base_url = "http://gws.pagodalabs.com.np/";
     // URL to get villagelist JSON
-    private static String url = "http://pagodalabs.com.np/gws/payment_distribution/api/payment_distribution?api_token=";
+    private static String url = "http://gws.pagodalabs.com.np/payment_distribution/api/payment_distribution?api_token=";
+    private static String url_delete = "http://gws.pagodalabs.com.np/payment_distribution/api/deletePaymentDistribution?api_token=";
     ArrayList<HashMap<String, String>> personlist;
     Call<ResponseBody> call;
     SessionManager sessionManager;
     FbSessionManager fbSessionManager;
     private int lastPosition = -1;
+    JobManager mJobManager;
+    MaterialProgressBar progressBar;
+    private boolean searchByAwc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +94,18 @@ public class Payment extends AppCompatActivity {
         title = (TextView) findViewById(R.id.title);
         title.setTypeface(face);
 
+        checkIfSearchByAwc();
+
         sessionManager = new SessionManager(getApplicationContext());
         fbSessionManager = new FbSessionManager(getApplicationContext());
 
+        mJobManager = GurkhaApplication.getInstance().getJobManager();
+
+        progressBar = findViewById(R.id.progressBar);
+
+
         adapter = new SimpleAdapter(Payment.this, personlist,
-                R.layout.list_item, new String[]{"name", "surname", "army_no"}, new int[]{R.id.name, R.id.surname, R.id.army_no}){
+                R.layout.list_item, new String[]{"name", "surname", "army_no"}, new int[]{R.id.name, R.id.surname, R.id.army_no}) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
@@ -133,11 +150,110 @@ public class Payment extends AppCompatActivity {
         }
         */
 
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(Payment.this, android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(Payment.this);
+                }
+                builder.setTitle("Delete")
+                        .setMessage("Are you sure you want to delete this data?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    HashMap<String, String> obj = (HashMap<String, String>) adapterView.getItemAtPosition(i);
+                                    String id = obj.get("payment_id");
+                                    deleteItem(id);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return true;
+            }
+        });
+
+    }
+
+    private void deleteItem(String id) {
+        progressBar.setVisibility(View.VISIBLE);
+        if (sessionManager.getUserDetails() != null) {
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            token = user.get(SessionManager.KEY_TOKEN);
+        }
+        if (fbSessionManager.getUserDetails() != null) {
+            HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
+            if (fbUser.get(SessionManager.KEY_TOKEN) != null)
+                token = fbUser.get(SessionManager.KEY_TOKEN);
+        }
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("payment_id", id);
+        params.put("api_token", token);
+
+        Log.e(TAG, "ID:" + id + "token:" + token);
+
+        JSONObject parameter = new JSONObject(params);
+
+        mJobManager.addJobInBackground(new PostJob(url_delete, parameter.toString(), Payment.this));
+
+
+    }
+
+    @Override
+    public void responseSuccess(okhttp3.Response response) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+                    if (progressBar.getVisibility() == View.VISIBLE)
+                        progressBar.setVisibility(View.INVISIBLE);
+                    String responseString = response.body().string();
+                    JSONObject responseObj = new JSONObject(responseString);
+                    boolean responseBoolean = responseObj.getBoolean("success");
+                    String msg = responseObj.getString("msg");
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(Payment.this, msg, Toast.LENGTH_SHORT).show();
+                    finish();
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+    }
+
+    @Override
+    public void responseFail(String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+                Toast.makeText(Payment.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
      * Interceptor to cache data and maintain it for a minute.
-     *
+     * <p>
      * If the same network request is sent within a minute,
      * the response is retrieved from cache.
      */
@@ -153,7 +269,7 @@ public class Payment extends AppCompatActivity {
 
     /**
      * Interceptor to cache data and maintain it for four weeks.
-     *
+     * <p>
      * If the device is offline, stale (at most 2 weeks)
      * response is fetched from the cache.
      */
@@ -171,10 +287,17 @@ public class Payment extends AppCompatActivity {
         }
     }
 
+    private void checkIfSearchByAwc() {
+        Intent i = getIntent();
+        searchByAwc = i.getBooleanExtra("search_by_awc", false);
+    }
+
     void run() {
         OkHttpClient client = new OkHttpClient();
-        final String awc = SelectAwc.awc;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+//        final String awc = preferences.getString("awc", null);
+        String awc = SelectAwc.awc;
 
         if (sessionManager.getUserDetails() != null) {
 
@@ -183,9 +306,9 @@ public class Payment extends AppCompatActivity {
             String id = user.get(SessionManager.KEY_ID);
             token = user.get(SessionManager.KEY_TOKEN);
 
-            if (token != null){
+            if (token != null) {
                 if (id != null) {
-                    if (id.matches("1")) {
+                    if (!searchByAwc) {
                         progressDialog = new ProgressDialog(Payment.this);
                         progressDialog.setMessage("Please wait...");
                         progressDialog.setCancelable(false);
@@ -210,7 +333,7 @@ public class Payment extends AppCompatActivity {
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
 
-                        call = retrofit.create(PaymentInterface.class).getResponse("gws/payment_distribution/api/payment_distribution?api_token=" + token);
+                        call = retrofit.create(PaymentInterface.class).getResponse("payment_distribution/api/payment_distribution?api_token=" + token);
 
                         if (call.isExecuted())
                             call = call.clone();
@@ -229,7 +352,7 @@ public class Payment extends AppCompatActivity {
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                                 try {
-                                    if (!(response.isSuccessful())) {
+                                    if (String.valueOf(response.code()).equals("504")) {
                                         Toast.makeText(Payment.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                         finish();
                                         return;
@@ -241,6 +364,9 @@ public class Payment extends AppCompatActivity {
                                     for (int i = 0; i < data.length(); i++) {
                                         JSONObject c = data.getJSONObject(i);
 
+
+                                        final String payment_id = c.getString("payment_id");
+                                        final String personal_id = c.getString("personal_id");
                                         final String name = c.getString("name");
                                         final String paid_date = c.getString("paid_date");
                                         final String granted = c.getString("granted");
@@ -263,6 +389,8 @@ public class Payment extends AppCompatActivity {
 
                                         // adding each child node to HashMap key => value
 
+                                        contact.put("payment_id", payment_id);
+                                        contact.put("personal_id", personal_id);
                                         contact.put("name", name);
                                         contact.put("paid_date", paid_date);
                                         contact.put("granted", granted);
@@ -309,6 +437,8 @@ public class Payment extends AppCompatActivity {
                                                 HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
                                                 final String name = (String) obj.get("name");
+                                                final String personal_id = (String) obj.get("personal_id");
+                                                final String payment_id = (String) obj.get("payment_id");
                                                 final String paid_date = (String) obj.get("paid_date");
                                                 final String granted = (String) obj.get("granted");
                                                 final String paid = (String) obj.get("paid");
@@ -326,6 +456,8 @@ public class Payment extends AppCompatActivity {
                                                 final String army = (String) obj.get("army");
 
                                                 Intent in = new Intent(Payment.this, Payment_details.class);
+                                                in.putExtra("payment_id", payment_id);
+                                                in.putExtra("personal_id", personal_id);
                                                 in.putExtra("name", name);
                                                 in.putExtra("paid_date", paid_date);
                                                 in.putExtra("granted", granted);
@@ -395,7 +527,7 @@ public class Payment extends AppCompatActivity {
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
 
-                        call = retrofit.create(PaymentInterface.class).getResponse("gws/payment_distribution/api/payment_distribution/" + awc + "?api_token=" + token);
+                        call = retrofit.create(PaymentInterface.class).getResponse("payment_distribution/api/payment_distribution/" + awc + "?api_token=" + token);
 
                         if (call.isExecuted())
                             call = call.clone();
@@ -415,7 +547,7 @@ public class Payment extends AppCompatActivity {
 
                                 try {
 
-                                    if (!(response.isSuccessful())) {
+                                    if (String.valueOf(response.code()).equals("504")) {
                                         Toast.makeText(Payment.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                         finish();
                                         return;
@@ -428,6 +560,8 @@ public class Payment extends AppCompatActivity {
                                     for (int i = 0; i < data.length(); i++) {
                                         JSONObject c = data.getJSONObject(i);
 
+                                        final String payment_id = c.getString("payment_id");
+                                        final String personal_id = c.getString("personal_id");
                                         final String name = c.getString("name");
                                         final String paid_date = c.getString("paid_date");
                                         final String granted = c.getString("granted");
@@ -450,6 +584,8 @@ public class Payment extends AppCompatActivity {
 
                                         // adding each child node to HashMap key => value
 
+                                        contact.put("payment_id", payment_id);
+                                        contact.put("personal_id", personal_id);
                                         contact.put("name", name);
                                         contact.put("paid_date", paid_date);
                                         contact.put("granted", granted);
@@ -495,6 +631,8 @@ public class Payment extends AppCompatActivity {
 
                                                 HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                                final String payment_id = (String) obj.get("payment_id");
+                                                final String personal_id = (String) obj.get("personal_id");
                                                 final String name = (String) obj.get("name");
                                                 final String paid_date = (String) obj.get("paid_date");
                                                 final String granted = (String) obj.get("granted");
@@ -513,6 +651,8 @@ public class Payment extends AppCompatActivity {
                                                 final String army = (String) obj.get("army");
 
                                                 Intent in = new Intent(Payment.this, Payment_details.class);
+                                                in.putExtra("payment_id", payment_id);
+                                                in.putExtra("personal_id", personal_id);
                                                 in.putExtra("name", name);
                                                 in.putExtra("paid_date", paid_date);
                                                 in.putExtra("granted", granted);
@@ -559,15 +699,15 @@ public class Payment extends AppCompatActivity {
                         });
                     }
                 }
+            }
         }
-    }
 
-        if (fbSessionManager.getUserDetails() != null) {
+      /*  if (fbSessionManager.getUserDetails() != null) {
             Log.e("fbSessionDetails:", fbSessionManager.getUserDetails().toString());
             HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
             String fbId = fbUser.get(FbSessionManager.KEY_ID);
             token = fbUser.get(FbSessionManager.KEY_TOKEN);
-            if (fbId != null){
+            if (fbId != null) {
                 if (fbId.matches("1")) {
                     progressDialog = new ProgressDialog(Payment.this);
                     progressDialog.setMessage("Please wait...");
@@ -612,7 +752,7 @@ public class Payment extends AppCompatActivity {
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                             try {
-                                if (!(response.isSuccessful())){
+                                if (String.valueOf(response.code()).equals("504")) {
                                     Toast.makeText(Payment.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                     finish();
                                     return;
@@ -625,6 +765,8 @@ public class Payment extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String payment_id = c.getString("payment_id");
+                                    final String personal_id = c.getString("personal_id");
                                     final String name = c.getString("name");
                                     final String paid_date = c.getString("paid_date");
                                     final String granted = c.getString("granted");
@@ -647,6 +789,8 @@ public class Payment extends AppCompatActivity {
 
                                     // adding each child node to HashMap key => value
 
+                                    contact.put("payment_id", payment_id);
+                                    contact.put("personal_id", personal_id);
                                     contact.put("name", name);
                                     contact.put("paid_date", paid_date);
                                     contact.put("granted", granted);
@@ -692,6 +836,8 @@ public class Payment extends AppCompatActivity {
 
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                            final String payment_id = (String) obj.get("payment_id");
+                                            final String personal_id = (String) obj.get("personal_id");
                                             final String name = (String) obj.get("name");
                                             final String paid_date = (String) obj.get("paid_date");
                                             final String granted = (String) obj.get("granted");
@@ -710,6 +856,8 @@ public class Payment extends AppCompatActivity {
                                             final String army = (String) obj.get("army");
 
                                             Intent in = new Intent(Payment.this, Payment_details.class);
+                                            in.putExtra("payment_id", payment_id);
+                                            in.putExtra("personal_id", personal_id);
                                             in.putExtra("name", name);
                                             in.putExtra("paid_date", paid_date);
                                             in.putExtra("granted", granted);
@@ -798,7 +946,7 @@ public class Payment extends AppCompatActivity {
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                             try {
-                                if (!(response.isSuccessful())){
+                                if (String.valueOf(response.code()).equals("504")) {
                                     Toast.makeText(Payment.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                     finish();
                                     return;
@@ -810,6 +958,8 @@ public class Payment extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String payment_id = c.getString("payment_id");
+                                    final String personal_id = c.getString("personal_id");
                                     final String name = c.getString("name");
                                     final String paid_date = c.getString("paid_date");
                                     final String granted = c.getString("granted");
@@ -832,6 +982,8 @@ public class Payment extends AppCompatActivity {
 
                                     // adding each child node to HashMap key => value
 
+                                    contact.put("payment_id", payment_id);
+                                    contact.put("personal_id", personal_id);
                                     contact.put("name", name);
                                     contact.put("paid_date", paid_date);
                                     contact.put("granted", granted);
@@ -877,6 +1029,8 @@ public class Payment extends AppCompatActivity {
 
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                            final String payment_id = (String) obj.get("payment_id");
+                                            final String personal_id = (String) obj.get("personal_id");
                                             final String name = (String) obj.get("name");
                                             final String paid_date = (String) obj.get("paid_date");
                                             final String granted = (String) obj.get("granted");
@@ -895,6 +1049,8 @@ public class Payment extends AppCompatActivity {
                                             final String army = (String) obj.get("army");
 
                                             Intent in = new Intent(Payment.this, Payment_details.class);
+                                            in.putExtra("payment_id", payment_id);
+                                            in.putExtra("personal_id", personal_id);
                                             in.putExtra("name", name);
                                             in.putExtra("paid_date", paid_date);
                                             in.putExtra("granted", granted);
@@ -941,14 +1097,15 @@ public class Payment extends AppCompatActivity {
                     });
                 }
             }
-        }
+        }*/
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        progressDialog.dismiss();
+        if (progressDialog.isShowing()) progressDialog.dismiss();
+
     }
 
     /**
@@ -974,97 +1131,8 @@ public class Payment extends AppCompatActivity {
             String checkAdmin = MainActivity.checkAdmin;
             // Making a request to  and getting response
 
-                if (checkAdmin.matches("1")) {
-                    String jsonStr = sh.makeServiceCall(url);
-
-                    Log.e(TAG, "Response from url: " + jsonStr);
-
-                    if (jsonStr != null) {
-                        try {
-                            JSONObject jsonObj = new JSONObject(jsonStr);
-
-                            // Getting JSON Array node
-                            JSONArray data = jsonObj.getJSONArray("payment");
-
-                            // looping through All data
-                            for (int i = 0; i < data.length(); i++) {
-                                JSONObject c = data.getJSONObject(i);
-
-
-                                final String name = c.getString("name");
-                                final String paid_date = c.getString("paid_date");
-                                final String granted = c.getString("granted");
-                                final String paid = c.getString("paid");
-                                final String unpaid_amount = c.getString("unpaid_amount");
-                                final String grant = c.getString("grant");
-                                final String items_given = c.getString("items_given");
-                                final String category = c.getString("category");
-                                final String total_cost = c.getString("total_cost");
-                                final String granted_amount = c.getString("granted_amount");
-                                final String date_handed_over = c.getString("date_handed_over");
-                                final String pv_no = c.getString("paid_date");
-                                final String sponsor_name = c.getString("sponsor_name");
-                                final String surname = c.getString("surname");
-                                final String army_no = c.getString("army_no");
-                                final String army = c.getString("army");
-
-                                // tmp hash map for single data
-                                HashMap<String, String> contact = new HashMap<>();
-
-                                // adding each child node to HashMap key => value
-
-                                contact.put("name", name);
-                                contact.put("paid_date", paid_date);
-                                contact.put("granted", granted);
-                                contact.put("paid", paid);
-                                contact.put("unpaid_amount", unpaid_amount);
-                                contact.put("grant", grant);
-                                contact.put("items_given", items_given);
-                                contact.put("category", category);
-                                contact.put("total_cost", total_cost);
-                                contact.put("granted_amount", granted_amount);
-                                contact.put("date_handed_over", date_handed_over);
-                                contact.put("pv_no", pv_no);
-                                contact.put("sponsor_name", sponsor_name);
-                                contact.put("surname", surname);
-                                contact.put("army_no", army_no);
-                                contact.put("army", army);
-
-                                // adding contact to contact list
-                                personlist.add(contact);
-                                adapter.notifyDataSetChanged();
-                            }
-                        } catch (final JSONException e) {
-                            Log.e(TAG, "Json parsing error: " + e.getMessage());
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Json parsing error: " + e.getMessage(),
-                                            Toast.LENGTH_LONG)
-                                            .show();
-                                }
-                            });
-
-                        }
-                    } else {
-                        Log.e(TAG, "Couldn't get json from server.");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(),
-                                        "Connection Timeout! Please check internet connection",
-                                        Toast.LENGTH_LONG)
-                                        .show();
-                            }
-                        });
-
-                    }
-
-                    return null;
-                }
-             else {
-                String jsonStr = sh.makeServiceCall(url + awc);
+            if (checkAdmin.matches("1")) {
+                String jsonStr = sh.makeServiceCall(url);
 
                 Log.e(TAG, "Response from url: " + jsonStr);
 
@@ -1080,6 +1148,7 @@ public class Payment extends AppCompatActivity {
                             JSONObject c = data.getJSONObject(i);
 
 
+                            final String payment_id = c.getString("payment_id");
                             final String name = c.getString("name");
                             final String paid_date = c.getString("paid_date");
                             final String granted = c.getString("granted");
@@ -1102,6 +1171,97 @@ public class Payment extends AppCompatActivity {
 
                             // adding each child node to HashMap key => value
 
+                            contact.put("payment_id", payment_id);
+                            contact.put("name", name);
+                            contact.put("paid_date", paid_date);
+                            contact.put("granted", granted);
+                            contact.put("paid", paid);
+                            contact.put("unpaid_amount", unpaid_amount);
+                            contact.put("grant", grant);
+                            contact.put("items_given", items_given);
+                            contact.put("category", category);
+                            contact.put("total_cost", total_cost);
+                            contact.put("granted_amount", granted_amount);
+                            contact.put("date_handed_over", date_handed_over);
+                            contact.put("pv_no", pv_no);
+                            contact.put("sponsor_name", sponsor_name);
+                            contact.put("surname", surname);
+                            contact.put("army_no", army_no);
+                            contact.put("army", army);
+
+                            // adding contact to contact list
+                            personlist.add(contact);
+                            adapter.notifyDataSetChanged();
+                        }
+                    } catch (final JSONException e) {
+                        Log.e(TAG, "Json parsing error: " + e.getMessage());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(),
+                                        "Json parsing error: " + e.getMessage(),
+                                        Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        });
+
+                    }
+                } else {
+                    Log.e(TAG, "Couldn't get json from server.");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "Connection Timeout! Please check internet connection",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
+
+                }
+
+                return null;
+            } else {
+                String jsonStr = sh.makeServiceCall(url + awc);
+
+                Log.e(TAG, "Response from url: " + jsonStr);
+
+                if (jsonStr != null) {
+                    try {
+                        JSONObject jsonObj = new JSONObject(jsonStr);
+
+                        // Getting JSON Array node
+                        JSONArray data = jsonObj.getJSONArray("payment");
+
+                        // looping through All data
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject c = data.getJSONObject(i);
+
+
+                            final String payment_id = c.getString("payment_id");
+                            final String name = c.getString("name");
+                            final String paid_date = c.getString("paid_date");
+                            final String granted = c.getString("granted");
+                            final String paid = c.getString("paid");
+                            final String unpaid_amount = c.getString("unpaid_amount");
+                            final String grant = c.getString("grant");
+                            final String items_given = c.getString("items_given");
+                            final String category = c.getString("category");
+                            final String total_cost = c.getString("total_cost");
+                            final String granted_amount = c.getString("granted_amount");
+                            final String date_handed_over = c.getString("date_handed_over");
+                            final String pv_no = c.getString("paid_date");
+                            final String sponsor_name = c.getString("sponsor_name");
+                            final String surname = c.getString("surname");
+                            final String army_no = c.getString("army_no");
+                            final String army = c.getString("army");
+
+                            // tmp hash map for single data
+                            HashMap<String, String> contact = new HashMap<>();
+
+                            // adding each child node to HashMap key => value
+
+                            contact.put("payment_id", payment_id);
                             contact.put("name", name);
                             contact.put("paid_date", paid_date);
                             contact.put("granted", granted);
@@ -1189,6 +1349,7 @@ public class Payment extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
+                    final String payment_id = (String) obj.get("payment_id");
                     final String name = (String) obj.get("name");
                     final String paid_date = (String) obj.get("paid_date");
                     final String granted = (String) obj.get("granted");
@@ -1207,6 +1368,7 @@ public class Payment extends AppCompatActivity {
                     final String army = (String) obj.get("army");
 
                     Intent in = new Intent(Payment.this, Payment_details.class);
+                    in.putExtra("payment_id", payment_id);
                     in.putExtra("name", name);
                     in.putExtra("paid_date", paid_date);
                     in.putExtra("granted", granted);
@@ -1250,7 +1412,7 @@ public class Payment extends AppCompatActivity {
 
     }
 
-    public void timerDelayRemoveDialog(long time, final ProgressDialog d){
+    public void timerDelayRemoveDialog(long time, final ProgressDialog d) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {

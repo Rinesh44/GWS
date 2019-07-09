@@ -22,11 +22,4 @@
         <item name="android:textColorSecondary">@android:color/white</item>
     </style>
 
-    <style name="MenuLabelsStyle">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:maxLines">2</item>
-        <item name="android:ellipsize">end</item>
-    </style>
 </resources>

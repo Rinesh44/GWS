@@ -14,7 +14,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorSecondary"
             android:orientation="vertical">
 
             <include
@@ -30,11 +29,10 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/colorSecondary">
+                    android:layout_height="wrap_content">
 
                     <android.support.v7.widget.CardView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:clickable="true"
@@ -57,7 +55,7 @@
                                 android:padding="5dp"
                                 android:text="Army No:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -72,7 +70,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/person"
@@ -83,7 +81,7 @@
                                 android:padding="5dp"
                                 android:text="Name:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -98,7 +96,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <EditText
                                 android:id="@+id/textpersonsurname"
@@ -113,7 +111,7 @@
                                 android:paddingRight="5dp"
                                 android:paddingTop="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
 
                             <TextView
@@ -125,7 +123,7 @@
                                 android:padding="5dp"
                                 android:text="Paid Date:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -141,7 +139,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
 
                             <TextView
@@ -153,7 +151,7 @@
                                 android:padding="5dp"
                                 android:text="Granted:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -167,7 +165,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/paid"
@@ -178,7 +176,7 @@
                                 android:padding="5dp"
                                 android:text="Paid:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -193,7 +191,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/unpaidamount"
@@ -204,7 +202,7 @@
                                 android:padding="5dp"
                                 android:text="Unpaid Amount:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -219,7 +217,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/grant"
@@ -230,7 +228,7 @@
                                 android:padding="5dp"
                                 android:text="Grant:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -245,7 +243,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/itemsgiven"
@@ -256,7 +254,7 @@
                                 android:padding="5dp"
                                 android:text="Items Given:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -271,7 +269,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/category"
@@ -282,7 +280,7 @@
                                 android:padding="5dp"
                                 android:text="Category:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -297,7 +295,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/totalcost"
@@ -308,7 +306,7 @@
                                 android:padding="5dp"
                                 android:text="Total Cost:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -324,7 +322,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/grantedamount"
@@ -335,7 +333,7 @@
                                 android:padding="5dp"
                                 android:text="Granted Amount:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -351,7 +349,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/datehandedover"
@@ -362,7 +360,7 @@
                                 android:padding="5dp"
                                 android:text="Date Handed Over:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -378,7 +376,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/pvno"
@@ -389,7 +387,7 @@
                                 android:padding="5dp"
                                 android:text="Pv No:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -404,7 +402,7 @@
                                 android:inputType="number"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
                             <TextView
                                 android:id="@+id/sponsername"
@@ -415,7 +413,7 @@
                                 android:padding="5dp"
                                 android:text="Sponser Name:"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp"
+                                android:textSize="18sp"
                                 android:textStyle="italic" />
 
                             <EditText
@@ -429,7 +427,7 @@
                                 android:fontFamily="@font/core_regular"
                                 android:padding="5dp"
                                 android:textColor="@android:color/black"
-                                android:textSize="20sp" />
+                                android:textSize="18sp" />
 
 
                         </RelativeLayout>
@@ -440,14 +438,14 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="end|bottom"
                             android:layout_margin="20dp"
-                            android:clickable="true"
                             android:backgroundTint="#dd4b39"
+                            android:clickable="true"
                             android:focusable="true"
+                            android:src="@drawable/ic_done_all"
                             android:visibility="gone"
                             app:borderWidth="0dp"
-                            app:fabSize="mini"
-                            android:src="@drawable/ic_done_all"
-                            app:elevation="8dp" />
+                            app:elevation="8dp"
+                            app:fabSize="mini" />
 
                     </android.support.v7.widget.CardView>
                 </LinearLayout>

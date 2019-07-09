@@ -3,20 +3,21 @@ package com.example.android.gurkha;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,11 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.birbit.android.jobqueue.JobManager;
+import com.example.android.gurkha.EventListener.ResponseListener;
+import com.example.android.gurkha.JobQueue.PostJob;
+import com.example.android.gurkha.application.GurkhaApplication;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +43,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -49,7 +57,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Investigation extends AppCompatActivity {
+public class Investigation extends AppCompatActivity implements ResponseListener {
     private String TAG = Investigation.class.getSimpleName();
     private TextView title;
     private Toolbar toolbar;
@@ -61,19 +69,24 @@ public class Investigation extends AppCompatActivity {
     Menu menu;
     private EditText search;
     // URL to get villagelist JSON
-    private static String base_url = "http://pagodalabs.com.np/";
-    private static String url = "http://pagodalabs.com.np/gws/investigate/api/investigate?api_token=";
+    private static String base_url = "http://gws.pagodalabs.com.np/";
+    private static String url = "http://gws.pagodalabs.com.np/investigate/api/investigate?api_token=";
+    private static String delete_url = "http://gws.pagodalabs.com.np/investigate/api/deleteInvestigate?api_token=";
     ArrayList<HashMap<String, String>> personlist;
     Call<ResponseBody> call;
     private TextView mEmptyStateTextView;
     SessionManager sessionManager;
     FbSessionManager fbSessionManager;
     private int lastPosition = -1;
+    JobManager mJobManager;
+    MaterialProgressBar progressBar;
+    private boolean searchByAwc;
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        progressDialog.dismiss();
+        if (progressDialog.isShowing()) progressDialog.dismiss();
+
     }
 
     @Override
@@ -93,19 +106,25 @@ public class Investigation extends AppCompatActivity {
         title = (TextView) findViewById(R.id.title);
         title.setTypeface(face);
 
+        progressBar = findViewById(R.id.progressBar);
+
+        checkIfSearchByAwc();
+
         sessionManager = new SessionManager(getApplicationContext());
         fbSessionManager = new FbSessionManager(getApplicationContext());
 
+        mJobManager = GurkhaApplication.getInstance().getJobManager();
+
         adapter = new SimpleAdapter(Investigation.this, personlist,
-                R.layout.list_item, new String[]{"name", "surname", "army_no"}, new int[]{R.id.name, R.id.surname, R.id.army_no}) {
+                R.layout.list_item, new String[]{"name", "army_no"}, new int[]{R.id.name, R.id.army_no}) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView name = (TextView) view.findViewById(R.id.name);
-                TextView surname = (TextView) view.findViewById(R.id.surname);
+//                TextView surname = (TextView) view.findViewById(R.id.surname);
                 TextView army_no = (TextView) view.findViewById(R.id.army_no);
                 name.setTypeface(face);
-                surname.setTypeface(face);
+//                surname.setTypeface(face);
                 army_no.setTypeface(face);
                 Animation animation = AnimationUtils.loadAnimation(Investigation.this, (position > lastPosition) ? R.anim.item_animation_fall_down : R.anim.item_animation_fall_down);
                 view.startAnimation(animation);
@@ -128,9 +147,36 @@ public class Investigation extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                MenuItem deleteBtn = menu.findItem(R.id.action_delete);
-                deleteBtn.setVisible(true);
-                return false;
+
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(Investigation.this, android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(Investigation.this);
+                }
+                builder.setTitle("Delete")
+                        .setMessage("Are you sure you want to delete this data?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    HashMap<String, String> obj = (HashMap<String, String>) parent.getItemAtPosition(position);
+                                    String id = obj.get("i_id");
+                                    deleteItem(id);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return true;
             }
         });
 
@@ -154,6 +200,71 @@ public class Investigation extends AppCompatActivity {
         */
 
         //new GetNames().execute();
+    }
+
+    private void deleteItem(String id) {
+        progressBar.setVisibility(View.VISIBLE);
+        if (sessionManager.getUserDetails() != null) {
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            token = user.get(SessionManager.KEY_TOKEN);
+        }
+        if (fbSessionManager.getUserDetails() != null) {
+            HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
+            if (fbUser.get(SessionManager.KEY_TOKEN) != null)
+                token = fbUser.get(SessionManager.KEY_TOKEN);
+        }
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("i_id", id);
+        params.put("api_token", token);
+
+        Log.e(TAG, "ID:" + id + "token:" + token);
+
+        JSONObject parameter = new JSONObject(params);
+
+        mJobManager.addJobInBackground(new PostJob(delete_url, parameter.toString(), Investigation.this));
+
+    }
+
+    @Override
+    public void responseSuccess(okhttp3.Response response) {
+
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+//
+                    if (progressBar.getVisibility() == View.VISIBLE)
+                        progressBar.setVisibility(View.INVISIBLE);
+                    String responseString = response.body().string();
+                    JSONObject responseObj = new JSONObject(responseString);
+                    boolean responseBoolean = responseObj.getBoolean("success");
+                    String msg = responseObj.getString("msg");
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(Investigation.this, msg, Toast.LENGTH_SHORT).show();
+                    finish();
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
+    }
+
+    @Override
+    public void responseFail(String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+                Toast.makeText(Investigation.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     /**
@@ -235,9 +346,17 @@ public class Investigation extends AppCompatActivity {
                 .show();
     }
 
+    private void checkIfSearchByAwc() {
+        Intent i = getIntent();
+        searchByAwc = i.getBooleanExtra("search_by_awc", false);
+    }
+
     void run() throws IOException {
         OkHttpClient client = new OkHttpClient();
-        final String awc = SelectAwc.awc;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        final String awc = preferences.getString("awc", null);
+        String awc = SelectAwc.awc;
+        Log.d(TAG, "run: getAwc" + awc);
 
         if (sessionManager.getUserDetails() != null) {
             HashMap<String, String> user = sessionManager.getUserDetails();
@@ -247,11 +366,12 @@ public class Investigation extends AppCompatActivity {
             Log.e(TAG, "TOKEN:" + token);
 
             if (id != null) {
-                if (id.matches("1")) {
+                if (!searchByAwc) {
                     progressDialog = new ProgressDialog(Investigation.this);
                     progressDialog.setMessage("Please wait...");
                     progressDialog.setCancelable(false);
                     progressDialog.show();
+                    timerDelayRemoveDialog(7000, progressDialog);
 
 
                     OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -272,7 +392,7 @@ public class Investigation extends AppCompatActivity {
                             .build();
 
 
-                    call = retrofit.create(InvestigationInterface.class).getResponse("gws/investigate/api/investigate?api_token=" + token);
+                    call = retrofit.create(InvestigationInterface.class).getResponse("investigate/api/investigate?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -293,7 +413,7 @@ public class Investigation extends AppCompatActivity {
 
 
                             try {
-                                if (!(response.isSuccessful())) {
+                                if (String.valueOf(response.code()).equals("504")) {
                                     Toast.makeText(Investigation.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                     finish();
                                     return;
@@ -305,6 +425,7 @@ public class Investigation extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String i_id = c.getString("i_id");
                                     final String investigator = c.getString("investigator");
                                     final String name = c.getString("name");
                                     final String personal_id = c.getString("personal_id");
@@ -321,10 +442,11 @@ public class Investigation extends AppCompatActivity {
 
                                     // adding each child node to HashMap key => value
 
+                                    contact.put("i_id", i_id);
                                     contact.put("investigator", investigator);
-                                    contact.put("name", name);
+                                    contact.put("name", name + " " + surname);
                                     contact.put("personal_id", personal_id);
-                                    contact.put("surname", surname);
+//                                    contact.put("surname", surname);
                                     contact.put("payment_base", payment_base);
                                     contact.put("date", date);
                                     contact.put("start_date", start_date);
@@ -360,6 +482,7 @@ public class Investigation extends AppCompatActivity {
 
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                            final String i_id = (String) obj.get("i_id");
                                             final String investigator = (String) obj.get("investigator");
                                             final String personal_id = (String) obj.get("personal_id");
                                             final String name = (String) obj.get("name");
@@ -371,6 +494,7 @@ public class Investigation extends AppCompatActivity {
                                             final String army_no = (String) obj.get("army_no");
 
                                             Intent in = new Intent(Investigation.this, Investigation_details.class);
+                                            in.putExtra("i_id", i_id);
                                             in.putExtra("investigator", investigator);
                                             in.putExtra("personal_id", personal_id);
                                             in.putExtra("name", name);
@@ -432,7 +556,7 @@ public class Investigation extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    call = retrofit.create(InvestigationInterface.class).getResponse("gws/investigate/api/investigate/" + awc + "?api_token=" + token);
+                    call = retrofit.create(InvestigationInterface.class).getResponse("investigate/api/investigate/" + awc + "?api_token=" + token);
 
                     if (call.isExecuted())
                         call = call.clone();
@@ -452,7 +576,7 @@ public class Investigation extends AppCompatActivity {
 
 
                             try {
-                                if (!(response.isSuccessful())) {
+                                if (String.valueOf(response.code()).equals("504")) {
                                     Toast.makeText(Investigation.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                     finish();
                                     return;
@@ -464,6 +588,7 @@ public class Investigation extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String i_id = c.getString("i_id");
                                     final String investigator = c.getString("investigator");
                                     final String personal_id = c.getString("personal_id");
                                     final String name = c.getString("name");
@@ -480,10 +605,11 @@ public class Investigation extends AppCompatActivity {
 
                                     // adding each child node to HashMap key => value
 
+                                    contact.put("i_id", i_id);
                                     contact.put("investigator", investigator);
                                     contact.put("personal_id", personal_id);
-                                    contact.put("name", name);
-                                    contact.put("surname", surname);
+                                    contact.put("name", name + " " + surname);
+//                                    contact.put("surname", surname);
                                     contact.put("payment_base", payment_base);
                                     contact.put("date", date);
                                     contact.put("start_date", start_date);
@@ -519,6 +645,7 @@ public class Investigation extends AppCompatActivity {
 
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                            final String i_id = (String) obj.get("i_id");
                                             final String investigator = (String) obj.get("investigator");
                                             final String personal_id = (String) obj.get("personal_id");
                                             final String name = (String) obj.get("name");
@@ -530,6 +657,7 @@ public class Investigation extends AppCompatActivity {
                                             final String army_no = (String) obj.get("army_no");
 
                                             Intent in = new Intent(Investigation.this, Investigation_details.class);
+                                            in.putExtra("i_id", i_id);
                                             in.putExtra("investigator", investigator);
                                             in.putExtra("personal_id", personal_id);
                                             in.putExtra("name", name);
@@ -571,7 +699,7 @@ public class Investigation extends AppCompatActivity {
             }
         }
 
-        if (fbSessionManager.getUserDetails() != null) {
+       /* if (fbSessionManager.getUserDetails() != null) {
             HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
             //HashMap<String, String> user = sessionManager.getUserDetails();
             String fbId = fbUser.get(SessionManager.KEY_ID);
@@ -623,7 +751,7 @@ public class Investigation extends AppCompatActivity {
 
 
                             try {
-                                if (!(response.isSuccessful())) {
+                                if (String.valueOf(response.code()).equals("504")) {
                                     Toast.makeText(Investigation.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                     finish();
                                     return;
@@ -635,6 +763,7 @@ public class Investigation extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String i_id = c.getString("i_id");
                                     final String investigator = c.getString("investigator");
                                     final String personal_id = c.getString("personal_id");
                                     final String name = c.getString("name");
@@ -651,6 +780,7 @@ public class Investigation extends AppCompatActivity {
 
                                     // adding each child node to HashMap key => value
 
+                                    contact.put("i_id", i_id);
                                     contact.put("investigator", investigator);
                                     contact.put("personal_id", personal_id);
                                     contact.put("name", name);
@@ -690,6 +820,7 @@ public class Investigation extends AppCompatActivity {
 
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                            final String i_id = (String) obj.get("i_id");
                                             final String investigator = (String) obj.get("investigator");
                                             final String personal_id = (String) obj.get("personal_id");
                                             final String name = (String) obj.get("name");
@@ -701,6 +832,7 @@ public class Investigation extends AppCompatActivity {
                                             final String army_no = (String) obj.get("army_no");
 
                                             Intent in = new Intent(Investigation.this, Investigation_details.class);
+                                            in.putExtra("i_id", i_id);
                                             in.putExtra("investigator", investigator);
                                             in.putExtra("personal_id", personal_id);
                                             in.putExtra("name", name);
@@ -782,7 +914,7 @@ public class Investigation extends AppCompatActivity {
 
 
                             try {
-                                if (!(response.isSuccessful())) {
+                                if (String.valueOf(response.code()).equals("504")) {
                                     Toast.makeText(Investigation.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                                     finish();
                                     return;
@@ -794,6 +926,7 @@ public class Investigation extends AppCompatActivity {
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject c = data.getJSONObject(i);
 
+                                    final String i_id = c.getString("i_id");
                                     final String personal_id = c.getString("personal_id");
                                     final String investigator = c.getString("investigator");
                                     final String name = c.getString("name");
@@ -810,6 +943,7 @@ public class Investigation extends AppCompatActivity {
 
                                     // adding each child node to HashMap key => value
 
+                                    contact.put("i_id", i_id);
                                     contact.put("investigator", investigator);
                                     contact.put("personal_id", personal_id);
                                     contact.put("name", name);
@@ -849,6 +983,7 @@ public class Investigation extends AppCompatActivity {
 
                                             HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
 
+                                            final String i_id = (String) obj.get("i_id");
                                             final String investigator = (String) obj.get("investigator");
                                             final String personal_id = (String) obj.get("personal_id");
                                             final String name = (String) obj.get("name");
@@ -860,6 +995,7 @@ public class Investigation extends AppCompatActivity {
                                             final String army_no = (String) obj.get("army_no");
 
                                             Intent in = new Intent(Investigation.this, Investigation_details.class);
+                                            in.putExtra("i_id", i_id);
                                             in.putExtra("investigator", investigator);
                                             in.putExtra("personal_id", personal_id);
                                             in.putExtra("name", name);
@@ -899,264 +1035,10 @@ public class Investigation extends AppCompatActivity {
                     });
                 }
             }
-        }
+        }*/
 
     }
 
-    /**
-     * Async task class to get json by making HTTP call
-     */
-    private class GetNames extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            // Showing progress dialog
-            progressDialog = new ProgressDialog(Investigation.this);
-            progressDialog.setMessage("Please wait...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-            timerDelayRemoveDialog(7000, progressDialog);
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            HttpHandler sh = new HttpHandler();
-            String awc = MainActivity.awcName;
-            String checkAdmin = MainActivity.checkAdmin;
-            // Making a request to url and getting response
-            if (checkAdmin.matches("1")) {
-                String jsonStr = sh.makeServiceCall(url);
-
-                Log.e(TAG, "Response from url: " + jsonStr);
-
-                if (jsonStr != null) {
-                    try {
-                        JSONObject jsonObj = new JSONObject(jsonStr);
-
-                        // Getting JSON Array node
-                        JSONArray data = jsonObj.getJSONArray("investigate");
-
-                        // looping through All data
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject c = data.getJSONObject(i);
-
-
-                            final String investigator = c.getString("investigator");
-                            final String name = c.getString("name");
-                            final String surname = c.getString("surname");
-                            final String payment_base = c.getString("payment_base");
-                            final String date = c.getString("date");
-                            final String start_date = c.getString("start_date");
-                            final String review_date = c.getString("review_date");
-                            final String army_no = c.getString("army_no");
-
-
-                            // tmp hash map for single data
-                            HashMap<String, String> contact = new HashMap<>();
-
-                            // adding each child node to HashMap key => value
-
-                            contact.put("investigator", investigator);
-                            contact.put("name", name);
-                            contact.put("surname", surname);
-                            contact.put("payment_base", payment_base);
-                            contact.put("date", date);
-                            contact.put("start_date", start_date);
-                            contact.put("review_date", review_date);
-                            contact.put("army_no", army_no);
-
-
-                            // adding contact to contact list
-                            personlist.add(contact);
-                            adapter.notifyDataSetChanged();
-                        }
-                    } catch (final JSONException e) {
-                        Log.e(TAG, "Json parsing error: " + e.getMessage());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(),
-                                        "Json parsing error: " + e.getMessage(),
-                                        Toast.LENGTH_LONG)
-                                        .show();
-                            }
-                        });
-
-                    }
-                } else {
-                    Log.e(TAG, "Couldn't get json from server.");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    "Connection Timeout! Please check internet connection",
-                                    Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    });
-
-                }
-
-                return null;
-            } else {
-                String jsonStr = sh.makeServiceCall(url + awc);
-
-                Log.e(TAG, "Response from url: " + jsonStr);
-
-                if (jsonStr != null) {
-                    try {
-                        JSONObject jsonObj = new JSONObject(jsonStr);
-
-                        // Getting JSON Array node
-                        JSONArray data = jsonObj.getJSONArray("investigate");
-
-                        // looping through All data
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject c = data.getJSONObject(i);
-
-
-                            final String investigator = c.getString("investigator");
-                            final String name = c.getString("name");
-                            final String surname = c.getString("surname");
-                            final String payment_base = c.getString("payment_base");
-                            final String date = c.getString("date");
-                            final String start_date = c.getString("start_date");
-                            final String review_date = c.getString("review_date");
-                            final String army_no = c.getString("army_no");
-
-
-                            // tmp hash map for single data
-                            HashMap<String, String> contact = new HashMap<>();
-
-                            // adding each child node to HashMap key => value
-
-                            contact.put("investigator", investigator);
-                            contact.put("name", name);
-                            contact.put("surname", surname);
-                            contact.put("payment_base", payment_base);
-                            contact.put("date", date);
-                            contact.put("start_date", start_date);
-                            contact.put("review_date", review_date);
-                            contact.put("army_no", army_no);
-
-
-                            // adding contact to contact list
-                            personlist.add(contact);
-                            adapter.notifyDataSetChanged();
-                        }
-                    } catch (final JSONException e) {
-                        Log.e(TAG, "Json parsing error: " + e.getMessage());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(),
-                                        "Json parsing error: " + e.getMessage(),
-                                        Toast.LENGTH_LONG)
-                                        .show();
-                            }
-                        });
-
-                    }
-                } else {
-                    Log.e(TAG, "Couldn't get json from server.");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    "Connection Timeout! Please check internet connection",
-                                    Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    });
-
-                }
-
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            // Dismiss the progress dialog
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
-            /**
-             * Updating parsed JSON data into ListView
-             * */
-            /*
-            adapter = new SimpleAdapter(Village_List.this, villageList,
-                    R.layout.list_item, new String[]{"v_id", "villages"}, new int[]{R.id.id, R.id.name}){
-                public View getView (int position, View convertView, ViewGroup parent)
-                {
-                    View v = super.getView(position, convertView, parent);
-                    if(position %2==0)
-                    {
-                        v.setBackgroundColor(Color.DKGRAY);
-                    }
-                    else
-                    {
-                        v.setBackgroundColor(Color.GRAY);
-                    }
-
-                    return v;
-                }
-
-            };
-            */
-            listView.setAdapter(adapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                    HashMap<String, Object> obj = (HashMap<String, Object>) adapter.getItem(position);
-
-                    final String investigator = (String) obj.get("investigator");
-                    final String name = (String) obj.get("name");
-                    final String surname = (String) obj.get("surname");
-                    final String payment_base = (String) obj.get("payment_base");
-                    final String date = (String) obj.get("date");
-                    final String start_date = (String) obj.get("start_date");
-                    final String review_date = (String) obj.get("review_date");
-                    final String army_no = (String) obj.get("army_no");
-
-                    Intent in = new Intent(Investigation.this, Investigation_details.class);
-                    in.putExtra("investigator", investigator);
-                    in.putExtra("name", name);
-                    in.putExtra("surname", surname);
-                    in.putExtra("payment_base", payment_base);
-                    in.putExtra("date", date);
-                    in.putExtra("start_date", start_date);
-                    in.putExtra("review_date", review_date);
-                    in.putExtra("army_no", army_no);
-                    startActivity(in);
-                }
-            });
-            search.addTextChangedListener(new TextWatcher() {
-
-                @Override
-                public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                    // When user changed the Text
-                    Investigation.this.adapter.getFilter().filter(cs);
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                              int arg3) {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable arg0) {
-                    // TODO Auto-generated method stub
-                }
-            });
-
-        }
-
-    }
 
     public void timerDelayRemoveDialog(long time, final ProgressDialog d) {
         Handler handler = new Handler();

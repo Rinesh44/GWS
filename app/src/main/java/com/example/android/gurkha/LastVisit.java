@@ -1,49 +1,31 @@
 package com.example.android.gurkha;
 
 import android.Manifest;
-
-
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Typeface;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,12 +48,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
+public class LastVisit extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = LastVisit.class.getSimpleName();
     private GoogleMap mMap;
-    private static String base_url = "http://pagodalabs.com.np";
+    private static String base_url = "http://gws.pagodalabs.com.np";
     private LocationManager locationManager;
-    private LocationListener locationListener;
     public static double lant, lont;
     private List<Marker> originMarkers = new ArrayList<>();
     boolean isNetworkEnabled = false;
@@ -93,6 +74,7 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
     Call<ResponseBody> call;
 
     private FusedLocationProviderClient mFusedLocationClient;
+    private Button mSatelliteView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +94,15 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_ACCESS_FINE_LOCATION);
         }
+
+        mSatelliteView = findViewById(R.id.btn_satellite_view);
+        mSatelliteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            }
+        });
+
 
         getVisitedLocations();
         remover = (FloatingActionButton) findViewById(R.id.remove);
@@ -160,8 +151,8 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
     }
 
 
-    void getVisitedLocations(){
-        if(sessionManager.getUserDetails() != null){
+    void getVisitedLocations() {
+        if (sessionManager.getUserDetails() != null) {
             HashMap<String, String> user = sessionManager.getUserDetails();
             token = user.get(SessionManager.KEY_TOKEN);
 
@@ -190,7 +181,7 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
-            call = retrofit.create(ApiInterface.class).getResponse("gws/path/api/path?api_token=" + token);
+            call = retrofit.create(ApiInterface.class).getResponse("/path/api/path?api_token=" + token);
 
             if (call.isExecuted())
                 call = call.clone();
@@ -198,8 +189,8 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    try{
-                        if(dialog.isShowing()) dialog.dismiss();
+                    try {
+                        if (dialog.isShowing()) dialog.dismiss();
                         if (!(response.isSuccessful())) {
                             Toast.makeText(LastVisit.this, "Cache data not found. Please connect to internet", Toast.LENGTH_SHORT).show();
                             finish();
@@ -210,7 +201,7 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
                         Log.e(TAG, getResponse);
                         JSONObject jsonObject = new JSONObject(getResponse);
                         JSONArray data = jsonObject.getJSONArray("path");
-                        for(int i = 0; i <= data.length(); i++){
+                        for (int i = 0; i <= data.length(); i++) {
                             JSONObject obj = data.getJSONObject(i);
 
                             String lat = obj.getString("latitude");
@@ -222,16 +213,16 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
                         }
 
 
-                    }catch (JSONException e){
+                    } catch (JSONException e) {
                         e.printStackTrace();
-                    }catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    if(dialog.isShowing()) dialog.dismiss();
+                    if (dialog.isShowing()) dialog.dismiss();
                     Toast.makeText(LastVisit.this, t.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
@@ -241,7 +232,7 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
     private void plotMarker(String lat, String lng, String username, String id) {
         StringBuilder title = new StringBuilder(username).append(", ").append(id);
         mMap.addMarker(new MarkerOptions().position(new LatLng(Double.valueOf(lat), Double.valueOf(lng)))
-        .title(title.toString()));
+                .title(title.toString()));
     }
 
 
@@ -249,12 +240,15 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
         @Override
         protected Void doInBackground(Void... params) {
 
-            *//** Deleting all the locations stored in SQLite database *//*
+            */
+
+    /**
+     * Deleting all the locations stored in SQLite database
+     *//*
             getContentResolver().delete(LocationsContentProvider.CONTENT_URI, null, null);
             return null;
         }
     }*/
-
     public void timerDelayRemoveDialog(long time, final ProgressDialog d) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -280,7 +274,7 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -288,13 +282,15 @@ public class LastVisit extends FragmentActivity implements OnMapReadyCallback{
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
 
-        locationManager = (LocationManager)this.getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         mMap.setMyLocationEnabled(true);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 7));
+        if (location != null)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 7));
     }
 
 

@@ -85,13 +85,14 @@ public class NFCWriteFragment extends DialogFragment {
                 ndef.connect();
                 String password = "password";
 
-                message = AESCrypt.encrypt(password, message);
+//                message = AESCrypt.encrypt(password, message);
+//                NdefRecord mimeRecord = NdefRecord.createMime("text/plain", message.getBytes(Charset.forName("US-ASCII")));
                 NdefRecord mimeRecord = NdefRecord.createMime("text/plain", message.getBytes(Charset.forName("US-ASCII")));
                 ndef.writeNdefMessage(new NdefMessage(mimeRecord));
                 ndef.close();
                 mTvMessage.setText(getString(R.string.message_write_success));
 
-            } catch (IOException | FormatException | GeneralSecurityException e) {
+            } catch (IOException | FormatException e) {
                 e.printStackTrace();
                 mTvMessage.setText(R.string.exceeded_storage);
                 Log.e(TAG, e.toString());

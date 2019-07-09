@@ -5,13 +5,13 @@
     android:background="@color/cardview_dark_background"
     android:orientation="vertical">
 
-    <Button
+  <!--  <Button
         android:id="@+id/direct"
         android:layout_width="match_parent"
         android:fontFamily="@font/core_regular"
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
-        android:text="Get Direct Direction" />
+        android:text="Get Direct Direction" />-->
 
     <Button
         android:id="@+id/track"

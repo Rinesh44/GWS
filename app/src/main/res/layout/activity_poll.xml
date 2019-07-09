@@ -71,7 +71,6 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/hill"
                 android:fontFamily="@font/core_regular"
                 android:text="Hill"
                 android:layout_marginLeft="15dp"/>
@@ -81,7 +80,6 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/core_regular"
             android:text="Terai"
-            android:id="@+id/terai"
             android:layout_marginLeft="15dp"/>
         </RadioGroup>
 
@@ -96,7 +94,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Urban"
-                android:id="@+id/urban"
                 android:fontFamily="@font/core_regular"
                 android:layout_marginLeft="15dp"/>
 
@@ -104,7 +101,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Suburban Area"
-                android:id="@+id/suburban"
                 android:fontFamily="@font/core_regular"
                 android:layout_marginLeft="15dp"/>
         </RadioGroup>
@@ -138,7 +134,6 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/communal"
                     android:fontFamily="@font/core_regular"
                     android:text="Communal"
                     android:layout_marginLeft="15dp"/>
@@ -147,7 +142,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Private"
-                    android:id="@+id/rb_private"
                     android:fontFamily="@font/core_regular"
                     android:layout_marginLeft="15dp"/>
 
@@ -211,7 +205,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/core_regular"
-                android:id="@+id/hpost"
                 android:text="Health Post"
                 android:layout_marginLeft="15dp"
                 />
@@ -221,7 +214,6 @@
             android:layout_height="wrap_content"
             android:text="Hospital"
             android:fontFamily="@font/core_regular"
-            android:id="@+id/hhospital"
             android:layout_marginLeft="15dp"
             />
 
@@ -270,7 +262,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Full"
-                android:id="@+id/full"
                 android:fontFamily="@font/core_regular"
                 android:layout_marginLeft="15dp"/>
 
@@ -278,7 +269,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Partial"
-            android:id="@+id/partial"
             android:fontFamily="@font/core_regular"
             android:layout_marginLeft="15dp"/>
 
@@ -303,7 +293,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Yes"
-                android:id="@+id/cyes"
                 android:fontFamily="@font/core_regular"
                 android:layout_marginLeft="15dp"/>
 
@@ -312,7 +301,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No"
-            android:id="@+id/cno"
             android:fontFamily="@font/core_regular"
             android:layout_marginLeft="15dp"/>
 
@@ -337,7 +325,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Yes"
-                android:id="@+id/tyes"
                 android:fontFamily="@font/core_regular"
                 android:layout_marginLeft="15dp"/>
 
@@ -346,7 +333,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No"
-                android:id="@+id/tno"
                 android:fontFamily="@font/core_regular"
                 android:layout_marginLeft="15dp"/>
 
@@ -370,7 +356,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Yes"
-                android:id="@+id/eyes"
                 android:fontFamily="@font/core_regular"
                 android:layout_marginLeft="15dp"/>
 
@@ -379,7 +364,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No"
-                android:id="@+id/eno"
                 android:fontFamily="@font/core_regular"
                 android:layout_marginLeft="15dp"/>
 
@@ -403,7 +387,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Less thatn 1 day"
-                android:id="@+id/less"
                 android:fontFamily="@font/core_regular"
                 android:layout_marginLeft="15dp"/>
 
@@ -413,7 +396,6 @@
                 android:layout_height="wrap_content"
                 android:text="More than 1 day"
                 android:fontFamily="@font/core_regular"
-                android:id="@+id/more"
                 android:layout_marginLeft="15dp"/>
 
         </RadioGroup>

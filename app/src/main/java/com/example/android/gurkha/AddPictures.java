@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.birbit.android.jobqueue.JobManager;
 import com.bumptech.glide.Glide;
+import com.example.android.gurkha.EventListener.ResponseListener;
 import com.example.android.gurkha.JobQueue.PostJob;
 import com.example.android.gurkha.application.GurkhaApplication;
 import com.github.clans.fab.FloatingActionButton;
@@ -47,11 +48,13 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddPictures extends AppCompatActivity {
+import okhttp3.Response;
+
+public class AddPictures extends AppCompatActivity implements ResponseListener {
     private static final int MY_CAMERA_REQUEST_CODE = 100;
     private static final int PASSPORTPICTURE = 1, GALLERYFORSTORY = 2, CAMERAFORSTORY = 3;
     private static final int CAMERAFORSTORYAGAIN = 4, GALLERYFORSTORYAGAIN = 5;
-    private static final String url = "http://pagodalabs.com.np/gws/pensioner_information/api/pensioner_information";
+    private static final String url = "http://gws.pagodalabs.com.np/pensioner_information/api/pensioner_information";
     private Toolbar toolbar;
     private ImageView picturesImage, passportImage, storyImage;
     private EditText storyDescription;
@@ -180,7 +183,7 @@ public class AddPictures extends AppCompatActivity {
         Log.e("TOKEN", token);
         Log.e("description", storyImageDescription.toString());
 
-        mJobManager.addJobInBackground(new PostJob(url, parameter.toString()));
+        mJobManager.addJobInBackground(new PostJob(url, parameter.toString(), AddPictures.this));
         Toast.makeText(this, "Pictures added", Toast.LENGTH_SHORT).show();
         finish();
     }
@@ -269,11 +272,11 @@ public class AddPictures extends AppCompatActivity {
                 if (base64PassportImage == null) {
                     Toast.makeText(this, "Please add an image first", Toast.LENGTH_SHORT).show();
                 } else {
-                    if(storyDescription != null) {
+                    if (storyDescription != null) {
                         String storyDesc = storyDescription.getText().toString().trim();
                         storyImageDescription.add(storyDesc);
                     }
-                    if(newEditText != null){
+                    if (newEditText != null) {
                         String storyDescriptionAgain = newEditText.getText().toString().trim();
                         storyImageDescription.add(storyDescriptionAgain);
                     }
@@ -459,5 +462,15 @@ public class AddPictures extends AppCompatActivity {
         byte[] b = baos.toByteArray();
         String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
         return encodedImage;
+    }
+
+    @Override
+    public void responseSuccess(Response response) {
+
+    }
+
+    @Override
+    public void responseFail(String msg) {
+
     }
 }

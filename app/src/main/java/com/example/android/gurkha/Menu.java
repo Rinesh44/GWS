@@ -2,54 +2,63 @@ package com.example.android.gurkha;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-
-import android.graphics.drawable.ColorDrawable;
-import android.location.LocationManager;
-import android.os.Build;
-
-import android.provider.Settings;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.example.android.gurkha.PensionerRiskAssessment.SendPersonId;
-import com.example.android.gurkha.QnA.EconomicPoll;
-import com.example.android.gurkha.QnA.HealthPoll;
-import com.example.android.gurkha.QnA.Questions;
-import com.example.android.gurkha.QnA.Results;
-import com.example.android.gurkha.QnA.SocialPoll;
-import com.google.firebase.messaging.FirebaseMessaging;
-
-import com.example.android.gurkha.app.Config.Config;
-import com.example.android.gurkha.utils.NotificationUtils;
-
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.gurkha.activities.PensionerRiskAssessment.SendPersonId;
+import com.example.android.gurkha.activities.QnA.EconomicPoll;
+import com.example.android.gurkha.activities.QnA.HealthPoll;
+import com.example.android.gurkha.activities.QnA.Questions;
+import com.example.android.gurkha.activities.QnA.SocialPoll;
+import com.example.android.gurkha.app.Config.Config;
+import com.example.android.gurkha.utils.NotificationUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+
+import okhttp3.Cache;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class Menu extends AppCompatActivity {
     private static final String TAG = Menu.class.getSimpleName();
+    private static String base_url = "http://gws.pagodalabs.com.np/";
     private Toolbar toolbar;
     public static String textName;
     public static String numAge;
@@ -76,6 +85,11 @@ public class Menu extends AppCompatActivity {
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private TextView txtRegId, txtMessage;
+    private TextView gallery;
+    private Handler mHandler;
+    private Runnable mRunnable;
+    private String token;
+    public static OkHttpClient okHttpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +97,16 @@ public class Menu extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
         toolbar = (Toolbar) findViewById(R.id.select);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        if (Build.VERSION.SDK_INT > 22) {
+            if (ContextCompat.checkSelfPermission(Menu.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(Menu.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+            }
+        }
+
 
         TextView tv = (TextView) findViewById(R.id.toolbar_title);
         Typeface face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
@@ -91,8 +115,8 @@ public class Menu extends AppCompatActivity {
         session = new SessionManager(getApplicationContext());
         fbSessionManager = new FbSessionManager(getApplicationContext());
 
-        txtRegId = (TextView) findViewById(R.id.txt_reg_id);
-        txtMessage = (TextView) findViewById(R.id.txt_push_message);
+   /*     txtRegId = (TextView) findViewById(R.id.txt_reg_id);
+        txtMessage = (TextView) findViewById(R.id.txt_push_message);*/
 
      /*   if (ContextCompat.checkSelfPermission(Menu.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(Menu.this,
@@ -106,12 +130,25 @@ public class Menu extends AppCompatActivity {
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         gps_enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        if(!hasPermissions(this, PERMISSIONS_STORAGE)){
+        if (!hasPermissions(this, PERMISSIONS_STORAGE)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, PERMISSION_ALL);
         }
 
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        if (session.getUserDetails() != null) {
+            HashMap<String, String> user = session.getUserDetails();
+            token = user.get(SessionManager.KEY_TOKEN);
+        }
+
+
+        mHandler = new Handler();
+//        callAllAPIs();
+
+
+
+
+
+/*        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
@@ -121,7 +158,7 @@ public class Menu extends AppCompatActivity {
                     // now subscribe to `global` topic to receive app wide notifications
                     FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
 
-                    displayFirebaseRegId();
+//                    displayFirebaseRegId();
 
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
                     // new push notification is received
@@ -133,47 +170,57 @@ public class Menu extends AppCompatActivity {
                     txtMessage.setText(message);
                 }
             }
-        };
+        };*/
 
-        displayFirebaseRegId();
+//        displayFirebaseRegId();
 
         topleft = (TextView) findViewById(R.id.top_left);
         topleft.setTypeface(face);
         topleft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (session.getUserDetails() != null) {
-                    HashMap<String, String> user = session.getUserDetails();
-                    String id = user.get(SessionManager.KEY_ID);
 
-                    if (id != null) {
+                final Dialog dialog = new Dialog(Menu.this);
+                dialog.getWindow();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.select_search_type);
+                dialog.show();
 
-                        if (id.matches("1")) {
-                            Intent ifAdmin = new Intent(Menu.this, Category.class);
+//                    Button direct = (Button) dialog.findViewById(R.id.direct);
+                Button searchByAWC = (Button) dialog.findViewById(R.id.search_by_awc);
+                Button searchNationWide = (Button) dialog.findViewById(R.id.seach_nationwide);
 
-                            if (Build.VERSION.SDK_INT > 22) {
-                                if (ContextCompat.checkSelfPermission(Menu.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(Menu.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
-                                } else
-                                    startActivity(ifAdmin);
-                            } else
+                searchByAWC.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(Menu.this, SelectAwc.class));
+                        dialog.dismiss();
+                    }
+                });
 
-                                startActivity(ifAdmin);
-                        } else {
-                            Intent list = new Intent(Menu.this, SelectAwc.class);
-
-                            if (Build.VERSION.SDK_INT > 22) {
-                                if (ContextCompat.checkSelfPermission(Menu.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(Menu.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
-                                } else
-                                    startActivity(list);
-                            } else
-
+                searchNationWide.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        if (session.getUserDetails() != null) {
+                            Log.e(TAG, "userDetailsNotNull");
+                            HashMap<String, String> user = session.getUserDetails();
+                            String id = user.get(SessionManager.KEY_ID);
+                            Log.e(TAG, "printUserId:" + id);
+                            if (id != null) {
+                                Intent list = new Intent(Menu.this, Category.class);
                                 startActivity(list);
+
+                            }
+                        } else {
+                            Toast.makeText(Menu.this, "User Details Null", Toast.LENGTH_SHORT).show();
                         }
                     }
-                }
+                });
 
+
+
+/*
                 if (fbSessionManager.getUserDetails() != null) {
 
                     HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
@@ -204,7 +251,7 @@ public class Menu extends AppCompatActivity {
                                 startActivity(list);
                         }
                     }
-                }
+                }*/
 
             }
         });
@@ -245,34 +292,54 @@ public class Menu extends AppCompatActivity {
                     String id = user.get(SessionManager.KEY_ID);
 
                     if (id != null) {
+                        final Dialog dialog = new Dialog(Menu.this);
+                        dialog.getWindow();
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setContentView(R.layout.select_search_type);
+                        dialog.show();
 
-                        if (id.matches("1")) {
-                            Intent ifAdminSearhPerson = new Intent(Menu.this, SearchPerson.class);
-                            startActivity(ifAdminSearhPerson);
-                        } else {
-                            Intent search = new Intent(Menu.this, SelectAwcForMap.class);
-                            startActivity(search);
-                        }
+//                    Button direct = (Button) dialog.findViewById(R.id.direct);
+                        Button searchByAWC = (Button) dialog.findViewById(R.id.search_by_awc);
+                        Button searchNationWide = (Button) dialog.findViewById(R.id.seach_nationwide);
+
+                        searchByAWC.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                Intent intent = new Intent(Menu.this, SelectAwc.class);
+                                intent.putExtra("search_person_in_map", true);
+                                startActivity(intent);
+                                dialog.dismiss();
+                            }
+                        });
+
+                        searchNationWide.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                                if (session.getUserDetails() != null) {
+                                    Log.e(TAG, "userDetailsNotNull");
+                                    HashMap<String, String> user = session.getUserDetails();
+                                    String id = user.get(SessionManager.KEY_ID);
+                                    Log.e(TAG, "printUserId:" + id);
+                                    if (id != null) {
+                                        Intent intent = new Intent(Menu.this, SearchPerson.class);
+                                        startActivity(intent);
+
+                                    }
+                                } else {
+                                    Toast.makeText(Menu.this, "User Details Null", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
                     }
                 }
 
-                if (fbSessionManager.getUserDetails() != null) {
-                    HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
-                    String fbId = fbUser.get(SessionManager.KEY_ID);
-
-                    if (fbId != null) {
-
-                        if (fbId.matches("1")) {
-                            Intent ifAdminSearhPerson = new Intent(Menu.this, SearchPerson.class);
-                            startActivity(ifAdminSearhPerson);
-                        } else {
-                            Intent search = new Intent(Menu.this, SelectAwcForMap.class);
-                            startActivity(search);
-                        }
-                    }
-                }
             }
         });
+
+
         middleright = (TextView) findViewById(R.id.middle_right);
         middleright.setTypeface(face);
         middleright.setOnClickListener(new View.OnClickListener() {
@@ -343,19 +410,19 @@ public class Menu extends AppCompatActivity {
                     dialog.setContentView(R.layout.addperson);
                     dialog.show();
 
-                    Button direct = (Button) dialog.findViewById(R.id.direct);
+//                    Button direct = (Button) dialog.findViewById(R.id.direct);
                     Button route = (Button) dialog.findViewById(R.id.track);
                     Button load = (Button) dialog.findViewById(R.id.load);
 
 
-                    direct.setOnClickListener(new View.OnClickListener() {
+                 /*   direct.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent direction = new Intent(Menu.this, BreadCrumbs.class);
                             startActivity(direction);
                             dialog.dismiss();
                         }
-                    });
+                    });*/
 
                     load.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -434,7 +501,7 @@ public class Menu extends AppCompatActivity {
                 final Dialog dialog = new Dialog(Menu.this);
                 dialog.getWindow();
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.addperson);
+                dialog.setContentView(R.layout.criteria);
                 dialog.show();
 
                 Button health = (Button) dialog.findViewById(R.id.direct);
@@ -475,14 +542,14 @@ public class Menu extends AppCompatActivity {
             }
         });
 
-        scanner = (TextView) findViewById(R.id.qrscanner);
+     /*   scanner = (TextView) findViewById(R.id.qrscanner);
         scanner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent scannerActivity = new Intent(Menu.this, MakePayment.class);
                 startActivity(scannerActivity);
             }
-        });
+        });*/
 
         addPhotos = findViewById(R.id.add_photos);
         addPhotos.setTypeface(face);
@@ -493,6 +560,133 @@ public class Menu extends AppCompatActivity {
                 startActivity(addPicturesActivity);
             }
         });
+
+        gallery = findViewById(R.id.gallery);
+        gallery.setTypeface(face);
+        gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent galleryActivity = new Intent(Menu.this, Gallery.class);
+                startActivity(galleryActivity);
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+//        getMenuInflater().inflate(R.menu.download_offline_data, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_download:
+//                callAllAPIs();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void callAllAPIs() {
+        if (InternetConnection.checkConnection(this)) {
+            Log.d(TAG, "callAllAPIs: called()");
+            ProgressDialog fetchDialog = new ProgressDialog(this);
+            fetchDialog.setMessage("Fetching offline data. Please Wait...");
+            fetchDialog.setCancelable(true);
+            fetchDialog.show();
+
+            okHttpClient = new OkHttpClient.Builder()
+                    // Enable response caching
+                    .addNetworkInterceptor(new ResponseCacheInterceptor())
+                    .addInterceptor(new OfflineResponseCacheInterceptor())
+                    // Set the cache location and size (1 MB)
+                    .cache(new Cache(new File(Menu.this
+                            .getCacheDir(),
+                            "Responses"), 1024 * 1024))
+                    .build();
+
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(base_url) // that means base url + the left url in interface
+                    .client(okHttpClient)//adding okhttp3 object that we have created
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            String[] apiUrls = new String[]{"personal_detail/api/personal_detail/",
+                    "payment_distribution/api/payment_distribution/",
+                    "investigate/api/investigate/",
+                    "awc/api/awc/",
+                    "ca/api/ca/",
+                    ""};
+
+            String[] apiUrls2 = new String[]{"path/api/path",
+                    "payment_distribution/api/payment_distribution",
+                    "investigate/api/investigate",
+                    "awc/api/awc",
+                    "ca/api/ca",
+                    "personal_detail/api/personal_detail",
+                    "track/api/track",
+                    "form_poll/api/form"};
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String awc = preferences.getString("awc", null);
+
+            Log.d(TAG, "callAllAPIs: " + awc);
+            for (String apiUrl2 : apiUrls2) {
+
+                Call<ResponseBody> call = retrofit.create(InvestigationInterface.class).getResponse(apiUrl2 + "?api_token=" + token);
+
+                if (call.isExecuted())
+                    call = call.clone();
+
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Log.d(TAG, "onResponse: " + response.body(), null);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.e(TAG, "onFailure: ", t);
+                    }
+                });
+            }
+
+
+            for (String apiUrl : apiUrls) {
+
+                mRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        Call<ResponseBody> call = retrofit.create(InvestigationInterface.class).getResponse(apiUrl + awc + "?api_token=" + token);
+                        if (call.isExecuted())
+                            call = call.clone();
+
+                        call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                                Log.d(TAG, "onResponse: " + response.body(), null);
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Log.e(TAG, "onFailure: ", t);
+                            }
+                        });
+
+                        fetchDialog.dismiss();
+                    }
+                };
+                mHandler.postDelayed(mRunnable, 10000);
+            }
+
+            Log.d(TAG, "callAllAPIs: complete", null);
+
+        } else
+            Toast.makeText(this, "Failed to fetch offline data. No internet Connection", Toast.LENGTH_LONG).show();
     }
 
 
@@ -505,6 +699,7 @@ public class Menu extends AppCompatActivity {
 
     /**
      * ask required permissions
+     *
      * @param context
      * @param permissions
      * @return
@@ -578,6 +773,42 @@ public class Menu extends AppCompatActivity {
             }, 3 * 1000);
         }
 
+    }
+
+    /**
+     * Interceptor to cache data and maintain it for a minute.
+     * <p>
+     * If the same network request is sent within a minute,
+     * the response is retrieved from cache.
+     */
+    private static class ResponseCacheInterceptor implements Interceptor {
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            okhttp3.Response originalResponse = chain.proceed(chain.request());
+            return originalResponse.newBuilder()
+                    .header("Cache-Control", "public, max-age=" + 60)
+                    .build();
+        }
+    }
+
+    /**
+     * Interceptor to cache data and maintain it for four weeks.
+     * <p>
+     * If the device is offline, stale (at most 2 weeks)
+     * response is fetched from the cache.
+     */
+    private class OfflineResponseCacheInterceptor implements Interceptor {
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            if (!InternetConnection.checkConnection(Menu.this)) {
+                request = request.newBuilder()
+                        .header("Cache-Control",
+                                "public, only-if-cached, max-stale=" + 1209600)// 2 weeks
+                        .build();
+            }
+            return chain.proceed(request);
+        }
     }
 
 }

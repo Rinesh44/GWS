@@ -2,7 +2,9 @@ package com.example.android.gurkha.NfcFragments;
 
 /**
  * Created by Shaakya on 12/18/2017.
- */import android.app.DialogFragment;
+ */
+
+import android.app.DialogFragment;
 import android.content.Context;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
@@ -39,7 +41,7 @@ public class NFCReadFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_read,container,false);
+        View view = inflater.inflate(R.layout.fragment_read, container, false);
         initViews(view);
         return view;
     }
@@ -52,7 +54,7 @@ public class NFCReadFragment extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (NFC)context;
+        mListener = (NFC) context;
         mListener.onDialogDisplayed();
     }
 
@@ -62,7 +64,7 @@ public class NFCReadFragment extends DialogFragment {
         mListener.onDialogDismissed();
     }
 
-    public void onNfcDetected(Ndef ndef){
+    public void onNfcDetected(Ndef ndef) {
 
         readFromNFC(ndef);
     }
@@ -73,12 +75,12 @@ public class NFCReadFragment extends DialogFragment {
             ndef.connect();
             NdefMessage ndefMessage = ndef.getNdefMessage();
             String message = new String(ndefMessage.getRecords()[0].getPayload());
-            String password = "password";
-            String decryptedMessage = AESCrypt.decrypt(password, message);
-            mTvMessage.setText(decryptedMessage);
+     /*       String password = "password";
+            String decryptedMessage = AESCrypt.decrypt(password, message);*/
+            mTvMessage.setText(message);
             ndef.close();
 
-        } catch (IOException | FormatException | GeneralSecurityException e) {
+        } catch (IOException | FormatException e) {
             e.printStackTrace();
 
         }

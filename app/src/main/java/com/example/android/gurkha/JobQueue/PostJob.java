@@ -1,5 +1,6 @@
 package com.example.android.gurkha.JobQueue;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -7,6 +8,7 @@ import com.birbit.android.jobqueue.CancelReason;
 import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
+import com.example.android.gurkha.EventListener.ResponseListener;
 
 import java.io.IOException;
 
@@ -19,15 +21,18 @@ import okhttp3.Request;
  */
 
 public class PostJob extends Job{
+    //for listening response
+    private static ResponseListener mListener;
     public static final int PRIORITY = 1;
     private String postData;
     private String url;
-    public PostJob(String url, String json) {
+    public PostJob(String url, String json, Context context) {
         // This job requires network connectivity,
         // and should be persisted in case the application exits before job is completed.
         super(new Params(PRIORITY).requireNetwork().persist());
         postData = json;
         this.url = url;
+        mListener = (ResponseListener) context;
 
     }
     @Override
@@ -45,6 +50,7 @@ public class PostJob extends Job{
         OkHttpClient client = new OkHttpClient();
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
+
         final okhttp3.RequestBody body = okhttp3.RequestBody.create(JSON, postData);
         Request request = new Request.Builder()
                 .url(url)
@@ -57,12 +63,12 @@ public class PostJob extends Job{
             @Override
             public void onFailure(okhttp3.Call call, IOException e) {
                 Log.e("response", call.request().body().toString());
-
+                mListener.responseFail(e.toString());
             }
 
             @Override
             public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-                Log.e("postResponse", response.body().string());
+                mListener.responseSuccess(response);
             }
 
         });

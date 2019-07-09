@@ -6,12 +6,18 @@
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="com.timotiusoktorio.tourguide.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -35,13 +41,6 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
 
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
-    -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <application
         android:name=".application.GurkhaApplication"
         android:allowBackup="false"
@@ -51,6 +50,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".activities.IndividualMarker"
+            android:label="@string/title_activity_individual_marker"></activity>
+        <activity android:name=".SavedPictures" />
+        <activity android:name=".Gallery" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -77,21 +94,13 @@
                 <data android:scheme="@string/facebook_app_id" />
             </intent-filter>
         </activity>
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
-        -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
+
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" /> <!-- optional (needed if default theme has no action bar) -->
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -121,15 +130,15 @@
             android:label="@string/title_activity_last_visit" />
         <activity
             android:name=".SearchPerson"
-            android:label="@string/title_activity_search_person" />
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_search_person"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ARView"
             android:screenOrientation="landscape" />
         <activity
             android:name=".Menu"
-            android:launchMode="singleTask" />
-
-        <!-- Firebase Notifications -->
+            android:launchMode="singleTask" /> <!-- Firebase Notifications -->
         <service android:name=".service.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -140,14 +149,12 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".Service" />
-        <!-- ./Firebase Notifications -->
+        <service android:name=".Service" /> <!-- ./Firebase Notifications -->
         <activity
             android:name=".People"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Person_Details" />
         <activity android:name=".marker_details" />
-        <activity android:name=".Addeddesc" />
         <activity android:name=".Category" />
         <activity
             android:name=".Awc_category"
@@ -169,22 +176,22 @@
         <activity android:name=".Investigation_details" />
         <activity android:name=".Category_to_add" />
         <activity
-            android:name=".Add_personal"
+            android:name=".activities.AddData.Add_personal"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Ca_details"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".Add_payment"
+            android:name=".activities.AddData.Add_payment"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".Add_investigation"
+            android:name=".activities.AddData.Add_investigation"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".Add_awc"
+            android:name=".activities.AddData.Add_awc"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".Add_ca"
+            android:name=".activities.AddData.Add_ca"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".BreadCrumbs" />
         <activity
@@ -192,7 +199,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_tracking"
             android:screenOrientation="portrait" />
-        <activity android:name=".AndroidDatabaseManager" />
 
         <provider
             android:name=".LocationsContentProvider"
@@ -221,36 +227,29 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Scanner" />
 
-        <service
-            android:name=".ShowNotification"
-            android:enabled="true" />
-
-        <receiver
-            android:name=".Alarm"
-            android:process=":remote" />
 
         <activity android:name=".SimDetails" />
         <activity android:name=".SelectAwc" />
         <activity android:name=".SelectAwcForMap" />
         <activity android:name=".NFC" />
-        <activity android:name=".QnA.Results" />
+        <activity android:name=".activities.QnA.Results" />
         <activity
-            android:name=".QnA.SocialPoll"
+            android:name=".activities.QnA.SocialPoll"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".QnA.EconomicPoll"
+            android:name=".activities.QnA.EconomicPoll"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".QnA.HealthPoll"
+            android:name=".activities.QnA.HealthPoll"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".QnA.Questions" />
-        <activity android:name=".QnA.AnswersResult" />
+        <activity android:name=".activities.QnA.Questions" />
+        <activity android:name=".activities.QnA.AnswersResult" />
         <activity android:name=".MakePayment" />
-        <activity android:name=".PensionerRiskAssessment.SendPersonId" />
+        <activity android:name=".activities.PensionerRiskAssessment.SendPersonId" />
         <activity
-            android:name=".PensionerRiskAssessment.AssessmentQuestions"
+            android:name=".activities.PensionerRiskAssessment.AssessmentQuestions"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".AddPictures"></activity>
+        <activity android:name=".AddPictures" />
     </application>
 
 </manifest>

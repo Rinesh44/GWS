@@ -21,11 +21,11 @@ public class JSONParser {
     /********
      * URLS
      *******/
-    private static final String MAIN_URL = "http://pagodalabs.com.np/gws/personal_detail/api/personal_detail?api_token=" + MainActivity.accessToken;
-    private static final String MAIN_URL2 = "http://pagodalabs.com.np/gws/payment_distribution/api/payment_distribution";
-    private static final String MAIN_URL3 = "http://pagodalabs.com.np/gws/investigate/api/investigate";
-    private static final String MAIN_URL4 = "http://pagodalabs.com.np/gws/ca/api/ca?api_token=" + MainActivity.accessToken;
-    private static final String MAIN_URL5 = "http://pagodalabs.com.np/gws/track/api/track?api_token=" + MainActivity.accessToken;
+    private static final String MAIN_URL = "http://gws.pagodalabs.com.np/personal_detail/api/personal_detail?api_token=" + MainActivity.accessToken;
+    private static final String MAIN_URL2 = "http://gws.pagodalabs.com.np/payment_distribution/api/payment_distribution";
+    private static final String MAIN_URL3 = "http://gws.pagodalabs.com.np/investigate/api/investigate";
+    private static final String MAIN_URL4 = "http://gws.pagodalabs.com.np/ca/api/ca?api_token=" + MainActivity.accessToken;
+    private static final String MAIN_URL5 = "http://gws.pagodalabs.com.np/track/api/track?api_token=" + MainActivity.accessToken;
 
 
     /**

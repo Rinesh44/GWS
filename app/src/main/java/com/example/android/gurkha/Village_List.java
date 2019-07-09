@@ -42,7 +42,7 @@ public class Village_List extends AppCompatActivity {
     private ListView listView;
     private EditText search;
     // URL to get villagelist JSON
-    private static String url = "http://pagodalabs.com.np/gws/individual_form/all_data";
+    private static String url = "http://gws.pagodalabs.com.np/individual_form/all_data";
     ArrayList<HashMap<String, String>> villageList;
 
     @Override

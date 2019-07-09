@@ -39,11 +39,12 @@ public class Category extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     Toolbar toolbar;
     TextView title;
-    private static final String url = "http://pagodalabs.com.np/gws/awc/api/awc/";
+    private static final String url = "http://gws.pagodalabs.com.np/awc/api/awc/";
     List<String> values;
     Typeface face;
     String awc = "Jiri";
-    private int lastPosition = -1 ;
+    private int lastPosition = -1;
+    private boolean searchByAwc = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class Category extends AppCompatActivity {
         title = (TextView) findViewById(R.id.title);
         title.setTypeface(face);
 
+        checkIfSearchByAwc();
 
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
@@ -69,7 +71,7 @@ public class Category extends AppCompatActivity {
         values.add("Device Info");
 
 
-        adapter = new ArrayAdapter<String>(Category.this, android.R.layout.simple_list_item_1, values){
+        adapter = new ArrayAdapter<String>(Category.this, android.R.layout.simple_list_item_1, values) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
@@ -89,26 +91,31 @@ public class Category extends AppCompatActivity {
                     // String mId = String.valueOf(databaseHelper.getId(textInputEditTextEmail.getText().toString().trim()));
 
                     Intent personal = new Intent(Category.this, People.class);
+                    personal.putExtra("search_by_awc", searchByAwc);
                     startActivity(personal);
                 }
 
                 if (position == 1) {
                     Intent payment = new Intent(Category.this, Payment.class);
+                    payment.putExtra("search_by_awc", searchByAwc);
                     startActivity(payment);
                 }
 
                 if (position == 2) {
                     Intent investigation = new Intent(Category.this, Investigation.class);
+                    investigation.putExtra("search_by_awc", searchByAwc);
                     startActivity(investigation);
                 }
 
                 if (position == 3) {
                     Intent districtawc = new Intent(Category.this, awc_name1.class);
+                    districtawc.putExtra("search_by_awc", searchByAwc);
                     startActivity(districtawc);
                 }
 
                 if (position == 4) {
                     Intent ca = new Intent(Category.this, Ca_servicetype.class);
+                    ca.putExtra("search_by_awc", searchByAwc);
                     startActivity(ca);
                 }
 
@@ -120,6 +127,11 @@ public class Category extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void checkIfSearchByAwc() {
+        Intent i = getIntent();
+        searchByAwc = i.getBooleanExtra("search_by_awc", false);
     }
 
 

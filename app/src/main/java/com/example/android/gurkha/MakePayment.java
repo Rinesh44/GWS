@@ -14,11 +14,11 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -35,13 +35,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.birbit.android.jobqueue.JobManager;
+import com.example.android.gurkha.EventListener.ResponseListener;
 import com.example.android.gurkha.JobQueue.PostJob;
 import com.example.android.gurkha.NFCInterface.Listener;
-import com.example.android.gurkha.NfcFragments.NFCReadFragment;
 import com.example.android.gurkha.NfcFragments.NFCWriteFragment;
 import com.example.android.gurkha.application.GurkhaApplication;
-import com.google.gson.Gson;
-import com.google.zxing.client.android.Intents;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
@@ -69,7 +67,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MakePayment extends AppCompatActivity implements Listener {
+public class MakePayment extends AppCompatActivity implements Listener, ResponseListener {
     private static final String TAG = MakePayment.class.getSimpleName();
     SearchableSpinner recipientName;
     Button QR, done, NFC;
@@ -79,7 +77,7 @@ public class MakePayment extends AppCompatActivity implements Listener {
     private ImageView image;
     private ProgressDialog progressDialog;
     private SessionManager sessionManager;
-    private static final String url = "http://pagodalabs.com.np/gws/payment_detail/api/payment_detail";
+    private static final String url = "http://gws.pagodalabs.com.np/payment_detail/api/payment_detail";
     private Calendar calendar;
     private int year, month, day;
     private FbSessionManager fbSessionManager;
@@ -88,7 +86,7 @@ public class MakePayment extends AppCompatActivity implements Listener {
     Toolbar toolbar;
     ArrayAdapter<Object> adapt_person;
     private EditText desc;
-    private static String base_url = "http://pagodalabs.com.np/";
+    private static String base_url = "http://gws.pagodalabs.com.np/";
     Call<ResponseBody> call;
     Typeface face;
     Object[] person_items;
@@ -216,7 +214,7 @@ public class MakePayment extends AppCompatActivity implements Listener {
                 Log.e("JSON:", parameter.toString());
                 Log.e("Date:", mDateOfTransaction);
 
-                mJobManager.addJobInBackground(new PostJob(url, parameter.toString()));
+                mJobManager.addJobInBackground(new PostJob(url, parameter.toString(), MakePayment.this));
                 Toast.makeText(MakePayment.this, "Details added", Toast.LENGTH_SHORT).show();
                 finish();
 
@@ -288,7 +286,7 @@ public class MakePayment extends AppCompatActivity implements Listener {
                     sb.append("\n" + "Army No: " + armyNo);
                     sb.append("\n" + "Amount: " + amount.getText().toString().trim());
 //                    sb.append("\n" + "Topic: " + topic.getText().toString().trim());
-                    sb.append("\n" + "Tran. Date: " + transactionDate.getText().toString().trim());
+                    sb.append("\n" + "Date: " + transactionDate.getText().toString().trim());
                     sb.append("\n" + "Tran. No: " + transactionNo.getText().toString().trim());
 
                     mNfcWriteFragment = (NFCWriteFragment) getFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
@@ -449,6 +447,16 @@ public class MakePayment extends AppCompatActivity implements Listener {
         isWrite = false;
     }
 
+    @Override
+    public void responseSuccess(okhttp3.Response response) {
+
+    }
+
+    @Override
+    public void responseFail(String msg) {
+
+    }
+
 
     /**
      * Interceptor to cache data and maintain it for a minute.
@@ -508,7 +516,7 @@ public class MakePayment extends AppCompatActivity implements Listener {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        call = retrofit.create(ApiInterface.class).getResponse("gws/personal_detail/api/personal_detail?api_token=" + token);
+        call = retrofit.create(ApiInterface.class).getResponse("personal_detail/api/personal_detail?api_token=" + token);
         Log.e(TAG, "Token:" + token);
         if (call.isExecuted())
             call = call.clone();

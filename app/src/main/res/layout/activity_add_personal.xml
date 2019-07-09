@@ -188,7 +188,7 @@
                         android:hint="Unit"
                         android:textColor="@android:color/black"
                         android:textSize="20sp" />
-
+<!--
                     <EditText
                         android:id="@+id/textsubunit"
                         android:layout_width="match_parent"
@@ -200,7 +200,7 @@
                         android:gravity="center"
                         android:hint="Subunit"
                         android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        android:textSize="20sp" />-->
 
 
                     <Spinner
@@ -228,7 +228,7 @@
                         android:focusable="false"
                         android:fontFamily="@font/core_regular"
                         android:gravity="center"
-                        android:hint="Pick Date Of Birth"
+                        android:hint="Pensioner's Date Of Birth"
                         android:textColor="@android:color/black"
                         android:textSize="20sp" />
 
@@ -241,7 +241,7 @@
                         android:focusable="false"
                         android:fontFamily="@font/core_regular"
                         android:gravity="center"
-                        android:hint="Pick Date Of Entry"
+                        android:hint="Pick Date Of Enlistment"
                         android:textColor="@android:color/black"
                         android:textSize="20sp" />
 
@@ -270,7 +270,7 @@
                         android:textColor="@android:color/black"
                         android:textSize="20sp" />
 
-                    <Spinner
+                  <!--  <Spinner
                         android:id="@+id/textretain"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -285,7 +285,7 @@
                         android:padding="5dp"
                         android:spinnerMode="dropdown"
                         android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        android:textSize="20sp" />-->
 
                     <Spinner
                         android:id="@+id/textpayee"
@@ -369,7 +369,7 @@
                         android:focusable="false"
                         android:fontFamily="@font/core_regular"
                         android:gravity="center"
-                        android:hint="Pick Dependent's DOB"
+                        android:hint="Dependent's DOB"
                         android:textColor="@android:color/black"
                         android:textSize="20sp" />
 
@@ -472,7 +472,7 @@
                         android:layout_margin="5dp"
                         android:fontFamily="@font/core_regular"
                         android:gravity="center"
-                        android:hint="VDC"
+                        android:hint="Municipality"
                         android:textColor="@android:color/black"
                         android:textSize="20sp" />
 
@@ -491,7 +491,7 @@
                         android:textSize="20sp" />
 
 
-                    <EditText
+             <!--       <EditText
                         android:id="@+id/textpo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -502,7 +502,7 @@
                         android:hint="Post Office"
                         android:textAlignment="center"
                         android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        android:textSize="20sp" />-->
 
                     <TextView
                         android:id="@+id/hiddenDate"
@@ -516,7 +516,6 @@
                         android:visibility="invisible" />
 
                     <LinearLayout
-                        android:id="@+id/photo1_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -548,7 +547,6 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/photo2_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -579,7 +577,6 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/photo3_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">

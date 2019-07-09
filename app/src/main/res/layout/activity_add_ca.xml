@@ -85,7 +85,7 @@
                             android:layout_margin="5dp"
                             android:fontFamily="@font/core_regular"
                             android:gravity="center"
-                            android:hint="VDC"
+                            android:hint="Municipality"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
@@ -217,7 +217,7 @@
                             android:layout_margin="5dp"
                             android:fontFamily="@font/core_regular"
                             android:gravity="center"
-                            android:hint="GWS/KAAA"
+                            android:hint="GWT(N)/KAAA (Rs.)"
                             android:inputType="number"
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
@@ -249,7 +249,7 @@
                             android:textColor="@android:color/black"
                             android:textSize="20sp" />
 
-                        <EditText
+                    <!--    <EditText
                             android:id="@+id/textfunder"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -259,7 +259,7 @@
                             android:gravity="center"
                             android:hint="Funder"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="20sp" />-->
 
 
                         <EditText
@@ -278,7 +278,7 @@
                             android:id="@+id/btn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/textfunder"
+                            android:layout_below="@+id/texttotal"
                             android:layout_margin="5dp"
                             android:background="@color/colorButton"
                             android:clickable="true"

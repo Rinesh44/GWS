@@ -30,7 +30,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Name:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textName"
@@ -58,7 +58,7 @@
                             android:padding="5dp"
                             android:fontFamily="@font/core_regular"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
 
                         <TextView
@@ -70,7 +70,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Relation:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textrelation"
@@ -82,7 +82,7 @@
                             android:layout_toRightOf="@+id/relation"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
 
                         <TextView
@@ -94,7 +94,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Latitude:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textlatidude"
@@ -105,7 +105,7 @@
                             android:layout_toRightOf="@+id/latitudes"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/longitudes"
@@ -116,7 +116,7 @@
                             android:padding="5dp"
                             android:text="Longitude:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textlongitude"
@@ -127,7 +127,7 @@
                             android:padding="5dp"
                             android:fontFamily="@font/core_regular"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/nominee"
@@ -138,7 +138,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Nominee:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textnominee"
@@ -149,7 +149,7 @@
                             android:layout_toRightOf="@+id/nominee"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/armyno"
@@ -160,7 +160,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Army_no:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textarmyno"
@@ -172,7 +172,7 @@
                             android:fontFamily="@font/core_regular"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/rank"
@@ -183,7 +183,7 @@
                             android:padding="5dp"
                             android:text="Rank:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textrank"
@@ -195,7 +195,7 @@
                             android:layout_toRightOf="@+id/rank"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/surname"
@@ -206,7 +206,7 @@
                             android:padding="5dp"
                             android:text="Surname:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textsurname"
@@ -218,7 +218,7 @@
                             android:layout_toRightOf="@+id/surname"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/subunit"
@@ -229,7 +229,7 @@
                             android:padding="5dp"
                             android:text="Subunit:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textsubunit"
@@ -241,7 +241,7 @@
                             android:fontFamily="@font/core_regular"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/unit"
@@ -252,7 +252,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Unit:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textunit"
@@ -264,7 +264,7 @@
                             android:fontFamily="@font/core_regular"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/armyid"
@@ -275,7 +275,7 @@
                             android:text="Army_id:"
                             android:fontFamily="@font/core_regular"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textarmyid"
@@ -287,7 +287,7 @@
                             android:layout_toRightOf="@+id/armyid"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/age"
@@ -298,7 +298,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Age:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textage"
@@ -309,7 +309,7 @@
                             android:padding="5dp"
                             android:fontFamily="@font/core_regular"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/dob"
@@ -320,7 +320,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Date_Of_Birth:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textdob"
@@ -331,7 +331,7 @@
                             android:padding="5dp"
                             android:fontFamily="@font/core_regular"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/doe"
@@ -342,7 +342,7 @@
                             android:padding="5dp"
                             android:text="Date Of Entry:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textdoe"
@@ -353,7 +353,7 @@
                             android:fontFamily="@font/core_regular"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/dod"
@@ -364,7 +364,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Date Of Discharge:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textdod"
@@ -375,7 +375,7 @@
                             android:fontFamily="@font/core_regular"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/dc"
@@ -386,7 +386,7 @@
                             android:padding="5dp"
                             android:text="Documents:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textdc"
@@ -397,7 +397,7 @@
                             android:layout_toRightOf="@+id/dc"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/retain"
@@ -408,7 +408,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Retain:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textretain"
@@ -419,7 +419,7 @@
                             android:fontFamily="@font/core_regular"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/payee"
@@ -430,7 +430,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Payee:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textpayee"
@@ -441,7 +441,7 @@
                             android:fontFamily="@font/core_regular"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/dependentname"
@@ -452,7 +452,7 @@
                             android:padding="5dp"
                             android:text="Dependent_Name:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textdependentname"
@@ -463,7 +463,7 @@
                             android:layout_toRightOf="@+id/dependentname"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
                         <TextView
                             android:id="@+id/dependentage"
                             android:layout_width="wrap_content"
@@ -473,7 +473,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Dependent_Age:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textdependentage"
@@ -484,7 +484,7 @@
                             android:layout_toRightOf="@+id/dependentage"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
                         <TextView
                             android:id="@+id/dependentdob"
                             android:layout_width="wrap_content"
@@ -494,7 +494,7 @@
                             android:padding="5dp"
                             android:text="Dependent_DOB:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textdependentdob"
@@ -505,7 +505,7 @@
                             android:layout_toRightOf="@+id/dependentdob"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/healthstate"
@@ -516,7 +516,7 @@
                             android:padding="5dp"
                             android:text="Health_State:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/texthealthstate"
@@ -527,7 +527,7 @@
                             android:layout_toRightOf="@+id/healthstate"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
                         <TextView
                             android:id="@+id/paid"
                             android:layout_width="wrap_content"
@@ -537,7 +537,7 @@
                             android:padding="5dp"
                             android:text="Paid_To:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textpaid"
@@ -548,7 +548,7 @@
                             android:layout_toRightOf="@+id/paid"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/typeofwelfarepensioner"
@@ -559,7 +559,7 @@
                             android:padding="5dp"
                             android:text="Type Of Welfare Pensioner:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/texttypeofwelfarepensioner"
@@ -570,7 +570,7 @@
                             android:layout_toRightOf="@+id/typeofwelfarepensioner"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/village"
@@ -581,7 +581,7 @@
                             android:padding="5dp"
                             android:text="Village:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textvillage"
@@ -592,7 +592,7 @@
                             android:layout_toRightOf="@+id/village"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/district"
@@ -603,7 +603,7 @@
                             android:padding="5dp"
                             android:text="District:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textdistrict"
@@ -614,7 +614,7 @@
                             android:layout_toRightOf="@+id/district"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/vdcid"
@@ -625,7 +625,7 @@
                             android:padding="5dp"
                             android:text="VDC ID:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textvdc"
@@ -636,7 +636,7 @@
                             android:layout_toRightOf="@+id/vdcid"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/wardno"
@@ -647,7 +647,7 @@
                             android:padding="5dp"
                             android:text="Ward No:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textwardno"
@@ -658,7 +658,7 @@
                             android:layout_toRightOf="@+id/wardno"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/po"
@@ -669,7 +669,7 @@
                             android:padding="5dp"
                             android:text="Post Office:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/textpo"
@@ -680,7 +680,7 @@
                             android:layout_toRightOf="@+id/po"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/photo1"
@@ -692,7 +692,7 @@
                             android:layout_marginTop="10dp"
                             android:text="Photo1:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <ImageView
                             android:id="@+id/imgphoto1"
@@ -703,7 +703,7 @@
                             android:layout_marginTop="10dp"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/photo2"
@@ -715,7 +715,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Photo2:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <ImageView
                             android:id="@+id/imgphoto2"
@@ -726,7 +726,7 @@
                             android:layout_toRightOf="@+id/photo2"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/photo3"
@@ -738,7 +738,7 @@
                             android:fontFamily="@font/core_regular"
                             android:text="Photo3:"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
 
                         <ImageView
                             android:id="@+id/imgphoto3"
@@ -749,7 +749,7 @@
                             android:layout_toRightOf="@+id/photo3"
                             android:padding="5dp"
                             android:textColor="@android:color/black"
-                            android:textSize="20sp" />
+                            android:textSize="18sp" />
                     </RelativeLayout>
                 </LinearLayout>
             </ScrollView>

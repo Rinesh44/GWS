@@ -4,7 +4,9 @@ package com.example.android.gurkha;
  * Created by Shaakya on 7/12/2017.
  */
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -26,7 +28,7 @@ import java.util.List;
 
 public class DirectionFinder {
     private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
-    private static final String GOOGLE_API_KEY = "AIzaSyA3bsNVTecGAClLV3hWLhlglmuHyrwybec";
+    private static final String GOOGLE_API_KEY = "AIzaSyAhLvnVHbSuGsuaAfaki6BGxUFMn3fb7yc";
     private DirectionFinderListener listener;
     private String origin;
     private String destination;

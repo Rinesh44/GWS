@@ -1,9 +1,12 @@
 package com.example.android.gurkha;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.birbit.android.jobqueue.JobManager;
+import com.example.android.gurkha.EventListener.ResponseListener;
 import com.example.android.gurkha.JobQueue.PostJob;
 import com.example.android.gurkha.JobQueue.PutJob;
 import com.example.android.gurkha.application.GurkhaApplication;
@@ -28,8 +32,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Investigation_details extends AppCompatActivity {
-    private static final String url = "http://pagodalabs.com.np/gws/investigate/api/investigate?api_token=";
+import okhttp3.Response;
+
+public class Investigation_details extends AppCompatActivity implements ResponseListener {
+    private static final String url = "http://gws.pagodalabs.com.np/investigate/api/editInvestigate";
     TextView name, surname, army_no, investigator, paymentbase, date, startdate, reviewdate;
     Toolbar toolbar;
     FloatingActionButton fabSave;
@@ -57,13 +63,13 @@ public class Investigation_details extends AppCompatActivity {
         sessionManager = new SessionManager(getApplicationContext());
         fbSessionManager = new FbSessionManager(getApplicationContext());
 
-        if(sessionManager.getUserDetails() != null) {
+        if (sessionManager.getUserDetails() != null) {
             HashMap<String, String> user = sessionManager.getUserDetails();
             token = user.get(SessionManager.KEY_TOKEN);
         }
-        if(fbSessionManager.getUserDetails() != null) {
+        if (fbSessionManager.getUserDetails() != null) {
             HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
-            if(fbUser.get(SessionManager.KEY_TOKEN) != null)
+            if (fbUser.get(SessionManager.KEY_TOKEN) != null)
                 token = fbUser.get(SessionManager.KEY_TOKEN);
         }
 
@@ -86,9 +92,12 @@ public class Investigation_details extends AppCompatActivity {
 
         fabSave = findViewById(R.id.save);
 
+
         Intent i = getIntent();
 
         String txtId = i.getStringExtra("personal_id");
+
+        String iId = i.getStringExtra("i_id");
 
         String txtname = i.getStringExtra("name");
         name.setText(txtname);
@@ -117,29 +126,50 @@ public class Investigation_details extends AppCompatActivity {
         fabSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(Investigation_details.this);
+                } else {
+                    builder = new AlertDialog.Builder(Investigation_details.this);
+                }
+                builder.setTitle("Edit")
+                        .setMessage("Are you sure to save the edited fields?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with edit
+                                Calendar c = Calendar.getInstance();
 
-                Calendar c = Calendar.getInstance();
+                                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                                String formattedDate = df.format(c.getTime());
 
-                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                String formattedDate = df.format(c.getTime());
-
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("date", date.getText().toString());
-                params.put("start_date", startdate.getText().toString());
-                params.put("personal_id", txtId);
-                params.put("investigator", investigator.getText().toString());
-                params.put("payment_base", paymentbase.getText().toString());
-                params.put("review_date", reviewdate.getText().toString());
+                                Map<String, String> params = new HashMap<String, String>();
+                                params.put("awc", SelectAwc.awc);
+                                params.put("date", date.getText().toString());
+                                params.put("start_date", startdate.getText().toString());
+                                params.put("personal_id", txtId);
+                                params.put("investigator", investigator.getText().toString());
+                                params.put("payment_base", paymentbase.getText().toString());
+                                params.put("review_date", reviewdate.getText().toString());
+                                params.put("i_id", iId.trim());
 //                params.put("awc", aw);
-                params.put("created_at", formattedDate);
-                params.put("api_token", token);
+                                params.put("created_at", formattedDate);
+                                params.put("api_token", token);
 
-                JSONObject parameter = new JSONObject(params);
-                Log.e("JSON:", parameter.toString());
+                                JSONObject parameter = new JSONObject(params);
+                                Log.e("JSON:", parameter.toString());
 
-                mJobManager.addJobInBackground(new PutJob(url, parameter.toString()));
-                Toast.makeText(Investigation_details.this, "Investigation Details Updated", Toast.LENGTH_SHORT).show();
-                finish();
+                                mJobManager.addJobInBackground(new PostJob(url, parameter.toString(), Investigation_details.this));
+                                Toast.makeText(Investigation_details.this, "Investigation Details Updated", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
         });
     }
@@ -152,7 +182,7 @@ public class Investigation_details extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_edit:
                 makeTextEditable();
                 break;
@@ -171,5 +201,16 @@ public class Investigation_details extends AppCompatActivity {
         startdate.setFocusableInTouchMode(true);
         reviewdate.setFocusableInTouchMode(true);
         army_no.setFocusableInTouchMode(true);
+        army_no.requestFocus();
+    }
+
+    @Override
+    public void responseSuccess(Response response) {
+
+    }
+
+    @Override
+    public void responseFail(String msg) {
+
     }
 }

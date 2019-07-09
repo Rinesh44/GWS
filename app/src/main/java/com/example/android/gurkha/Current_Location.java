@@ -25,6 +25,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.birbit.android.jobqueue.JobManager;
+import com.example.android.gurkha.EventListener.ResponseListener;
 import com.example.android.gurkha.JobQueue.PostJob;
 import com.example.android.gurkha.application.GurkhaApplication;
 import com.google.android.gms.common.ConnectionResult;
@@ -73,10 +74,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentNavigableMap;
 
-public class Current_Location extends FragmentActivity implements OnMapReadyCallback {
+import okhttp3.Response;
+
+public class Current_Location extends FragmentActivity implements OnMapReadyCallback, ResponseListener {
 
 
-    private String url = "http://pagodalabs.com.np/gws/path/api/path?api_token=";
+    private String url = "http://gws.pagodalabs.com.np/path/api/path?api_token=";
     private GoogleMap mMap;
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -107,6 +110,8 @@ public class Current_Location extends FragmentActivity implements OnMapReadyCall
     JobManager mJobManager;
 
     private FusedLocationProviderClient mFusedLocationClient;
+    private Button mSatelliteView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +124,15 @@ public class Current_Location extends FragmentActivity implements OnMapReadyCall
 
         sessionManager = new SessionManager(getApplicationContext());
         fbSessionManager = new FbSessionManager(getApplicationContext());
+
+        mSatelliteView = findViewById(R.id.btn_satellite_view);
+
+        mSatelliteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            }
+        });
 
         if (sessionManager.getUserDetails() != null) {
             HashMap<String, String> user = sessionManager.getUserDetails();
@@ -261,7 +275,7 @@ public class Current_Location extends FragmentActivity implements OnMapReadyCall
         JSONObject parameter = new JSONObject(params);
         Log.e("JSON:", parameter.toString());
 
-        mJobManager.addJobInBackground(new PostJob(url + token, parameter.toString()));
+        mJobManager.addJobInBackground(new PostJob(url + token, parameter.toString(), Current_Location.this));
 
     }
 
@@ -313,5 +327,14 @@ public class Current_Location extends FragmentActivity implements OnMapReadyCall
 
     }
 
+    @Override
+    public void responseSuccess(Response response) {
+
+    }
+
+    @Override
+    public void responseFail(String msg) {
+
+    }
 }
 

@@ -1,24 +1,17 @@
 package com.example.android.gurkha;
 
-import android.*;
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Build;
-import android.os.Environment;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
-
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,7 +19,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.SphericalUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,8 +32,9 @@ import org.json.JSONException;
 import java.io.File;
 import java.util.ArrayList;
 
-public class Loader extends FragmentActivity implements OnMapReadyCallback {
+public class Loader extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
+    private static final String TAG = Loader.class.getSimpleName();
     private GoogleMap mMap;
     public ArrayList<LatLng> markerList;
     public static JSONArray markerArray;
@@ -45,6 +44,8 @@ public class Loader extends FragmentActivity implements OnMapReadyCallback {
     private TextView noteField;
     public File[] allFiles;
     String mImagePath, mNotes;
+    private double routeDistance;
+    private TextView distanceInKm;
     private static final int REQUEST_PERMISSIONS = 1999;
     private static String[] PERMISSIONS_STORAGE = {
             android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -73,6 +74,8 @@ public class Loader extends FragmentActivity implements OnMapReadyCallback {
         polylineList = new ArrayList<>();
         polylineOptions = new PolylineOptions();
 
+        distanceInKm = findViewById(R.id.distance);
+
         Intent i = getIntent();
         String mMarker = i.getStringExtra("marker");
         String mPolyline = i.getStringExtra("polyline");
@@ -93,6 +96,7 @@ public class Loader extends FragmentActivity implements OnMapReadyCallback {
                 double polyLng = Double.parseDouble(separatedPoly[1]);
                 LatLng latLngPoly = new LatLng(polyLat, polyLng);
                 polylineList.add(latLngPoly);
+
             }
 
             for (int j = 0; j < markerArray.length(); j++) {
@@ -127,6 +131,12 @@ public class Loader extends FragmentActivity implements OnMapReadyCallback {
             mMap.addMarker(add);
         }
 
+
+        routeDistance = SphericalUtil.computeLength(polylineList);
+        Double modifiedDistance = routeDistance/1000;
+        String distanceInString = String.format("%.2f", modifiedDistance);
+        distanceInKm.setText(String.valueOf(distanceInString + " KM"));
+        Log.i(TAG, "distance -->" + routeDistance);
         polylineOptions.addAll(polylineList);
         polylineOptions
                 .width(7)
@@ -137,6 +147,7 @@ public class Loader extends FragmentActivity implements OnMapReadyCallback {
         mMap.addPolyline(polylineOptions);
         Marker startMarker = mMap.addMarker(new MarkerOptions().position(start).title("Start").snippet("start").icon(BitmapDescriptorFactory.fromResource(R.drawable.start)));
         Marker endMarker = mMap.addMarker(new MarkerOptions().position(end).title("Stop").snippet("stop").icon(BitmapDescriptorFactory.fromResource(R.drawable.stop)));
+        endMarker.hideInfoWindow();
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 12));
 
@@ -201,6 +212,12 @@ public class Loader extends FragmentActivity implements OnMapReadyCallback {
             }
         });
 
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if(marker.getSnippet().equals("start") || marker.getSnippet().equals("stop")) return true;
+        else return false;
     }
 /*
 

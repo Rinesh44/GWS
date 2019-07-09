@@ -1,29 +1,49 @@
 package com.example.android.gurkha;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.birbit.android.jobqueue.JobManager;
+import com.example.android.gurkha.EventListener.ResponseListener;
+import com.example.android.gurkha.JobQueue.PostJob;
+import com.example.android.gurkha.application.GurkhaApplication;
+
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Payment_details extends AppCompatActivity {
+import okhttp3.Response;
+
+public class Payment_details extends AppCompatActivity implements ResponseListener {
+    static String editUrl = "http://gws.pagodalabs.com.np/payment_distribution/api/editpayment_distribution";
     TextView name, paiddate, granted, paid, unpaidamount, grant, itemsgiven, category, totalcost, grantedamount, datehandedover, pvno, sponsername, surname;
     EditText armyno;
     Toolbar toolbar;
     FloatingActionButton fabSave;
+    SessionManager sessionManager;
+    FbSessionManager fbSessionManager;
+    String token;
+    JobManager mJobManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +56,24 @@ public class Payment_details extends AppCompatActivity {
 
         Typeface face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
 
+        mJobManager = GurkhaApplication.getInstance().getJobManager();
+
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
+
+        sessionManager = new SessionManager(getApplicationContext());
+        fbSessionManager = new FbSessionManager(getApplicationContext());
+
+        if (sessionManager.getUserDetails() != null) {
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            token = user.get(SessionManager.KEY_TOKEN);
+        }
+
+        if (fbSessionManager.getUserDetails() != null) {
+            HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
+            if (fbUser.get(SessionManager.KEY_TOKEN) != null)
+                token = fbUser.get(SessionManager.KEY_TOKEN);
+        }
 
         name = (TextView) findViewById(R.id.textperson);
         name.setTypeface(face);
@@ -73,7 +109,12 @@ public class Payment_details extends AppCompatActivity {
 
         fabSave = findViewById(R.id.save);
 
+
         Intent i = getIntent();
+
+        String paymentId = i.getStringExtra("payment_id");
+
+        String personalId = i.getStringExtra("personal_id");
 
         String txtname = i.getStringExtra("name");
         name.setText(txtname);
@@ -123,24 +164,64 @@ public class Payment_details extends AppCompatActivity {
         fabSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             /*   Map<String, String> params = new HashMap<String, String>();
-                params.put("personal_id", id);
-                params.put("paid_date", mpaiddate);
-                params.put("paid", mpaid);
-                params.put("unpaid_amount", munpaidamount);
-                params.put("items_given", mitemsgiven);
-                params.put("category", mcategory);
-                params.put("total_cost", mtotalcost);
-                params.put("date_handed_over", mdategrantedover);
-                params.put("granted_amount", mgranted_amount);
-                params.put("sponsor_name", msponsername);
-                params.put("pv_no", mpvno);
-                params.put("grant", mgrant);
-                params.put("awc", mAwc);
-                params.put("created_at", mHiddenDate);
-                params.put("api_token", token);*/
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(Payment_details.this);
+                } else {
+                    builder = new AlertDialog.Builder(Payment_details.this);
+                }
+                builder.setTitle("Edit")
+                        .setMessage("Are you sure to save the edited fields?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with edit
+
+                                Calendar c = Calendar.getInstance();
+
+                                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                                String formattedDate = df.format(c.getTime());
+
+
+//                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+                                Map<String, String> params = new HashMap<String, String>();
+                                params.put("personal_id", personalId);
+                                params.put("awc", SelectAwc.awc);
+                                params.put("paid_date", paiddate.getText().toString().trim());
+                                params.put("paid", paid.getText().toString().trim());
+                                params.put("unpaid_amount", unpaidamount.getText().toString().trim());
+                                params.put("items_given", itemsgiven.getText().toString().trim());
+                                params.put("category", category.getText().toString().trim());
+                                params.put("total_cost", totalcost.getText().toString().trim());
+                                params.put("date_handed_over", datehandedover.getText().toString().trim());
+                                params.put("granted_amount", grantedamount.getText().toString().trim());
+                                params.put("sponsor_name", sponsername.getText().toString().trim());
+                                params.put("pv_no", pvno.getText().toString().trim());
+                                params.put("grant", grant.getText().toString().trim());
+//                                params.put("awc", mAwc);
+                                params.put("created_at", formattedDate.trim());
+                                params.put("api_token", token);
+                                params.put("payment_id", paymentId);
+
+                                JSONObject parameter = new JSONObject(params);
+                                Log.e("JSON:", parameter.toString());
+
+                                mJobManager.addJobInBackground(new PostJob(editUrl, parameter.toString(), Payment_details.this));
+                                Toast.makeText(Payment_details.this, "Payment Details Updated", Toast.LENGTH_SHORT).show();
+                                finish();
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
         });
+
     }
 
     @Override
@@ -151,7 +232,7 @@ public class Payment_details extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_edit:
                 makeTextEditable();
                 break;
@@ -166,6 +247,7 @@ public class Payment_details extends AppCompatActivity {
         paiddate.setFocusableInTouchMode(true);
         surname.setFocusableInTouchMode(true);
         armyno.setFocusableInTouchMode(true);
+        armyno.requestFocus();
         granted.setFocusableInTouchMode(true);
         paid.setFocusableInTouchMode(true);
         unpaidamount.setFocusableInTouchMode(true);
@@ -177,5 +259,15 @@ public class Payment_details extends AppCompatActivity {
         datehandedover.setFocusableInTouchMode(true);
         pvno.setFocusableInTouchMode(true);
         sponsername.setFocusableInTouchMode(true);
+    }
+
+    @Override
+    public void responseSuccess(Response response) {
+
+    }
+
+    @Override
+    public void responseFail(String msg) {
+
     }
 }

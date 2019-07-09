@@ -30,50 +30,50 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="5"
-                android:layout_below="@+id/select">
-
-            <EditText
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="5"
                 android:layout_below="@+id/select"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/onmenuclick"
-                android:drawableLeft="@drawable/ic_search"
-                android:fontFamily="@font/core_regular"
-                android:hint="Full Name or Army No."
-                android:inputType="text"
-                android:padding="5dp"
-                android:textColor="@android:color/black"
-                android:textColorHint="#9e9e9e"
-                android:textCursorDrawable="@null" />
+                android:orientation="horizontal"
+                android:weightSum="5">
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnsearch"
-                android:layout_width="wrap_content"
-                android:layout_weight="2"
-                android:clickable="true"
-                android:padding="5dp"
-                android:focusable="true"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:foreground="?attr/selectableItemBackground"
-                android:layout_marginEnd="7dp"
-                android:fontFamily="@font/core_regular"
-                android:text="Search" />
+                <EditText
+                    android:id="@+id/search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/select"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="5"
+                    android:background="@drawable/onmenuclick"
+                    android:drawableLeft="@drawable/ic_search"
+                    android:fontFamily="@font/core_regular"
+                    android:hint="Full Name or Army No."
+                    android:inputType="text"
+                    android:padding="5dp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#9e9e9e"
+                    android:textCursorDrawable="@null" />
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btnsearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginEnd="7dp"
+                    android:layout_weight="2"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/core_regular"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="5dp"
+                    android:text="Search" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
                 android:orientation="vertical">
 
                 <TextView
@@ -93,8 +93,8 @@
                     android:id="@+id/colorEconomical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginRight="20dp"
                     android:drawableLeft="@drawable/ic_orange"
                     android:fontFamily="@font/core_regular"
@@ -103,7 +103,6 @@
                     android:textColor="@android:color/holo_orange_dark" />
 
                 <TextView
-                    android:id="@+id/colorNormal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/colorSocial"
@@ -139,8 +138,8 @@
         android:name="com.example.android.gurkha.NavigationDrawer"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_gravity="start"
         app:layout="@layout/fragment_navigation_drawer"
         tools:layout="@layout/fragment_navigation_drawer" />

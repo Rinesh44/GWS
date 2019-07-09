@@ -7,7 +7,7 @@ import android.graphics.Typeface;
  */
 
 public class Information {
-        int iconId;
-        String title;
+       public int iconId;
+        public String title;
     }
 

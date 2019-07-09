@@ -1,25 +1,49 @@
 package com.example.android.gurkha;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.birbit.android.jobqueue.JobManager;
+import com.example.android.gurkha.EventListener.ResponseListener;
+import com.example.android.gurkha.JobQueue.PostJob;
+import com.example.android.gurkha.application.GurkhaApplication;
+
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
-public class Ca_details extends AppCompatActivity {
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.Response;
+
+public class Ca_details extends AppCompatActivity implements ResponseListener {
+    public static String editUrl = "http://gws.pagodalabs.com.np/ca/api/editCa";
     TextView scheme, village, vdc, wno, servicetype, hhtotal, tenta, population, level, totpopulation, gws, community,
             total, funder, location;
     Toolbar toolbar;
     FloatingActionButton fabSave;
+
+    SessionManager sessionManager;
+    FbSessionManager fbSessionManager;
+    String token;
+    JobManager mJobManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +56,24 @@ public class Ca_details extends AppCompatActivity {
 
         Typeface face = Typeface.createFromAsset(getAssets(), "fonts/core_regular.otf");
 
+        mJobManager = GurkhaApplication.getInstance().getJobManager();
+
         NavigationDrawer navigationDrawerFragment = (NavigationDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         navigationDrawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
+
+
+        sessionManager = new SessionManager(getApplicationContext());
+        fbSessionManager = new FbSessionManager(getApplicationContext());
+
+        if (sessionManager.getUserDetails() != null) {
+            HashMap<String, String> user = sessionManager.getUserDetails();
+            token = user.get(SessionManager.KEY_TOKEN);
+        }
+        if (fbSessionManager.getUserDetails() != null) {
+            HashMap<String, String> fbUser = fbSessionManager.getUserDetails();
+            if (fbUser.get(SessionManager.KEY_TOKEN) != null)
+                token = fbUser.get(SessionManager.KEY_TOKEN);
+        }
 
         scheme = (TextView) findViewById(R.id.textscheme);
         scheme.setTypeface(face);
@@ -68,7 +108,10 @@ public class Ca_details extends AppCompatActivity {
 
         fabSave = findViewById(R.id.save);
 
+
         Intent i = getIntent();
+
+        String caId = i.getStringExtra("ca_id");
 
         String txtscheme = i.getStringExtra("scheme_no");
         scheme.setText(txtscheme);
@@ -115,6 +158,69 @@ public class Ca_details extends AppCompatActivity {
         String txtfunder = i.getStringExtra("funder");
         funder.setText(txtfunder);
 
+        fabSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(Ca_details.this);
+                } else {
+                    builder = new AlertDialog.Builder(Ca_details.this);
+                }
+                builder.setTitle("Edit")
+                        .setMessage("Are you sure to save the edited fields?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                // continue with edit
+
+                                Calendar c = Calendar.getInstance();
+
+                                SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                                String formattedDate = df.format(c.getTime());
+
+                                Map<String, String> params = new HashMap<String, String>();
+                                params.put("awc", SelectAwc.awc);
+                                params.put("scheme_no", scheme.getText().toString().trim());
+                                params.put("location", location.getText().toString().trim());
+                                params.put("village", village.getText().toString().trim());
+                                params.put("vdc", vdc.getText().toString().trim());
+                                params.put("ward_no", wno.getText().toString().trim());
+                                params.put("service_type", servicetype.getText().toString().trim());
+                                params.put("hh_total", hhtotal.getText().toString().trim());
+                                params.put("population_total", population.getText().toString().trim());
+                                params.put("tenta_tap_no", tenta.getText().toString().trim());
+                                params.put("level", level.getText().toString().trim());
+                                params.put("school_popu_total", totpopulation.getText().toString().trim());
+                                params.put("gws_kaa", gws.getText().toString().trim());
+                                params.put("community", community.getText().toString().trim());
+                                params.put("total", total.getText().toString().trim());
+                                params.put("funder", funder.getText().toString().trim());
+//                                params.put("awc", aw);
+                                params.put("created_at", formattedDate.trim());
+                                params.put("api_token", token);
+                                params.put("ca_id", caId);
+
+
+                                JSONObject parameter = new JSONObject(params);
+                                Log.e("JSON:", parameter.toString());
+
+                                mJobManager.addJobInBackground(new PostJob(editUrl, parameter.toString(), Ca_details.this));
+                                Toast.makeText(Ca_details.this, "Ca Details Updated", Toast.LENGTH_SHORT).show();
+                                finish();
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        });
+
     }
 
     @Override
@@ -125,7 +231,7 @@ public class Ca_details extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_edit:
                 makeTextEditable();
                 break;
@@ -139,6 +245,7 @@ public class Ca_details extends AppCompatActivity {
         scheme.setFocusableInTouchMode(true);
         village.setFocusableInTouchMode(true);
         location.setFocusableInTouchMode(true);
+        location.requestFocus();
         vdc.setFocusableInTouchMode(true);
         wno.setFocusableInTouchMode(true);
         servicetype.setFocusableInTouchMode(true);
@@ -151,5 +258,15 @@ public class Ca_details extends AppCompatActivity {
         gws.setFocusableInTouchMode(true);
         community.setFocusableInTouchMode(true);
         funder.setFocusableInTouchMode(true);
+    }
+
+    @Override
+    public void responseSuccess(Response response) {
+
+    }
+
+    @Override
+    public void responseFail(String msg) {
+
     }
 }

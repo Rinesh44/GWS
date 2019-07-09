@@ -1,26 +1,26 @@
 package com.example.android.gurkha;
 
-import android.*;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
-import android.view.*;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -29,8 +29,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +44,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 import okhttp3.Cache;
-import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -69,9 +66,9 @@ public class ChoosePath extends AppCompatActivity {
     private EditText search;
     ArrayList<HashMap<String, Object>> pathlist;
     private static final int REQUEST_PERMISSIONS = 1246;
-    private static String base_url = "http://pagodalabs.com.np/";
+    private static String base_url = "http://gws.pagodalabs.com.np/";
     // URL to get peoplelist JSON
-    private static String url = "http://pagodalabs.com.np/gws/track/api/track?api_token=";
+    private static String url = "http://gws.pagodalabs.com.np/track/api/track?api_token=";
     private static String[] PERMISSIONS_STORAGE = {
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -266,7 +263,7 @@ public class ChoosePath extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        call = retrofit.create(ChoosePathInterface.class).getResponse("gws/track/api/getAll/" + userId + "?api_token=" + token);
+        call = retrofit.create(ChoosePathInterface.class).getResponse("track/api/track?api_token=" + token);
 
         if (call.isExecuted())
             call = call.clone();
@@ -451,7 +448,7 @@ public class ChoosePath extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        call = retrofit.create(ChoosePathInterface.class).getResponse("gws/track/api/track?api_token=" + token);
+        call = retrofit.create(ChoosePathInterface.class).getResponse("track/api/getAll/" + userId + "?api_token=" + token);
 
         if (call.isExecuted())
             call = call.clone();

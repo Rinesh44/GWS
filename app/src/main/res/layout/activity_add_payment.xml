@@ -170,6 +170,7 @@
                                 android:layout_below="@+id/textcategory"
                                 android:layout_centerHorizontal="true"
                                 android:layout_margin="7dp"
+                                android:focusable="false"
                                 android:fontFamily="@font/core_regular"
                                 android:gravity="center"
                                 android:hint="Total Cost"

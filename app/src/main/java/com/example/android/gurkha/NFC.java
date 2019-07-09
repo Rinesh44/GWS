@@ -131,7 +131,7 @@ public class NFC extends AppCompatActivity implements Listener {
 
                 if (isWrite) {
 
-                    /*String messageToWrite = mEtMessage.getText().toString();
+              /*      String messageToWrite = mEtMessage.getText().toString();
                     mNfcWriteFragment = (NFCWriteFragment) getFragmentManager().findFragmentByTag(NFCWriteFragment.TAG);
                     mNfcWriteFragment.onNfcDetected(ndef, messageToWrite);*/
 
